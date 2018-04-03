@@ -101,10 +101,10 @@ public class Controller implements Initializable {
     }
 
     private void parseServerCommand(String s) {
-        if (s.startsWith(Constants.INFO_MESSAGE)) {
-            showAlert(s.substring(Constants.INFO_MESSAGE.length() + 1));
-            return;
-        }
+//        if (s.startsWith(Constants.INFO_MESSAGE)) {
+//            showAlert(s.substring(Constants.INFO_MESSAGE.length() + 1));
+//            return;
+//        }
         if (s.startsWith(Constants.AUTH_RESPONSE_OK)) {
             setAuthorized(true);
             login.clear();
@@ -173,7 +173,7 @@ public class Controller implements Initializable {
             showAlert("Произошла ошибка при отправке сообщения. Возможно потеряно соединение с сервером.");
         }
 
-        if (msg.equals(Constants.DISCONNECT_CMD)) {
+        if (msg.equals(Constants.LOGOUT_CMD)) {
             disconnect();
             setAuthorized(false);
             closeWindow();
@@ -239,11 +239,11 @@ public class Controller implements Initializable {
     public void clientsListClicked(MouseEvent mouseEvent) {
         if (mouseEvent.getClickCount() == 2) {
             String addressee = clientsListView.getSelectionModel().getSelectedItem();
-            if (!addressee.equals(myNick)) {
-                message.setText(Constants.PRIVATE_MSG + " " + addressee + " ");
-                message.requestFocus();
-                message.selectEnd();
-            }
+//            if (!addressee.equals(myNick)) {
+//                message.setText(Constants.PRIVATE_MSG + " " + addressee + " ");
+//                message.requestFocus();
+//                message.selectEnd();
+//            }
         }
     }
 }
