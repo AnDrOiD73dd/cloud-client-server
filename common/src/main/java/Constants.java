@@ -13,7 +13,7 @@ public class Constants {
     public static final String ADD_FILE = PREFIX + "add_file";
     public static final String DELETE_FILE = PREFIX + "delete_file";
 
-    public static final String TERMINATE_SERVER = PREFIX + "close";
+    public static final String TERMINATE_SERVER = PREFIX + "closeDb";
 
     public static final String SERVER_IP = "localhost";
     public static final int SERVER_PORT = 8189;
