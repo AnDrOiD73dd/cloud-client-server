@@ -60,7 +60,30 @@ public class FileDAOImpl implements FileDAO {
     }
 
     public File get(Connection connection, long id) {
-        return null;
+        PreparedStatement ps = null;
+        File user = null;
+        String selectSQL = String.format("SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = ?;",
+                COLUMN_ID, COLUMN_USER_ID, COLUMN_FILE_PATH, COLUMN_FILE_SIZE, COLUMN_FILE_DATE, COLUMN_SYNCED,
+                COLUMN_LAST_ACTION, TABLE_NAME, COLUMN_ID);
+        try {
+            ps = connection.prepareStatement(selectSQL);
+            ps.setLong(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                user = File.map(rs);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        return user;
     }
 
     public File get(Connection connection, long userId, String filepath) {
