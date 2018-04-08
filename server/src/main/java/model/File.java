@@ -36,6 +36,30 @@ public class File {
         this.id = id;
     }
 
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public void setFileDate(long fileDate) {
+        this.fileDate = fileDate;
+    }
+
+    public void setSynced(boolean synced) {
+        this.synced = synced;
+    }
+
+    public void setLastAction(String lastAction) {
+        this.lastAction = lastAction;
+    }
+
     public long getId() {
         return id;
     }

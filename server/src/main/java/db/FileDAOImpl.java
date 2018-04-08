@@ -115,7 +115,32 @@ public class FileDAOImpl implements FileDAO {
     }
 
     public boolean update(Connection connection, File file) {
-        return false;
+        PreparedStatement ps = null;
+        try {
+            ps = connection.prepareStatement(String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, " +
+                            "%s = ?, %s = ?, %s = ? WHERE %s = ?;",
+                    TABLE_NAME, COLUMN_USER_ID, COLUMN_FILE_PATH, COLUMN_FILE_SIZE, COLUMN_FILE_DATE, COLUMN_SYNCED,
+                    COLUMN_LAST_ACTION, COLUMN_ID));
+            ps.setLong(1, file.getUserId());
+            ps.setString(2, file.getFilePath());
+            ps.setLong(3, file.getFileSize());
+            ps.setLong(4, file.getFileDate());
+            ps.setBoolean(5, file.isSynced());
+            ps.setString(6, file.getLastAction());
+            ps.setLong(7, file.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        return true;
     }
 
     public boolean delete(Connection connection, long id) {

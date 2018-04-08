@@ -30,6 +30,10 @@ public class CloudServer {
 //                    .create();
 //            UserDAOImpl.getInstance().create(connection, user);
 //            FileDAOImpl.getInstance().create(connection, file);
+//            user.setEmail("android@mail.ru");
+//            UserDAOImpl.getInstance().update(connection, user);
+//            file.setFilePath("/root/home/evgeny/aaa.txt");
+//            FileDAOImpl.getInstance().update(connection, file);
 //            FileDAOImpl.getInstance().delete(connection, file.getId());
 //            UserDAOImpl.getInstance().delete(connection, user.getId());
 //            DBHelper.getInstance().closeDb();

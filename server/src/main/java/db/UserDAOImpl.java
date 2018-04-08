@@ -113,7 +113,32 @@ public class UserDAOImpl implements UserDAO {
     }
 
     public boolean update(Connection connection, User user) {
-        return false;
+        PreparedStatement ps = null;
+        try {
+            ps = connection.prepareStatement(String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, " +
+                            "%s = ?, %s = ?, %s = ? WHERE %s = ?;",
+                    TABLE_NAME, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_FIRST_NAME, COLUMN_LAST_NAME, COLUMN_EMAIL,
+                    COLUMN_ROOT_DIR, COLUMN_ID));
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getPassword());
+            ps.setString(3, user.getFirstName());
+            ps.setString(4, user.getLastName());
+            ps.setString(5, user.getEmail());
+            ps.setString(6, user.getRootDir());
+            ps.setLong(7, user.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        return true;
     }
 
     public boolean delete(Connection connection, long id) {
