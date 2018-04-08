@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileDAOImpl implements FileDAO {
@@ -61,7 +62,7 @@ public class FileDAOImpl implements FileDAO {
 
     public File get(Connection connection, long id) {
         PreparedStatement ps = null;
-        File user = null;
+        File file = null;
         String selectSQL = String.format("SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = ?;",
                 COLUMN_ID, COLUMN_USER_ID, COLUMN_FILE_PATH, COLUMN_FILE_SIZE, COLUMN_FILE_DATE, COLUMN_SYNCED,
                 COLUMN_LAST_ACTION, TABLE_NAME, COLUMN_ID);
@@ -70,7 +71,7 @@ public class FileDAOImpl implements FileDAO {
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                user = File.map(rs);
+                file = File.map(rs);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -83,12 +84,12 @@ public class FileDAOImpl implements FileDAO {
                 }
             }
         }
-        return user;
+        return file;
     }
 
     public File get(Connection connection, long userId, String filepath) {
         PreparedStatement ps = null;
-        File user = null;
+        File file = null;
         String selectSQL = String.format("SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = ? AND %s = ?;",
                 COLUMN_ID, COLUMN_USER_ID, COLUMN_FILE_PATH, COLUMN_FILE_SIZE, COLUMN_FILE_DATE, COLUMN_SYNCED,
                 COLUMN_LAST_ACTION, TABLE_NAME, COLUMN_USER_ID, COLUMN_FILE_PATH);
@@ -98,7 +99,7 @@ public class FileDAOImpl implements FileDAO {
             ps.setString(2, filepath);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                user = File.map(rs);
+                file = File.map(rs);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -111,7 +112,7 @@ public class FileDAOImpl implements FileDAO {
                 }
             }
         }
-        return user;
+        return file;
     }
 
     public boolean update(Connection connection, File file) {
@@ -165,10 +166,53 @@ public class FileDAOImpl implements FileDAO {
     }
 
     public List<File> getAll(Connection connection) {
-        return null;
+        List<File> files = new ArrayList<File>();
+        PreparedStatement ps = null;
+        String selectSQL = String.format("SELECT * FROM %s;", TABLE_NAME);
+        try {
+            ps = connection.prepareStatement(selectSQL);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                File file = File.map(rs);
+                files.add(file);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        return files;
     }
 
     public List<File> getAll(Connection connection, long userId) {
-        return null;
+        List<File> files = new ArrayList<File>();
+        PreparedStatement ps = null;
+        String selectSQL = String.format("SELECT * FROM %s WHERE %s = ?;", TABLE_NAME, COLUMN_USER_ID);
+        try {
+            ps = connection.prepareStatement(selectSQL);
+            ps.setLong(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                File file = File.map(rs);
+                files.add(file);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        return files;
     }
 }

@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
@@ -163,6 +164,27 @@ public class UserDAOImpl implements UserDAO {
     }
 
     public List<User> getAll(Connection connection) {
-        return null;
+        List<User> users = new ArrayList<User>();
+        PreparedStatement ps = null;
+        String selectSQL = String.format("SELECT * FROM %s;", TABLE_NAME);
+        try {
+            ps = connection.prepareStatement(selectSQL);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = User.map(rs);
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        return users;
     }
 }

@@ -81,6 +81,19 @@ public class User {
         return rootDir;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", rootDir='" + rootDir + '\'' +
+                '}';
+    }
+
     public static class Builder {
         private long id;
         private String username;

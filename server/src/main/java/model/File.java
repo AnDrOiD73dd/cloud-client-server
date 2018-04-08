@@ -88,6 +88,19 @@ public class File {
         return lastAction;
     }
 
+    @Override
+    public String toString() {
+        return "File{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", filePath='" + filePath + '\'' +
+                ", fileSize=" + fileSize +
+                ", fileDate=" + fileDate +
+                ", synced=" + synced +
+                ", lastAction='" + lastAction + '\'' +
+                '}';
+    }
+
     public static class Builder {
         private long id;
         private long userId;
