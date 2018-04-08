@@ -117,7 +117,24 @@ public class UserDAOImpl implements UserDAO {
     }
 
     public boolean delete(Connection connection, long id) {
-        return false;
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(String.format("DELETE FROM %s WHERE %s = ?;", TABLE_NAME, COLUMN_ID));
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        return true;
     }
 
     public List<User> getAll(Connection connection) {

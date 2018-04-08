@@ -20,7 +20,6 @@ public class CloudServer {
 //                    .setEmail("email")
 //                    .setRootDir("/home/sdfsd")
 //                    .create();
-//            UserDAOImpl.getInstance().create(connection, user);
 //            File file = new File.Builder()
 //                    .setUserId(1)
 //                    .setFileDate(324234)
@@ -29,7 +28,10 @@ public class CloudServer {
 //                    .setSynced(false)
 //                    .setLastAction("last action")
 //                    .create();
+//            UserDAOImpl.getInstance().create(connection, user);
 //            FileDAOImpl.getInstance().create(connection, file);
+//            FileDAOImpl.getInstance().delete(connection, file.getId());
+//            UserDAOImpl.getInstance().delete(connection, user.getId());
 //            DBHelper.getInstance().closeDb();
 //        } catch (SQLException e) {
 //            e.printStackTrace();

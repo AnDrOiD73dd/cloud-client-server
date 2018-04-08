@@ -114,12 +114,29 @@ public class FileDAOImpl implements FileDAO {
         return user;
     }
 
-    public void update(Connection connection, File file) {
-
+    public boolean update(Connection connection, File file) {
+        return false;
     }
 
-    public void delete(Connection connection, long id) {
-
+    public boolean delete(Connection connection, long id) {
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(String.format("DELETE FROM %s WHERE %s = ?;", TABLE_NAME, COLUMN_ID));
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        } finally {
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        return true;
     }
 
     public List<File> getAll(Connection connection) {
