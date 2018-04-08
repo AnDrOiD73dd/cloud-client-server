@@ -9,6 +9,10 @@ public class DBHelper implements Database {
     private Connection connection;
     private static DBHelper instance;
 
+    private DBHelper() {
+
+    }
+
     public static synchronized DBHelper getInstance() {
         if (instance == null)
             instance = new DBHelper();
@@ -30,7 +34,7 @@ public class DBHelper implements Database {
                         "%s TEXT NOT NULL, " +
                         "%s TEXT, " +
                         "%s TEXT UNIQUE NOT NULL);",
-                UserDAOImpl.TABLE_USERS, UserDAOImpl.COLUMN_ID, UserDAOImpl.COLUMN_USERNAME,
+                UserDAOImpl.TABLE_NAME, UserDAOImpl.COLUMN_ID, UserDAOImpl.COLUMN_USERNAME,
                 UserDAOImpl.COLUMN_PASSWORD, UserDAOImpl.COLUMN_FIRST_NAME, UserDAOImpl.COLUMN_LAST_NAME,
                 UserDAOImpl.COLUMN_EMAIL, UserDAOImpl.COLUMN_ROOT_DIR));
     }
@@ -46,7 +50,7 @@ public class DBHelper implements Database {
                         "%s BIGINT, " +
                         "%s BOOLEAN NOT NULL DEFAULT (0), " +
                         "%s TEXT);",
-                FileDAOImpl.TABLE_FILES, FileDAOImpl.COLUMN_ID, FileDAOImpl.COLUMN_USER, UserDAOImpl.TABLE_USERS,
+                FileDAOImpl.TABLE_NAME, FileDAOImpl.COLUMN_ID, FileDAOImpl.COLUMN_USER_ID, UserDAOImpl.TABLE_NAME,
                 UserDAOImpl.COLUMN_ID, FileDAOImpl.COLUMN_FILE_PATH, FileDAOImpl.COLUMN_FILE_SIZE,
                 FileDAOImpl.COLUMN_FILE_DATE, FileDAOImpl.COLUMN_SYNCED, FileDAOImpl.COLUMN_LAST_ACTION));
     }
@@ -72,7 +76,7 @@ public class DBHelper implements Database {
             openDb();
         if (stmt == null)
             stmt = connection.createStatement();
-        stmt.executeUpdate(String.format("DROP TABLE IF EXISTS %s", tableName));
+        stmt.executeUpdate(String.format("DROP TABLE_NAME IF EXISTS %s", tableName));
     }
 
     public void clearTable(String tableName) throws SQLException, ClassNotFoundException {

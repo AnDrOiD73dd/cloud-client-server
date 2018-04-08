@@ -2,14 +2,15 @@ package db;
 
 import model.User;
 
+import java.sql.Connection;
 import java.util.List;
 
 public interface UserDAO {
 
-    User create(User user);
-    User get(long id);
-    User get(String username);
-    boolean update(User user);
-    boolean delete(long id);
-    List<User> getAll();
+    User create(Connection connection, User user);
+    User get(Connection connection, long id);
+    User get(Connection connection, String username);
+    boolean update(Connection connection, User user);
+    boolean delete(Connection connection, long id);
+    List<User> getAll(Connection connection);
 }
