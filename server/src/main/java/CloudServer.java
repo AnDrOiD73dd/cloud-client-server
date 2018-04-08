@@ -1,5 +1,4 @@
 import db.DBHelper;
-import model.User;
 
 import java.sql.SQLException;
 
