@@ -1,4 +1,6 @@
 public class Constants {
+    public static final String APP_NAME = "Simple Cloud";
+
     public static final String PREFIX = "/";
 
     public static final String AUTH_REQUEST = PREFIX + "login";

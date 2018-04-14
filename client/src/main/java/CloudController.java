@@ -16,7 +16,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Controller implements Initializable {
+public class CloudController implements Initializable {
 
     @FXML
     public TextField message;

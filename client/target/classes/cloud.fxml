@@ -2,8 +2,8 @@
 <?import javafx.scene.layout.*?>
 <HBox xmlns:fx="http://javafx.com/fxml"
       xmlns="http://javafx.com/javafx/8.0.112"
-      fx:controller="Controller"
-      stylesheets="@list_style.css"
+      fx:controller="CloudController"
+      stylesheets="@cloud.css"
       alignment="center">
     <VBox>
         <HBox fx:id="authPanel">
