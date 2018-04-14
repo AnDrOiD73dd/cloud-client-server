@@ -1,21 +1,44 @@
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<HBox xmlns:fx="http://javafx.com/fxml"
-      xmlns="http://javafx.com/javafx/8.0.112"
-      fx:controller="CloudController"
-      stylesheets="@cloud.css"
-      alignment="center">
-    <VBox>
-        <HBox fx:id="authPanel">
-            <TextField fx:id="login" promptText="Логин" HBox.hgrow="ALWAYS"/>
-            <PasswordField fx:id="password" promptText="Пароль" onAction="#sendAuthMsg"/>
-            <Button text="Авторизоваться" onAction="#sendAuthMsg"/>
-        </HBox>
-        <TextArea fx:id="messageHistory" VBox.vgrow="ALWAYS" editable="false"/>
-        <HBox fx:id="msgPanel">
-            <TextField fx:id="message" HBox.hgrow="ALWAYS" onAction="#sendMsg" promptText="Введите текст сообщения"/>
-            <Button fx:id="sendButton" text="Отправить" onAction="#sendMsg"/>
-        </HBox>
-    </VBox>
-    <ListView fx:id="clientsListView" managed="false" minWidth="100" onMouseClicked="#clientsListClicked" prefHeight="0.0" prefWidth="0.0" visible="false" />
-</HBox>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane stylesheets="@cloud.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="CloudController">
+    <SplitPane dividerPositions="0.75" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+               AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="300.0">
+                <TableView prefHeight="300.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0"
+                           AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <columns>
+                        <TableColumn prefWidth="75.0" text="№"/>
+                        <TableColumn prefWidth="75.0" text="Имя файла"/>
+                        <TableColumn prefWidth="75.0" text="Путь"/>
+                        <TableColumn prefWidth="75.0" text="Размер"/>
+                        <TableColumn prefWidth="75.0" text="Статус"/>
+                    </columns>
+                </TableView>
+            </AnchorPane>
+            <AnchorPane minHeight="0.0" minWidth="0.0">
+                <VBox>
+                    <Button prefWidth="70.0" text="Добавить" onAction="#onClickAdd">
+                        <VBox.margin>
+                            <Insets bottom="5.0" left="5.0" right="5.0" top="30.0"/>
+                        </VBox.margin>
+                    </Button>
+                    <Button prefWidth="70.0" text="Удалить" onAction="#onClickDelete">
+                        <VBox.margin>
+                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                        </VBox.margin>
+                    </Button>
+                </VBox>
+            </AnchorPane>
+        </items>
+    </SplitPane>
+</AnchorPane>
