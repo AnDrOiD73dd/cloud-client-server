@@ -8,9 +8,10 @@ public class ClientRunner extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("client.fxml"));
-        primaryStage.setTitle("Simple Cloud");
-        primaryStage.setScene(new Scene(root, 400, 400));
+        Parent root = FXMLLoader.load(getClass().getResource("auth.fxml"));
+        primaryStage.setTitle("Simple Cloud: Вход в систему");
+//        primaryStage.setScene(new Scene(root, 400, 250));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 

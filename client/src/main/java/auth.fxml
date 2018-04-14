@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="AuthContoller"
+      stylesheets="@auth_style.css">
+    <VBox fx:id="signin" alignment="CENTER">
+        <TextField fx:id="login" promptText="Логин" HBox.hgrow="ALWAYS"/>
+        <PasswordField fx:id="password" promptText="Пароль" onAction="#onClickSignIn"/>
+        <Button text="Войти" onAction="#onClickSignIn"/>
+    </VBox>
+    <VBox fx:id="signup" alignment="CENTER">
+        <TextField fx:id="username" promptText="Логин" HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="passwd" promptText="Пароль" HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="firstName" promptText="Имя" HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="lastName" promptText="Фамилия" HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="email" promptText="E-mail" HBox.hgrow="ALWAYS"/>
+        <Button text="Зарегистрироваться" onAction="#onClickSignUp" />
+    </VBox>
+    <padding>
+        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+    </padding>
+</VBox>
