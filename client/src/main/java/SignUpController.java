@@ -4,12 +4,28 @@ import javafx.scene.layout.VBox;
 
 public class SignUpController {
     public VBox signup;
-    public TextField login;
-    public TextField password;
-    public TextField firstName;
-    public TextField lastName;
-    public TextField email;
+    public TextField loginField;
+    public TextField passwordField;
+    public TextField firstNameField;
+    public TextField lastNameField;
+    public TextField emailField;
 
     public void onClickSignUp(ActionEvent actionEvent) {
+        if (isValidCredentials()) {
+
+        }
+    }
+
+    private boolean isValidCredentials() {
+        String username = loginField.getText().trim();
+        String password = passwordField.getText().trim();
+        String firstName = firstNameField.getText().trim();
+        String lastName = lastNameField.getText().trim();
+        String email = emailField.getText().trim();
+        if (username.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()){
+            Utils.showAlert("Вы заполнили не все поля");
+            return false;
+        }
+        return true;
     }
 }

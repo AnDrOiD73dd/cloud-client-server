@@ -13,11 +13,11 @@
       stylesheets="@auth.css"
       fx:id="signup"
       alignment="CENTER">
-    <TextField fx:id="login" promptText="Логин" HBox.hgrow="ALWAYS"/>
-    <TextField fx:id="password" promptText="Пароль" HBox.hgrow="ALWAYS"/>
-    <TextField fx:id="firstName" promptText="Имя" HBox.hgrow="ALWAYS"/>
-    <TextField fx:id="lastName" promptText="Фамилия" HBox.hgrow="ALWAYS"/>
-    <TextField fx:id="email" promptText="E-mail" HBox.hgrow="ALWAYS"/>
+    <TextField fx:id="loginField" promptText="Логин" HBox.hgrow="ALWAYS"/>
+    <TextField fx:id="passwordField" promptText="Пароль" HBox.hgrow="ALWAYS"/>
+    <TextField fx:id="firstNameField" promptText="Имя" HBox.hgrow="ALWAYS"/>
+    <TextField fx:id="lastNameField" promptText="Фамилия" HBox.hgrow="ALWAYS"/>
+    <TextField fx:id="emailField" promptText="E-mail" HBox.hgrow="ALWAYS"/>
     <Button text="Зарегистрироваться" onAction="#onClickSignUp" />
     <padding>
         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />

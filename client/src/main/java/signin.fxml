@@ -13,8 +13,8 @@
       stylesheets="@auth.css"
       alignment="CENTER"
       fx:id="signin">
-    <TextField fx:id="login" promptText="Логин" HBox.hgrow="ALWAYS"/>
-    <PasswordField fx:id="password" promptText="Пароль" onAction="#onClickSignIn"/>
+    <TextField fx:id="loginField" promptText="Логин" HBox.hgrow="ALWAYS"/>
+    <PasswordField fx:id="passwordField" promptText="Пароль" onAction="#onClickSignIn"/>
     <Button text="Войти" onAction="#onClickSignIn"/>
     <Label text="Нет аккаунта?"/>
     <Button text="Регистрация" onAction="#onClickSignUp"/>

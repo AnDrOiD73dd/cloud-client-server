@@ -194,10 +194,10 @@ public class CloudController implements Initializable {
             connect();
         }
 
-        try {// /auth login pass
+        try {// /auth loginField pass
             out.writeUTF(String.format("%s %s %s", Constants.AUTH_REQUEST, login.getText(), password.getText()));
-//            login.clear();
-//            password.clear();
+//            loginField.clear();
+//            passwordField.clear();
         } catch (IOException e) {
 //            e.printStackTrace();
             showAlert("Произошла ошибка при аутентификации. Возможно потеряно соединение с сервером.");
