@@ -51,6 +51,7 @@ public class ContollerSignIn {
             Parent root = FXMLLoader.load(getClass().getResource("layout_signup.fxml"));
             Stage stage = new Stage();
             stage.setTitle(Constants.APP_NAME + ": Регистрация");
+            Utils.setupIcon(stage, getClass());
             stage.setScene(new Scene(root));
             stage.show();
             // Hide this current window (if this is what you want)

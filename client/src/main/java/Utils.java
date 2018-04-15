@@ -1,5 +1,8 @@
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
 public class Utils {
 
@@ -11,5 +14,9 @@ public class Utils {
             alert.setContentText(msg);
             alert.showAndWait();
         });
+    }
+
+    public static void setupIcon(Stage stage, Class cl) {
+        stage.getIcons().add(new Image(cl.getResourceAsStream("/images/happy-cloud-480.png")));
     }
 }
