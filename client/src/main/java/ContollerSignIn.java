@@ -48,7 +48,7 @@ public class ContollerSignIn {
 
     private void showSignUp(Event event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("layout_signup.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("layout_sign_up.fxml"));
             Stage stage = new Stage();
             stage.setTitle(Constants.APP_NAME + ": Регистрация");
             Utils.setupIcon(stage, getClass());
