@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class SignInContoller {
+public class ContollerSignIn {
 
     public VBox signin;
     public TextField loginField;
@@ -48,7 +48,7 @@ public class SignInContoller {
 
     private void showSignUp(Event event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("signup.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("layout_signup.fxml"));
             Stage stage = new Stage();
             stage.setTitle(Constants.APP_NAME + ": Регистрация");
             stage.setScene(new Scene(root));

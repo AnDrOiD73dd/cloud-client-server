@@ -9,8 +9,8 @@
 <?import javafx.scene.control.Label?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="SignInContoller"
-      stylesheets="@auth.css"
+      fx:controller="ContollerSignIn"
+      stylesheets="@style_auth.css"
       alignment="CENTER"
       fx:id="signin">
     <TextField fx:id="loginField" promptText="Логин" HBox.hgrow="ALWAYS"/>

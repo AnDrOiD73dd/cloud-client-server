@@ -8,7 +8,7 @@ public class ClientRunner extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("signin.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("layout_signin.fxml"));
         primaryStage.setTitle(Constants.APP_NAME + ": Вход в систему");
 //        primaryStage.setScene(new Scene(root, 500, 400));
         primaryStage.setScene(new Scene(root));
