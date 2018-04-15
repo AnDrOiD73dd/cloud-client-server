@@ -11,7 +11,7 @@ public class CloudServer {
     public static void main(String[] args) {
         try {
             Connection connection = DBHelper.getInstance().openDb();
-            DBHelper.getInstance().createTables();
+            DBHelper.getInstance().createTables(connection);
 
             User user = new User.Builder()
                     .setUsername("test1")
@@ -54,14 +54,12 @@ public class CloudServer {
             FileDAOImpl.getInstance().delete(connection, file.getId());
 
             // CLEAR TABLES
-            DBHelper.getInstance().clearTable(UserDAOImpl.TABLE_NAME);
-            DBHelper.getInstance().clearTable(FileDAOImpl.TABLE_NAME);
+            DBHelper.getInstance().clearTable(connection, UserDAOImpl.TABLE_NAME);
+            DBHelper.getInstance().clearTable(connection, FileDAOImpl.TABLE_NAME);
 
-            DBHelper.getInstance().closeDb();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            DBHelper.getInstance().closeDb(connection);
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e);
         }
     }
 }

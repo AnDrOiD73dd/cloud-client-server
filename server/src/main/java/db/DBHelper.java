@@ -26,7 +26,7 @@ public class DBHelper implements Database {
         return connection;
     }
 
-    public void createTableUsers() throws SQLException {
+    public void createTableUsers(Connection connection) throws SQLException {
         if (stmt == null)
             stmt = connection.createStatement();
         stmt.executeUpdate(String.format("CREATE TABLE IF NOT EXISTS %s (" +
@@ -42,7 +42,7 @@ public class DBHelper implements Database {
                 UserDAOImpl.COLUMN_EMAIL, UserDAOImpl.COLUMN_ROOT_DIR));
     }
 
-    public void createTableFiles() throws SQLException {
+    public void createTableFiles(Connection connection) throws SQLException {
         if (stmt == null)
             stmt = connection.createStatement();
         stmt.executeUpdate(String.format("CREATE TABLE IF NOT EXISTS %s (" +
@@ -64,27 +64,23 @@ public class DBHelper implements Database {
         return connection;
     }
 
-    public void closeDb() throws SQLException {
+    public void closeDb(Connection connection) throws SQLException {
         connection.close();
-        connection = null;
+        this.connection = null;
     }
 
-    public void createTables() throws SQLException {
-        createTableUsers();
-        createTableFiles();
+    public void createTables(Connection connection) throws SQLException {
+        createTableUsers(connection);
+        createTableFiles(connection);
     }
 
-    public void dropTable(String tableName) throws SQLException, ClassNotFoundException {
-        if (connection == null)
-            openDb();
+    public void dropTable(Connection connection, String tableName) throws SQLException, ClassNotFoundException {
         if (stmt == null)
             stmt = connection.createStatement();
         stmt.executeUpdate(String.format("DROP TABLE_NAME IF EXISTS %s", tableName));
     }
 
-    public void clearTable(String tableName) throws SQLException, ClassNotFoundException {
-        if (connection == null)
-            openDb();
+    public void clearTable(Connection connection, String tableName) throws SQLException, ClassNotFoundException {
         if (stmt == null)
             stmt = connection.createStatement();
         stmt.executeUpdate(String.format("DELETE FROM %s", tableName));
