@@ -1,13 +1,8 @@
 package db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class DBHelper implements Database {
-
-    private Statement stmt;
 
     private Connection connection;
     private static DBHelper instance;
@@ -27,9 +22,7 @@ public class DBHelper implements Database {
     }
 
     public void createTableUsers(Connection connection) throws SQLException {
-        if (stmt == null)
-            stmt = connection.createStatement();
-        stmt.executeUpdate(String.format("CREATE TABLE IF NOT EXISTS %s (" +
+        PreparedStatement ps = connection.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s (" +
                         "%s INTEGER PRIMARY KEY UNIQUE NOT NULL, " +
                         "%s TEXT UNIQUE NOT NULL, " +
                         "%s TEXT NOT NULL, " +
@@ -40,12 +33,12 @@ public class DBHelper implements Database {
                 UserDAOImpl.TABLE_NAME, UserDAOImpl.COLUMN_ID, UserDAOImpl.COLUMN_USERNAME,
                 UserDAOImpl.COLUMN_PASSWORD, UserDAOImpl.COLUMN_FIRST_NAME, UserDAOImpl.COLUMN_LAST_NAME,
                 UserDAOImpl.COLUMN_EMAIL, UserDAOImpl.COLUMN_ROOT_DIR));
+        ps.executeUpdate();
+        ps.close();
     }
 
     public void createTableFiles(Connection connection) throws SQLException {
-        if (stmt == null)
-            stmt = connection.createStatement();
-        stmt.executeUpdate(String.format("CREATE TABLE IF NOT EXISTS %s (" +
+        PreparedStatement ps = connection.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s (" +
                         "%s INTEGER PRIMARY KEY UNIQUE NOT NULL, " +
                         "%s INTEGER REFERENCES %s (%s) ON DELETE CASCADE NOT NULL, " +
                         "%s TEXT NOT NULL, " +
@@ -56,6 +49,8 @@ public class DBHelper implements Database {
                 FileDAOImpl.TABLE_NAME, FileDAOImpl.COLUMN_ID, FileDAOImpl.COLUMN_USER_ID, UserDAOImpl.TABLE_NAME,
                 UserDAOImpl.COLUMN_ID, FileDAOImpl.COLUMN_FILE_PATH, FileDAOImpl.COLUMN_FILE_SIZE,
                 FileDAOImpl.COLUMN_FILE_DATE, FileDAOImpl.COLUMN_SYNCED, FileDAOImpl.COLUMN_LAST_ACTION));
+        ps.executeUpdate();
+        ps.close();
     }
 
     public Connection openDb() throws ClassNotFoundException, SQLException {
@@ -75,14 +70,14 @@ public class DBHelper implements Database {
     }
 
     public void dropTable(Connection connection, String tableName) throws SQLException, ClassNotFoundException {
-        if (stmt == null)
-            stmt = connection.createStatement();
-        stmt.executeUpdate(String.format("DROP TABLE_NAME IF EXISTS %s", tableName));
+        PreparedStatement ps = connection.prepareStatement(String.format("DROP TABLE_NAME IF EXISTS %s", tableName));
+        ps.executeUpdate();
+        ps.close();
     }
 
     public void clearTable(Connection connection, String tableName) throws SQLException, ClassNotFoundException {
-        if (stmt == null)
-            stmt = connection.createStatement();
-        stmt.executeUpdate(String.format("DELETE FROM %s", tableName));
+        PreparedStatement ps = connection.prepareStatement(String.format("DELETE FROM %s", tableName));
+        ps.executeUpdate();
+        ps.close();
     }
 }
