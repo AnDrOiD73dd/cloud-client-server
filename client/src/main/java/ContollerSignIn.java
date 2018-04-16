@@ -23,11 +23,11 @@ public class ContollerSignIn {
 //                connect();
 //            }
 //            try {// /auth loginField pass
-//                out.writeUTF("/auth " + loginField.getText() + " " + passField.getText());
+//                out.writeUTF("/auth " + loginField.getText().trim() + " " + passwordField.getText().trim());
 //                loginField.clear();
-//                passField.clear();
+//                passwordField.clear();
 //            } catch (IOException e) {
-//                e.printStackTrace();
+//                System.out.println(e.getMessage());
 //            }
         }
     }

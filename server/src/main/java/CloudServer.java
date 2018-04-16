@@ -9,6 +9,8 @@ import java.sql.SQLException;
 
 public class CloudServer {
     public static void main(String[] args) {
+        // TODO: create tables if not exists, clean files table: remove files, which transferring was broken
+        // TODO v2: add size limit, current size, check free space before load file
         try {
             Connection connection = DBHelper.getInstance().openDb();
             DBHelper.getInstance().createTables(connection);
