@@ -8,7 +8,6 @@ public class DBHelper implements Database {
     private static DBHelper instance;
 
     private DBHelper() {
-
     }
 
     public static synchronized DBHelper getInstance() {
@@ -69,13 +68,13 @@ public class DBHelper implements Database {
         createTableFiles(connection);
     }
 
-    public void dropTable(Connection connection, String tableName) throws SQLException, ClassNotFoundException {
+    public void dropTable(Connection connection, String tableName) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(String.format("DROP TABLE_NAME IF EXISTS %s", tableName));
         ps.executeUpdate();
         ps.close();
     }
 
-    public void clearTable(Connection connection, String tableName) throws SQLException, ClassNotFoundException {
+    public void clearTable(Connection connection, String tableName) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(String.format("DELETE FROM %s", tableName));
         ps.executeUpdate();
         ps.close();
