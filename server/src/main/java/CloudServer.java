@@ -8,9 +8,34 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class CloudServer {
+
+    /* TODO:
+    create tables if not exists,
+    clean files table: remove files, which transferring was broken
+    check free space before load file
+    drag&drop files
+    сортировка файлов
+    выбор файла
+    TODO v2: add size limit, current size, check free space before load file
+    */
+
     public static void main(String[] args) {
-        // TODO: create tables if not exists, clean files table: remove files, which transferring was broken
-        // TODO v2: add size limit, current size, check free space before load file
+        prepareDb();
+    }
+
+    private static void prepareDb() {
+        Connection connection;
+        try {
+            connection = DBHelper.getInstance().openDb();
+            DBHelper.getInstance().createTables(connection);
+            // TODO: delete broken files from DB table
+            DBHelper.getInstance().closeDb(connection);
+        } catch (ClassNotFoundException | SQLException e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    private void test() {
         try {
             Connection connection = DBHelper.getInstance().openDb();
             DBHelper.getInstance().createTables(connection);
