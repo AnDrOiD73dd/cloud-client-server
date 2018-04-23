@@ -31,8 +31,9 @@ public class FileDAOImpl implements FileDAO {
         return instance;
     }
 
-    public File create(Connection connection, File file) {
+    public File create(Connection connection, File file) throws SQLException {
         PreparedStatement ps = null;
+        File res = null;
         try {
             ps = connection.prepareStatement(String.format("INSERT INTO %s (%s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?);",
                     TABLE_NAME, COLUMN_USER_ID, COLUMN_FILE_PATH, COLUMN_FILE_SIZE, COLUMN_FILE_DATE, COLUMN_SYNCED, COLUMN_LAST_ACTION));
@@ -45,9 +46,17 @@ public class FileDAOImpl implements FileDAO {
             int count = ps.executeUpdate();
             if (count <= 0)
                 return null;
-            file.setId(get(connection, file.getUserId(), file.getFilePath()).getId());
+            res = new File.Builder()
+                    .setId(get(connection, file.getUserId(), file.getFilePath()).getId())
+                    .setUserId(file.getUserId())
+                    .setFileDate(file.getFileDate())
+                    .setFilePath(file.getFilePath())
+                    .setFileSize(file.getFileSize())
+                    .setSynced(file.isSynced())
+                    .setLastAction(file.getLastAction())
+                    .create();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new SQLException(e);
         } finally {
             if (ps != null) {
                 try {
@@ -57,7 +66,7 @@ public class FileDAOImpl implements FileDAO {
                 }
             }
         }
-        return file;
+        return res;
     }
 
     public File get(Connection connection, long id) {
@@ -117,6 +126,7 @@ public class FileDAOImpl implements FileDAO {
 
     public boolean update(Connection connection, File file) {
         PreparedStatement ps = null;
+        int res = -1;
         try {
             ps = connection.prepareStatement(String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, " +
                             "%s = ?, %s = ?, %s = ? WHERE %s = ?;",
@@ -129,7 +139,7 @@ public class FileDAOImpl implements FileDAO {
             ps.setBoolean(5, file.isSynced());
             ps.setString(6, file.getLastAction());
             ps.setLong(7, file.getId());
-            ps.executeUpdate();
+            res = ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -141,15 +151,16 @@ public class FileDAOImpl implements FileDAO {
                 }
             }
         }
-        return true;
+        return res > 0;
     }
 
     public boolean delete(Connection connection, long id) {
         PreparedStatement preparedStatement = null;
+        int res = -1;
         try {
             preparedStatement = connection.prepareStatement(String.format("DELETE FROM %s WHERE %s = ?;", TABLE_NAME, COLUMN_ID));
             preparedStatement.setLong(1, id);
-            preparedStatement.executeUpdate();
+            res = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return false;
@@ -162,7 +173,7 @@ public class FileDAOImpl implements FileDAO {
                 }
             }
         }
-        return true;
+        return res > 0;
     }
 
     public List<File> getAll(Connection connection) {

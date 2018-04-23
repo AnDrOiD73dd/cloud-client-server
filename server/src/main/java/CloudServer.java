@@ -33,11 +33,11 @@ public class CloudServer {
                     .setLastAction("last action")
                     .create();
             // CREATE
-            UserDAOImpl.getInstance().create(connection, user);
+            User res = UserDAOImpl.getInstance().create(connection, user);
             FileDAOImpl.getInstance().create(connection, file);
             // UPDATE
-            user.setEmail("android@mail.ru");
-            UserDAOImpl.getInstance().update(connection, user);
+            res.setEmail("android@mail.ru");
+            UserDAOImpl.getInstance().update(connection, res);
             file.setFilePath("/root/home/evgeny/aaa.txt");
             FileDAOImpl.getInstance().update(connection, file);
 
@@ -61,7 +61,7 @@ public class CloudServer {
 
             DBHelper.getInstance().closeDb(connection);
         } catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e);
+            System.err.println(e.getMessage());
         }
     }
 }

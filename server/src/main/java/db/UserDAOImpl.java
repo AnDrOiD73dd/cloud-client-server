@@ -31,8 +31,9 @@ public class UserDAOImpl implements UserDAO {
         return instance;
     }
 
-    public User create(Connection connection, User user) {
+    public User create(Connection connection, User user) throws SQLException {
         PreparedStatement ps = null;
+        User res;
         try {
             ps = connection.prepareStatement(String.format("INSERT INTO %s (%s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?);",
                     TABLE_NAME, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_FIRST_NAME, COLUMN_LAST_NAME, COLUMN_EMAIL, COLUMN_ROOT_DIR));
@@ -45,9 +46,17 @@ public class UserDAOImpl implements UserDAO {
             int count = ps.executeUpdate();
             if (count <= 0)
                 return null;
-            user.setId(get(connection, user.getUsername()).getId());
+            res = new User.Builder()
+                    .setId(get(connection, user.getUsername()).getId())
+                    .setUsername(user.getUsername())
+                    .setPassword(user.getPassword())
+                    .setFirstName(user.getFirstName())
+                    .setLastName(user.getLastName())
+                    .setEmail(user.getEmail())
+                    .setRootDir(user.getRootDir())
+                    .create();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            throw new SQLException(e);
         } finally {
             try {
                 if (ps != null)
@@ -56,7 +65,7 @@ public class UserDAOImpl implements UserDAO {
                 System.out.println(e.getMessage());
             }
         }
-        return user;
+        return res;
     }
 
     public User get(Connection connection, long id) {
@@ -115,6 +124,7 @@ public class UserDAOImpl implements UserDAO {
 
     public boolean update(Connection connection, User user) {
         PreparedStatement ps = null;
+        int res = -1;
         try {
             ps = connection.prepareStatement(String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, " +
                             "%s = ?, %s = ?, %s = ? WHERE %s = ?;",
@@ -127,7 +137,7 @@ public class UserDAOImpl implements UserDAO {
             ps.setString(5, user.getEmail());
             ps.setString(6, user.getRootDir());
             ps.setLong(7, user.getId());
-            ps.executeUpdate();
+            res = ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -139,18 +149,18 @@ public class UserDAOImpl implements UserDAO {
                 }
             }
         }
-        return true;
+        return res > 0;
     }
 
     public boolean delete(Connection connection, long id) {
         PreparedStatement preparedStatement = null;
+        int res = -1;
         try {
             preparedStatement = connection.prepareStatement(String.format("DELETE FROM %s WHERE %s = ?;", TABLE_NAME, COLUMN_ID));
             preparedStatement.setLong(1, id);
-            preparedStatement.executeUpdate();
+            res = preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            return false;
         } finally {
             if (preparedStatement != null) {
                 try {
@@ -160,7 +170,7 @@ public class UserDAOImpl implements UserDAO {
                 }
             }
         }
-        return true;
+        return res > 0;
     }
 
     public List<User> getAll(Connection connection) {
