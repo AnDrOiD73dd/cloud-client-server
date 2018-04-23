@@ -8,19 +8,19 @@ public class MessageParser {
      * Parse raw message
      * @param messageData raw message
      * @param lastRequest last command @see {@link RequestMessage}
-     * @throws JSONException
+     * @throws JSONException if there is an error while parsing
      */
-    public static void parse(byte[] messageData, RequestMessage lastRequest) throws JSONException {
+    public static void parse(byte[] messageData, RequestMessage lastRequest, RequestHandler requestHandler, ResponseHandler responseHandler) throws JSONException {
         String strMessage = MessageUtil.toString(messageData);
         MessageType msgType = MessageUtil.getType(strMessage);
         switch (msgType) {
             case REQUEST:
                 RequestMessage request = RequestMessage.parse(strMessage);
-                MessageHandler.getInstance().handleRequest(request);
+                requestHandler.handleRequest(request);
                 break;
             case RESPONSE:
                 ResponseMessage response = ResponseMessage.parse(strMessage);
-                MessageHandler.getInstance().handleResponse(response, lastRequest.getCmd());
+                responseHandler.handleResponse(response, lastRequest.getCmd());
                 break;
             case UNKNOWN:
                 break;

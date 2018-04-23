@@ -1,30 +1,46 @@
-package protocol;
+import protocol.*;
 
-public class MessageHandler {
+public class MessageProcessor implements RequestHandler, ResponseHandler {
 
-    private static MessageHandler instance;
+    private static MessageProcessor instance;
 
-    private MessageHandler() {
+    private MessageProcessor() {
     }
 
-    public static MessageHandler getInstance() {
-        MessageHandler localInstance = instance;
+    public static MessageProcessor getInstance() {
+        MessageProcessor localInstance = instance;
         if (localInstance == null) {
-            synchronized (MessageHandler.class) {
+            synchronized (MessageProcessor.class) {
                 localInstance = instance;
                 if (localInstance == null) {
-                    instance = localInstance = new MessageHandler();
+                    instance = localInstance = new MessageProcessor();
                 }
             }
         }
         return localInstance;
     }
 
-    /**
-     * Parse response message
-     * @param responseMessage @see {@link ResponseMessage}
-     * @param command @see {@link CommandList}
-     */
+    @Override
+    public void handleRequest(RequestMessage requestMessage) {
+        System.out.println("handleRequest: RequestMessage=" + requestMessage.toString());
+        int id = requestMessage.getId();
+//        switch (id) {
+//            case Message.HOST_MSG_ID:
+//                switch (requestMessage.getCmd()) {
+//                    case CommandList.SIGN_OUT:
+//                        break;
+//                    default:
+//                        System.out.println(String.format("parseRequest::Unknown request CMD: %s", requestMessage.toString()));
+//                        break;
+//                }
+//                break;
+//            default:
+//                System.out.println(String.format("parseRequest::Unknown request ID: %s", requestMessage.toString()));
+//                break;
+//        }
+    }
+
+    @Override
     public void handleResponse(ResponseMessage responseMessage, String command) {
         System.out.println("handleResponse() responseCode=" + responseMessage.getResponseCode() + ", cmd=" + command);
         switch (command) {
@@ -82,28 +98,5 @@ public class MessageHandler {
                 System.out.println(("Unknown command=" + command));
                 break;
         }
-    }
-
-    /**
-     * Parse request message
-     * @param requestMessage @see {@link RequestMessage}
-     */
-    public void handleRequest(RequestMessage requestMessage) {
-        System.out.println("handleRequest: RequestMessage=" + requestMessage.toString());
-        int id = requestMessage.getId();
-//        switch (id) {
-//            case Message.HOST_MSG_ID:
-//                switch (requestMessage.getCmd()) {
-//                    case CommandList.SIGN_OUT:
-//                        break;
-//                    default:
-//                        System.out.println(String.format("parseRequest::Unknown request CMD: %s", requestMessage.toString()));
-//                        break;
-//                }
-//                break;
-//            default:
-//                System.out.println(String.format("parseRequest::Unknown request ID: %s", requestMessage.toString()));
-//                break;
-//        }
     }
 }

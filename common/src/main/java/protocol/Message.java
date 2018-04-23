@@ -6,8 +6,6 @@ import java.io.UnsupportedEncodingException;
 
 public interface Message {
 
-    int HOST_MSG_ID = 0;
-
     String KEY_ID = "id";
     String DEFAULT_ENCODING = "UTF-8";
 
@@ -20,7 +18,7 @@ public interface Message {
     /**
      * Convert object to byte array representation
      * @return Return byte array representation of instance (usually from JSON representation)
-     * @throws JSONException
+     * @throws JSONException if there is an error while parsing
      */
     byte[] toByteArray() throws UnsupportedEncodingException, JSONException;
 }
