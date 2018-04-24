@@ -9,7 +9,7 @@
 <?import javafx.scene.control.Label?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="ContollerSignIn"
+      fx:controller="ControllerSignIn"
       stylesheets="@style_auth.css"
       alignment="CENTER"
       fx:id="signin">

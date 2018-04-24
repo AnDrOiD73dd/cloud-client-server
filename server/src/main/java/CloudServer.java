@@ -29,7 +29,7 @@ public class CloudServer {
         ConnectionHandler.getInstance().listenConnections();
     }
 
-    private void test() {
+    private static void test() {
         try {
             Connection connection = DBHelper.getInstance().openDb();
             DBHelper.getInstance().createTables(connection);

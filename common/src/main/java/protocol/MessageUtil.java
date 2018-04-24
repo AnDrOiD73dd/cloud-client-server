@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
-class MessageUtil {
+public class MessageUtil {
 
     private static Random random = new Random();
 

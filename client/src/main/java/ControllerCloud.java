@@ -46,8 +46,8 @@ public class ControllerCloud implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Platform.runLater(() -> login.requestFocus());
-        setAuthorized(false);
+//        Platform.runLater(() -> login.requestFocus());
+//        setAuthorized(false);
     }
 
     private void connect() {

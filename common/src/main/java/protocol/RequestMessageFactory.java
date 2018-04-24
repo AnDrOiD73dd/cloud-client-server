@@ -4,8 +4,8 @@ import java.util.HashMap;
 
 public class RequestMessageFactory {
 
-    private static final String KEY_LOGIN = "login";
-    private static final String KEY_PASSWORD = "password";
+    public static final String KEY_LOGIN = "login";
+    public static final String KEY_PASSWORD = "password";
     private static final String KEY_FIRST_NAME = "first name";
     private static final String KEY_LAST_NAME = "last name";
     private static final String KEY_EMAIL = "email";

@@ -12,6 +12,10 @@ public class MessageParser {
      */
     public static void parse(byte[] messageData, RequestMessage lastRequest, RequestHandler requestHandler, ResponseHandler responseHandler) throws JSONException {
         String strMessage = MessageUtil.toString(messageData);
+        parse(strMessage, lastRequest, requestHandler, responseHandler);
+    }
+
+    public static void parse(String strMessage, RequestMessage lastRequest, RequestHandler requestHandler, ResponseHandler responseHandler) throws JSONException {
         MessageType msgType = MessageUtil.getType(strMessage);
         switch (msgType) {
             case REQUEST:

@@ -56,4 +56,12 @@ public class ResponseMessage implements Message {
         int responseCode = jsonObject.getInt(KEY_RESPONSE);
         return new ResponseMessage(id, responseCode);
     }
+
+    @Override
+    public String toString() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(KEY_ID, id);
+        jsonObject.put(KEY_RESPONSE, responseCode);
+        return jsonObject.toString();
+    }
 }
