@@ -4,8 +4,12 @@ import db.UserDAOImpl;
 import model.File;
 import model.User;
 
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Vector;
 
 public class CloudServer {
 
@@ -20,19 +24,9 @@ public class CloudServer {
     */
 
     public static void main(String[] args) {
-        prepareDb();
-    }
-
-    private static void prepareDb() {
-        Connection connection;
-        try {
-            connection = DBHelper.getInstance().openDb();
-            DBHelper.getInstance().createTables(connection);
-            // TODO: delete broken files from DB table
-            DBHelper.getInstance().closeDb(connection);
-        } catch (ClassNotFoundException | SQLException e) {
-            System.err.println(e.getMessage());
-        }
+//        test();
+        ConnectionHandler.getInstance().prepareDb();
+        ConnectionHandler.getInstance().listenConnections();
     }
 
     private void test() {

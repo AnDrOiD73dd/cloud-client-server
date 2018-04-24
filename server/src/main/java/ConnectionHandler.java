@@ -1,6 +1,7 @@
 import db.DBHelper;
+import model.File;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Connection;
@@ -10,11 +11,8 @@ import java.util.Vector;
 public class ConnectionHandler {
     private static ConnectionHandler instance;
     private Vector<ClientHandler> clients;
-    private Socket serverSocket;
-    private boolean isRunning;
 
     private ConnectionHandler() {
-        isRunning = false;
     }
 
     public static synchronized ConnectionHandler getInstance() {
@@ -27,39 +25,42 @@ public class ConnectionHandler {
         return clients;
     }
 
-    public Socket getServerSocket() {
-        return serverSocket;
+    public void prepareDb() {
+        Connection connection;
+        try {
+            connection = DBHelper.getInstance().openDb();
+            DBHelper.getInstance().createTables(connection);
+            // TODO: delete broken files from DB table
+            DBHelper.getInstance().closeDb(connection);
+        } catch (ClassNotFoundException | SQLException e) {
+            System.err.println(e.getMessage());
+        }
     }
 
-    public boolean isRunning() {
-        return isRunning;
-    }
-
-    public void run() {
-        if (isRunning)
-            return;
-        isRunning = true;
-        Connection connection = DBHelper.getInstance().getConnection();
-        try (ServerSocket serverSocket = new ServerSocket(Constants.SERVER_PORT)) {
-            clients = new Vector<>();
-            if (connection == null)
-                connection = DBHelper.getInstance().openDb();
-            System.out.println("Server started... Waiting clients...");
-            while (true) {
-                this.serverSocket = serverSocket.accept();
-                System.out.println(String.format("Client connected: %s:%s:%s",
-                        this.serverSocket.getInetAddress(), this.serverSocket.getPort(), this.serverSocket.getLocalPort()));
-                new ClientHandler(this, this.serverSocket.getInetAddress(), this.serverSocket.getPort(), this.serverSocket.getLocalPort());
+    public void listenConnections() {
+        Connection connection = null;
+        try {
+            connection = DBHelper.getInstance().openDb();
+            try (ServerSocket serverSocket = new ServerSocket(Constants.SERVER_PORT)) {
+                clients = new Vector<>();
+                System.out.println("Server started... Waiting clients...");
+                while (true) {
+                    Socket socket = serverSocket.accept();
+                    new ClientHandler(this, socket, connection).startListen();
+                }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SQLException | ClassNotFoundException e) {
-            System.out.println("Could not connect to DB: " + e.getMessage());
+            catch (IOException e) {
+                System.out.println("Не удалось запустить сервер: " + e.getMessage());
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println("Произошла ошибка при открытии БД: " + e);
         } finally {
-            try {
-                DBHelper.getInstance().closeDb(connection);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
+            if (connection != null) {
+                try {
+                    DBHelper.getInstance().closeDb(connection);
+                } catch (SQLException e) {
+                    System.out.println("Произошла ошибка при закрытии БД: " + e);
+                }
             }
         }
     }
