@@ -1,16 +1,17 @@
 import db.DBHelper;
-import model.File;
 
-import java.io.*;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ConnectionHandler {
     private static ConnectionHandler instance;
-    private Vector<ClientHandler> clients;
+    private List<ClientHandler> clients;
 
     private ConnectionHandler() {
     }
@@ -21,7 +22,7 @@ public class ConnectionHandler {
         return instance;
     }
 
-    public Vector<ClientHandler> getClients() {
+    public List<ClientHandler> getClients() {
         return clients;
     }
 
@@ -42,7 +43,7 @@ public class ConnectionHandler {
         try {
             connection = DBHelper.getInstance().openDb();
             try (ServerSocket serverSocket = new ServerSocket(Constants.SERVER_PORT)) {
-                clients = new Vector<>();
+                clients = Collections.synchronizedList(new ArrayList<>());
                 System.out.println("Server started... Waiting clients...");
                 while (true) {
                     Socket socket = serverSocket.accept();
