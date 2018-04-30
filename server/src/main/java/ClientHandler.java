@@ -33,7 +33,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
     private RequestMessage lastRequest;
     private User currentUser;
 
-    public ClientHandler(ConnectionHandler connectionHandler, Socket socket, Connection dbConnection) {
+    ClientHandler(ConnectionHandler connectionHandler, Socket socket, Connection dbConnection) {
         System.out.println(String.format("Client connected: %s:%s:%s",
                 socket.getInetAddress(), socket.getPort(), socket.getLocalPort()));
         this.connectionHandler = connectionHandler;
@@ -41,7 +41,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
         this.dbConnection = dbConnection;
     }
 
-    public void startListen() {
+    void startListen() {
         authorized = false;
 
         authTimeoutThread = new Thread(() -> {
@@ -92,7 +92,6 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
 
     private void disconnect() {
 //        connectionHandler.unsubscribe(this);
-        System.out.println("disconnect()");
         messageListener.interrupt();
         authTimeoutThread.interrupt();
         try {
@@ -106,10 +105,10 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
     }
 
     private void onDisconnected() {
+        onAuthorized(false);
         in = null;
         out = null;
         socket = null;
-        authorized = false;
         currentUser = null;
     }
 
@@ -172,7 +171,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
         try {
             User newUser = UserDAOImpl.getInstance().create(dbConnection, user);
             if (newUser.getId() > 0) {
-                authorized = true;
+                onAuthorized(true);
                 currentUser = newUser;
                 sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
             }
@@ -193,7 +192,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
             }
             User user = UserDAOImpl.getInstance().get(dbConnection, username);
             if (user != null && user.getPassword().equals(password)) {
-                authorized = true;
+                onAuthorized(true);
                 currentUser = user;
                 sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
             }
@@ -210,11 +209,20 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
 
     }
 
-    public void sendMessage(String message) {
+    private void sendMessage(String message) {
         try {
             out.writeObject(message);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private void onAuthorized(boolean isAuthorized) {
+        authorized = isAuthorized;
+        if (isAuthorized) {
+            connectionHandler.subscribe(this);
+            authTimeoutThread.interrupt();
+        }
+        else connectionHandler.unSubscribe(this);
     }
 }

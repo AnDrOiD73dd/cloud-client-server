@@ -16,7 +16,7 @@ public class ConnectionHandler {
     private ConnectionHandler() {
     }
 
-    public static synchronized ConnectionHandler getInstance() {
+    static synchronized ConnectionHandler getInstance() {
         if (instance == null)
             instance = new ConnectionHandler();
         return instance;
@@ -26,7 +26,7 @@ public class ConnectionHandler {
         return clients;
     }
 
-    public void prepareDb() {
+    void prepareDb() {
         Connection connection;
         try {
             connection = DBHelper.getInstance().openDb();
@@ -38,7 +38,7 @@ public class ConnectionHandler {
         }
     }
 
-    public void listenConnections() {
+    void listenConnections() {
         Connection connection = null;
         try {
             connection = DBHelper.getInstance().openDb();
@@ -64,6 +64,15 @@ public class ConnectionHandler {
                 }
             }
         }
+    }
+
+    void subscribe(ClientHandler clientHandler) {
+        if (!clients.contains(clientHandler))
+            clients.add(clientHandler);
+    }
+
+    void unSubscribe(ClientHandler clientHandler) {
+        clients.remove(clientHandler);
     }
 }
 
