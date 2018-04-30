@@ -42,7 +42,7 @@ public class SignInPresenter implements ResponseListener, RequestHandler, Respon
             } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
             lastRequest = newRequest;
             connectionService.getOut().writeObject(lastRequest.toString());
-            connectionService.getOut().flush();
+//            connectionService.getOut().flush();
             controller.setUsername("");
             controller.setPassword("");
         } catch (IOException e) {

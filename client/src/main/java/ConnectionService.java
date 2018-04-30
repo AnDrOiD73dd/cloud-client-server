@@ -50,10 +50,7 @@ public class ConnectionService {
             listenerThread = new Thread(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
-//                        String s = in.readUTF();
-//                        responseListener.onNewMessage(s);
-                        Object request;
-                        request = in.readObject();
+                        Object request = in.readObject();
                         if (request instanceof File) {
                             File requestFile = (File) request;
                             responseListener.onNewFile(requestFile);
@@ -67,17 +64,10 @@ public class ConnectionService {
                     } catch (IOException e) {
 //                        System.out.println(e.getMessage());
                         onConnectionError("Сервер перестал отвечать");
-//                } catch (ClassNotFoundException e) {
-//                    System.out.println("Class of a serialized object cannot be found: " + e.getMessage());
                     } catch (ClassNotFoundException e) {
                         onConnectionError("Произошла ошибка во время получения данных от сервера");
                     } finally {
                         disconnect();
-//                    try {
-//                        socket.close();
-//                    } catch (IOException e) {
-//                        System.err.println("Не удалось закрыть сокет: " + e.getMessage());
-//                    }
                     }
                 }
             });

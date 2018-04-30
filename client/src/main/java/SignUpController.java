@@ -1,4 +1,5 @@
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,15 +15,22 @@ import java.util.regex.Pattern;
 
 public class SignUpController extends BaseController {
 
-    private final SignUpPresenter presenter;
-
+    @FXML
     public VBox rootSignUp;
+    @FXML
     public TextField loginField;
+    @FXML
     public PasswordField passwordField;
+    @FXML
     public TextField firstNameField;
+    @FXML
     public TextField lastNameField;
+    @FXML
     public TextField emailField;
+    @FXML
     public Button signUp;
+
+    private final SignUpPresenter presenter;
 
     public SignUpController() {
         presenter = new SignUpPresenter(this);

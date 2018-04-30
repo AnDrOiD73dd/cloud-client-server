@@ -27,7 +27,7 @@ public class DBHelper implements Database {
                         "%s TEXT NOT NULL, " +
                         "%s TEXT NOT NULL, " +
                         "%s TEXT NOT NULL, " +
-                        "%s TEXT, " +
+                        "%s TEXT UNIQUE NOT NULL, " +
                         "%s TEXT UNIQUE NOT NULL);",
                 UserDAOImpl.TABLE_NAME, UserDAOImpl.COLUMN_ID, UserDAOImpl.COLUMN_USERNAME,
                 UserDAOImpl.COLUMN_PASSWORD, UserDAOImpl.COLUMN_FIRST_NAME, UserDAOImpl.COLUMN_LAST_NAME,

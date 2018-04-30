@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import protocol.*;
 
@@ -48,7 +49,8 @@ public class SignUpPresenter implements ResponseListener, RequestHandler, Respon
                 newRequest = (RequestMessage) RequestMessageFactory.getSignUpMessage(MessageUtil.getId(), username, password, firstName, lastName, email);
             } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
             lastRequest = newRequest;
-            connectionService.getOut().writeUTF(lastRequest.toString());
+            connectionService.getOut().writeObject(lastRequest.toString());
+//            connectionService.getOut().flush();
         } catch (IOException e) {
             System.out.println(e.getMessage());
             controller.showAlert("Произошла ошибка при отправке данных на сервер");
@@ -127,7 +129,7 @@ public class SignUpPresenter implements ResponseListener, RequestHandler, Respon
                             controller.updateUI(false);
                             break;
                         case 1:
-                            controller.showCloudClient();
+                            Platform.runLater(() -> controller.showCloudClient());
                             break;
                         case 2:
                             // TODO: hide progress

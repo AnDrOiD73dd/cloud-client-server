@@ -122,6 +122,34 @@ public class UserDAOImpl implements UserDAO {
         return user;
     }
 
+
+    public User getByEmail(Connection connection, String email) {
+        PreparedStatement ps = null;
+        User user = null;
+        String selectSQL = String.format("SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = ?;",
+                COLUMN_ID, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_FIRST_NAME, COLUMN_LAST_NAME, COLUMN_EMAIL,
+                COLUMN_ROOT_DIR, TABLE_NAME, COLUMN_EMAIL);
+        try {
+            ps = connection.prepareStatement(selectSQL);
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                user = User.map(rs);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        return user;
+    }
+
     public boolean update(Connection connection, User user) {
         PreparedStatement ps = null;
         int res = -1;

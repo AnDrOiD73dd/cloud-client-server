@@ -1,5 +1,6 @@
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -14,11 +15,17 @@ import java.io.IOException;
 
 public class SignInController extends BaseController {
 
+    @FXML
     public VBox rootSignIn;
+    @FXML
     public TextField loginField;
+    @FXML
     public PasswordField passwordField;
+    @FXML
     public Button signIn;
+    @FXML
     public Button signUp;
+
     private SignInPresenter presenter;
 
     public SignInController() {

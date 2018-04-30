@@ -7,10 +7,18 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.FileStoreAttributeView;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class ClientHandler implements RequestHandler, ResponseHandler {
+
+    private static final String CLOUD_DIR_NAME = "storage";
 
     private static final long AUTH_TIMEOUT = 120 * 1000L;
 
@@ -58,22 +66,17 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
         messageListener = new Thread(() -> {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
-//                    String s = in.readUTF();
-//                    parseCommand(s);
-                    Object request;
-                    request = in.readObject();
+                    Object request = in.readObject();
                     if (request instanceof File) {
                         File requestFile = (File) request;
                         // TODO load file
                     } else if (request instanceof String) {
                         String question = request.toString();
-//                        String msg = in.readUTF();
-                        System.out.println("msg = " + question);
                         parseCommand(question);
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
-                System.out.println("Exception in data listener: " + e);
+                System.out.println("Exception in data listener: " + e + " " + e.getMessage());
             } finally {
                 disconnect();
             }
@@ -88,6 +91,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
 
     private void disconnect() {
 //        connectionHandler.unsubscribe(this);
+        System.out.println("disconnect()");
         messageListener.interrupt();
         authTimeoutThread.interrupt();
         try {
@@ -110,32 +114,90 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
     @Override
     public void handleRequest(RequestMessage requestMessage) {
         System.out.println("handleRequest: RequestMessage=" + requestMessage.toString());
-        int id = requestMessage.getId();
         String cmd = requestMessage.getCmd();
         switch (cmd) {
             case CommandList.SIGN_IN:
-                HashMap<String, String> body = requestMessage.getRequest();
-                if (body.containsKey(RequestMessageFactory.KEY_LOGIN) && body.containsKey(RequestMessageFactory.KEY_PASSWORD)) {
-                    String username = body.get(RequestMessageFactory.KEY_LOGIN);
-                    String password = body.get(RequestMessageFactory.KEY_PASSWORD);
-                    if (username.isEmpty() || password.isEmpty()) {
-                        // TODO: send invalid data
-                        return;
-                    }
-                    User user = UserDAOImpl.getInstance().get(dbConnection, username);
-                    if (user != null && user.getPassword().equals(password)) {
-                        sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
-                        authorized = true;
-                    }
-                    else {
-                        sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
-                    }
-
-                } else {
-                    // TODO: send invalid data
-                    return;
-                }
+                parseSignIn(requestMessage);
                 break;
+            case CommandList.SIGN_UP:
+                parseSignUp(requestMessage);
+                break;
+            default:
+                System.out.println("Unknown command = " + cmd);
+                break;
+        }
+    }
+
+    private void parseSignUp(RequestMessage requestMessage) {
+        HashMap<String, String> body = requestMessage.getRequest();
+        String username = body.getOrDefault(RequestMessageFactory.KEY_LOGIN, "");
+        String password = body.getOrDefault(RequestMessageFactory.KEY_PASSWORD, "");
+        String firstName = body.getOrDefault(RequestMessageFactory.KEY_FIRST_NAME, "");
+        String lastName = body.getOrDefault(RequestMessageFactory.KEY_LAST_NAME, "");
+        String email = body.getOrDefault(RequestMessageFactory.KEY_EMAIL, "");
+        // Some checks
+        if (username.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()) {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 2).toString());
+            return;
+        }
+        User user = UserDAOImpl.getInstance().get(dbConnection, username);
+        if (user != null) {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 4).toString());
+            return;
+        }
+        user = UserDAOImpl.getInstance().getByEmail(dbConnection, email);
+        if (user != null) {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 5).toString());
+            return;
+        }
+        // Create user directory
+        Path userPath = Paths.get(Utils.getWorkingDirectory() + "/" + CLOUD_DIR_NAME + "/" + username).normalize();
+        try {
+            userPath = Files.createDirectories(userPath);
+        } catch (IOException e) {
+            System.out.println("Не могу создать директорию: " + userPath.toString());
+            sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
+        }
+        // add user to DB
+        user = new User.Builder()
+                .setUsername(username)
+                .setPassword(password)
+                .setFirstName(firstName)
+                .setLastName(lastName)
+                .setEmail(email)
+                .setRootDir(userPath.toString())
+                .create();
+        try {
+            User newUser = UserDAOImpl.getInstance().create(dbConnection, user);
+            if (newUser.getId() > 0) {
+                authorized = true;
+                sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
+            }
+            else sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
+        } catch (SQLException e) {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
+        }
+    }
+
+    private void parseSignIn(RequestMessage requestMessage) {
+        HashMap<String, String> body = requestMessage.getRequest();
+        if (body.containsKey(RequestMessageFactory.KEY_LOGIN) && body.containsKey(RequestMessageFactory.KEY_PASSWORD)) {
+            String username = body.get(RequestMessageFactory.KEY_LOGIN);
+            String password = body.get(RequestMessageFactory.KEY_PASSWORD);
+            if (username.isEmpty() || password.isEmpty()) {
+                sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
+                return;
+            }
+            User user = UserDAOImpl.getInstance().get(dbConnection, username);
+            if (user != null && user.getPassword().equals(password)) {
+                sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
+                authorized = true;
+            }
+            else {
+                sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
+            }
+        } else {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 2).toString());
         }
     }
 

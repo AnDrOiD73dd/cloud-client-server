@@ -7,6 +7,7 @@ import model.User;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -25,6 +26,7 @@ public class CloudServer {
 
     public static void main(String[] args) {
 //        test();
+//        System.out.println(Paths.get(Utils.getWorkingDirectory() + "/user1"));
         ConnectionHandler.getInstance().prepareDb();
         ConnectionHandler.getInstance().listenConnections();
     }

@@ -6,9 +6,9 @@ public class RequestMessageFactory {
 
     public static final String KEY_LOGIN = "login";
     public static final String KEY_PASSWORD = "password";
-    private static final String KEY_FIRST_NAME = "first name";
-    private static final String KEY_LAST_NAME = "last name";
-    private static final String KEY_EMAIL = "email";
+    public static final String KEY_FIRST_NAME = "first name";
+    public static final String KEY_LAST_NAME = "last name";
+    public static final String KEY_EMAIL = "email";
 
     /**
      * Generate @see {@link Message} instance from input params to login operation
