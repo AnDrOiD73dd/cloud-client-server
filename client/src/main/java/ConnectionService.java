@@ -48,27 +48,26 @@ public class ConnectionService {
             in = new ObjectInputStream(this.socket.getInputStream());
             onConnectionStateChanged(true);
             listenerThread = new Thread(() -> {
-                while (!Thread.currentThread().isInterrupted()) {
-                    try {
+                try {
+                    while (!Thread.currentThread().isInterrupted()) {
                         Object request = in.readObject();
                         if (request instanceof File) {
                             File requestFile = (File) request;
                             responseListener.onNewFile(requestFile);
-                        }
-                        else if (request instanceof String) {
+                        } else if (request instanceof String) {
                             String question = request.toString();
-    //                        String msg = in.readUTF();
+//                        String msg = in.readUTF();
                             System.out.println("msg = " + question);
                             responseListener.onNewMessage(question);
                         }
-                    } catch (IOException e) {
-//                        System.out.println(e.getMessage());
-                        onConnectionError("Сервер перестал отвечать");
-                    } catch (ClassNotFoundException e) {
-                        onConnectionError("Произошла ошибка во время получения данных от сервера");
-                    } finally {
-                        disconnect();
                     }
+                } catch (IOException e) {
+//                        System.out.println(e.getMessage());
+                    onConnectionError("Сервер перестал отвечать");
+                } catch (ClassNotFoundException e) {
+                    onConnectionError("Произошла ошибка во время получения данных от сервера");
+                } finally {
+                    disconnect();
                 }
             });
             listenerThread.setDaemon(true);
