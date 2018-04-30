@@ -2,9 +2,10 @@ import db.UserDAOImpl;
 import model.User;
 import protocol.*;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.Connection;
 import java.util.HashMap;
@@ -16,8 +17,8 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
     private ConnectionHandler connectionHandler;
     private Socket socket;
     private Connection dbConnection;
-    private DataInputStream in;
-    private DataOutputStream out;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
     private Thread messageListener;
     private Thread authTimeoutThread;
     private boolean authorized;
@@ -48,8 +49,8 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
         authTimeoutThread.start();
 
         try {
-            this.out = new DataOutputStream(socket.getOutputStream());
-            this.in = new DataInputStream(socket.getInputStream());
+            this.out = new ObjectOutputStream(socket.getOutputStream());
+            this.in = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -57,21 +58,22 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
         messageListener = new Thread(() -> {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
-                    String s = in.readUTF();
-                    parseCommand(s);
-//                    Object request;
-//                    request = this.in.readObject();
-//                    if (request instanceof File) {
-//                        File requestFile = (File) request;
-//                    } else if (request instanceof String) {
-//                        String question = request.toString();
-////                        String msg = in.readUTF();
-//                        System.out.println("msg = " + question);
-//                        parseCommand(question);
-//                    }
+//                    String s = in.readUTF();
+//                    parseCommand(s);
+                    Object request;
+                    request = in.readObject();
+                    if (request instanceof File) {
+                        File requestFile = (File) request;
+                        // TODO load file
+                    } else if (request instanceof String) {
+                        String question = request.toString();
+//                        String msg = in.readUTF();
+                        System.out.println("msg = " + question);
+                        parseCommand(question);
+                    }
                 }
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
+            } catch (IOException | ClassNotFoundException e) {
+                System.out.println("messageListener ERROR: " + e);
             } finally {
                 disconnect();
             }
@@ -144,7 +146,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
 
     public void sendMessage(String message) {
         try {
-            out.writeUTF(message);
+            out.writeObject(message);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }

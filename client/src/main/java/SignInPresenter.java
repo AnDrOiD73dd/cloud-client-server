@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.event.Event;
 import protocol.*;
 
@@ -40,7 +41,8 @@ public class SignInPresenter implements ResponseListener, RequestHandler, Respon
                 newRequest = (RequestMessage) RequestMessageFactory.getLoginMessage(MessageUtil.getId(), username, password);
             } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
             lastRequest = newRequest;
-            connectionService.getOut().writeUTF(lastRequest.toString());
+            connectionService.getOut().writeObject(lastRequest.toString());
+            connectionService.getOut().flush();
             controller.setUsername("");
             controller.setPassword("");
         } catch (IOException e) {
@@ -103,7 +105,7 @@ public class SignInPresenter implements ResponseListener, RequestHandler, Respon
                             controller.updateUI(false);
                             break;
                         case 1:
-                            controller.showCloudClient();
+                            Platform.runLater(() -> controller.showCloudClient());
                             break;
                         case 2:
                             // TODO: hide progress

@@ -1,6 +1,7 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -8,8 +9,8 @@ public class ConnectionService {
 
     private static ConnectionService instance;
     private Socket socket;
-    private DataInputStream in;
-    private DataOutputStream out;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
     private Thread listenerThread;
     private boolean isConnected;
     private ResponseListener responseListener;
@@ -26,7 +27,7 @@ public class ConnectionService {
         return instance;
     }
 
-    DataOutputStream getOut() {
+    ObjectOutputStream getOut() {
         return out;
     }
 
@@ -43,31 +44,33 @@ public class ConnectionService {
             return;
         try {
             this.socket = new Socket(host, port);
-            out = new DataOutputStream(this.socket.getOutputStream());
-            in = new DataInputStream(this.socket.getInputStream());
+            out = new ObjectOutputStream(this.socket.getOutputStream());
+            in = new ObjectInputStream(this.socket.getInputStream());
             onConnectionStateChanged(true);
             listenerThread = new Thread(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
-                        String s = in.readUTF();
-                        responseListener.onNewMessage(s);
-//                    Object request;
-//                    request = this.in.readObject();
-//                    if (request instanceof File) {
-//                        File requestFile = (File) request;
-//                        responseListener.onNewFile(requestFile);
-//                    }
-//                    else if (request instanceof String) {
-//                        String question = request.toString();
-////                        String msg = in.readUTF();
-//                        System.out.println("msg = " + question);
-//                        responseListener.onNewMessage(question);
-//                    }
+//                        String s = in.readUTF();
+//                        responseListener.onNewMessage(s);
+                        Object request;
+                        request = in.readObject();
+                        if (request instanceof File) {
+                            File requestFile = (File) request;
+                            responseListener.onNewFile(requestFile);
+                        }
+                        else if (request instanceof String) {
+                            String question = request.toString();
+    //                        String msg = in.readUTF();
+                            System.out.println("msg = " + question);
+                            responseListener.onNewMessage(question);
+                        }
                     } catch (IOException e) {
 //                        System.out.println(e.getMessage());
                         onConnectionError("Сервер перестал отвечать");
 //                } catch (ClassNotFoundException e) {
 //                    System.out.println("Class of a serialized object cannot be found: " + e.getMessage());
+                    } catch (ClassNotFoundException e) {
+                        onConnectionError("Произошла ошибка во время получения данных от сервера");
                     } finally {
                         disconnect();
 //                    try {
