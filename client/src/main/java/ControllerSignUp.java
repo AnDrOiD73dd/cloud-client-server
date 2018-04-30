@@ -1,56 +1,60 @@
 import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ControllerSignUp {
+public class ControllerSignUp extends BaseController {
 
-    private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+    private final SignUpPresenter presenter;
 
-    public VBox signup;
+    public VBox rootSignUp;
     public TextField loginField;
     public PasswordField passwordField;
     public TextField firstNameField;
     public TextField lastNameField;
     public TextField emailField;
+    public Button signUp;
+
+    public ControllerSignUp() {
+        presenter = new SignUpPresenter(this);
+    }
 
     public void onClickSignUp(ActionEvent actionEvent) {
-        if (isValidCredentials()) {
+        presenter.onClickSignUp(actionEvent, loginField.getText(), passwordField.getText(), firstNameField.getText(),
+                lastNameField.getText(), emailField.getText());
+    }
 
+    void showCloudClient() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("layout_cloud.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle(Constants.APP_NAME);
+            Utils.setupIcon(stage, getClass());
+            stage.setScene(new Scene(root));
+            stage.show();
+            // Hide this current window (if this is what you want)
+            rootSignUp.getScene().getWindow().hide();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private boolean isValidCredentials() {
-        String username = loginField.getText().trim();
-        String password = passwordField.getText().trim();
-        String firstName = firstNameField.getText().trim();
-        String lastName = lastNameField.getText().trim();
-        String email = emailField.getText().trim();
-        if (username.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()){
-            Utils.showAlert("Вы заполнили не все поля");
-            return false;
-        }
-        String usernamePattern = "[a-zA-Z0-9._\\-]{3,}";
-        if (!username.matches(usernamePattern)) {
-            Utils.showAlert("Имя пользователя должно быть не короче 3-х символов. Разрешенные символы:" +
-                    "\nцифры, буквы, точка, нижнее подчеркивание, тире");
-            return false;
-        }
-        String passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
-        if (!password.matches(passwordPattern)) {
-            Utils.showAlert("Пароль должен состоять не менее чем из 8 символов и иметь по одному символу:" +
-                    "\nцыфры\nстрочной буквы\nпрописной буквы\nсодержать хотя бы один символ из: [@#$%^&+=\nи не должен содержать пробелы");
-            return false;
-        }
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
-        if (!matcher.find()) {
-            Utils.showAlert("Вы указали невалидное значение в поле email");
-            return false;
-        }
-        return true;
+    void updateUI(boolean flag) {
+        loginField.setEditable(flag);
+        passwordField.setEditable(flag);
+        firstNameField.setEditable(flag);
+        lastNameField.setEditable(flag);
+        emailField.setEditable(flag);
+        signUp.setDisable(!flag);
     }
 }

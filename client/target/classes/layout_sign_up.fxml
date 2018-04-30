@@ -7,14 +7,14 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="ControllerSignUp"
       stylesheets="@style_auth.css"
-      fx:id="signup"
+      fx:id="rootSignUp"
       alignment="CENTER">
     <TextField fx:id="loginField" promptText="Логин" HBox.hgrow="ALWAYS"/>
     <PasswordField fx:id="passwordField" promptText="Пароль" HBox.hgrow="ALWAYS"/>
     <TextField fx:id="firstNameField" promptText="Имя" HBox.hgrow="ALWAYS"/>
     <TextField fx:id="lastNameField" promptText="Фамилия" HBox.hgrow="ALWAYS"/>
     <TextField fx:id="emailField" promptText="E-mail" HBox.hgrow="ALWAYS"/>
-    <Button text="Зарегистрироваться" onAction="#onClickSignUp"/>
+    <Button fx:id="signUp" text="Зарегистрироваться" onAction="#onClickSignUp"/>
     <padding>
         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
     </padding>

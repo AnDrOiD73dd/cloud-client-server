@@ -38,7 +38,7 @@ public class RequestMessageFactory {
      * @param id request id
      * @return @see {@link Message} instance
      */
-    public static Message getRegisterMessage(int id, String username, String password, String firtName, String lastName, String email) {
+    public static Message getSignUpMessage(int id, String username, String password, String firtName, String lastName, String email) {
         HashMap<String, String> dataMap = new HashMap<>();
         dataMap.put(KEY_LOGIN, username);
         dataMap.put(KEY_PASSWORD, password);

@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
@@ -11,11 +12,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class ControllerSignIn {
+public class ControllerSignIn extends BaseController {
 
-    public VBox signin;
+    public VBox rootSignIn;
     public TextField loginField;
     public PasswordField passwordField;
+    public Button signIn;
+    public Button signUp;
     private SignInPresenter presenter;
 
     public ControllerSignIn() {
@@ -55,7 +58,7 @@ public class ControllerSignIn {
             stage.setScene(new Scene(root));
             stage.show();
             // Hide this current window (if this is what you want)
-            signin.getScene().getWindow().hide();
+            rootSignIn.getScene().getWindow().hide();
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -65,10 +68,8 @@ public class ControllerSignIn {
     void updateUI(boolean flag) {
         loginField.setEditable(flag);
         passwordField.setEditable(flag);
-    }
-
-    public void showAlert(String message) {
-        Utils.showAlert(message);
+        signIn.setDisable(!flag);
+        signUp.setDisable(!flag);
     }
 
     public void setUsername(String s) {

@@ -12,12 +12,12 @@
       fx:controller="ControllerSignIn"
       stylesheets="@style_auth.css"
       alignment="CENTER"
-      fx:id="signin">
+      fx:id="rootSignIn">
     <TextField fx:id="loginField" promptText="Логин" HBox.hgrow="ALWAYS"/>
     <PasswordField fx:id="passwordField" promptText="Пароль" onAction="#onClickSignIn"/>
-    <Button text="Войти" onAction="#onClickSignIn"/>
+    <Button fx:id="signIn" text="Войти" onAction="#onClickSignIn"/>
     <Label text="Нет аккаунта?"/>
-    <Button text="Регистрация" onAction="#onClickSignUp"/>
+    <Button fx:id="signUp" text="Регистрация" onAction="#onClickSignUp"/>
     <padding>
         <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
     </padding>

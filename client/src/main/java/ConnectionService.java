@@ -10,7 +10,7 @@ public class ConnectionService {
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
-    protected Thread listenerThread;
+    private Thread listenerThread;
     private boolean isConnected;
     private ResponseListener responseListener;
     private ArrayList<ConnectionStateListener> connectionStateListeners;
@@ -20,21 +20,13 @@ public class ConnectionService {
         connectionStateListeners = new ArrayList<>();
     }
 
-    public static synchronized ConnectionService getInstance() {
+    static synchronized ConnectionService getInstance() {
         if (instance == null)
             instance = new ConnectionService();
         return instance;
     }
 
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public DataInputStream getIn() {
-        return in;
-    }
-
-    public DataOutputStream getOut() {
+    DataOutputStream getOut() {
         return out;
     }
 
@@ -42,7 +34,7 @@ public class ConnectionService {
         return isConnected;
     }
 
-    public void setResponseListener(ResponseListener responseListener) {
+    void setResponseListener(ResponseListener responseListener) {
         this.responseListener = responseListener;
     }
 
@@ -126,12 +118,12 @@ public class ConnectionService {
         }
     }
 
-    public void addConnectionStateListener(ConnectionStateListener listener) {
+    void addConnectionStateListener(ConnectionStateListener listener) {
         if (!connectionStateListeners.contains(listener))
             connectionStateListeners.add(listener);
     }
 
-    public void removeConnectionStateListener(ConnectionStateListener listener) {
+    void removeConnectionStateListener(ConnectionStateListener listener) {
         connectionStateListeners.remove(listener);
     }
 }
