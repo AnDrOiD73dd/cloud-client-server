@@ -57,7 +57,6 @@ public class ConnectionService {
                         } else if (request instanceof String) {
                             String question = request.toString();
 //                        String msg = in.readUTF();
-                            System.out.println("msg = " + question);
                             responseListener.onNewMessage(question);
                         }
                     }
