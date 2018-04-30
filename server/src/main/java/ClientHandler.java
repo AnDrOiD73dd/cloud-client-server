@@ -31,6 +31,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
     private Thread authTimeoutThread;
     private boolean authorized;
     private RequestMessage lastRequest;
+    private User currentUser;
 
     public ClientHandler(ConnectionHandler connectionHandler, Socket socket, Connection dbConnection) {
         System.out.println(String.format("Client connected: %s:%s:%s",
@@ -109,6 +110,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
         out = null;
         socket = null;
         authorized = false;
+        currentUser = null;
     }
 
     @Override
@@ -171,6 +173,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
             User newUser = UserDAOImpl.getInstance().create(dbConnection, user);
             if (newUser.getId() > 0) {
                 authorized = true;
+                currentUser = newUser;
                 sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
             }
             else sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
@@ -190,8 +193,9 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
             }
             User user = UserDAOImpl.getInstance().get(dbConnection, username);
             if (user != null && user.getPassword().equals(password)) {
-                sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
                 authorized = true;
+                currentUser = user;
+                sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
             }
             else {
                 sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
