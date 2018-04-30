@@ -6,14 +6,14 @@ import java.io.IOException;
 
 public class SignInPresenter implements ResponseListener, RequestHandler, ResponseHandler {
 
-    private ControllerSignIn controller;
+    private SignInController controller;
     private ConnectionService connectionService;
     private RequestMessage lastRequest;
     private ConnectionStateListener connectionStateListener;
     private String username;
     private String password;
 
-    public SignInPresenter(ControllerSignIn controller) {
+    public SignInPresenter(SignInController controller) {
         this.controller = controller;
         connectionStateListener = new ConnectionStateListener() {
             @Override

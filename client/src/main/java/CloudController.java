@@ -17,7 +17,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ControllerCloud implements Initializable {
+public class CloudController implements Initializable {
 
     @FXML
     public TextField message;
@@ -43,11 +43,16 @@ public class ControllerCloud implements Initializable {
     private boolean authorized;
     private String myNick;
     private ObservableList<String> clientList;
+    private CloudPresenter presenter;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 //        Platform.runLater(() -> login.requestFocus());
 //        setAuthorized(false);
+    }
+
+    public CloudController() {
+        presenter = new CloudPresenter(this);
     }
 
     private void connect() {

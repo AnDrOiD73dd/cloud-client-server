@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ControllerSignUp extends BaseController {
+public class SignUpController extends BaseController {
 
     private final SignUpPresenter presenter;
 
@@ -24,7 +24,7 @@ public class ControllerSignUp extends BaseController {
     public TextField emailField;
     public Button signUp;
 
-    public ControllerSignUp() {
+    public SignUpController() {
         presenter = new SignUpPresenter(this);
     }
 

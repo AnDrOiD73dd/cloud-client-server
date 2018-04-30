@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class ControllerSignIn extends BaseController {
+public class SignInController extends BaseController {
 
     public VBox rootSignIn;
     public TextField loginField;
@@ -21,7 +21,7 @@ public class ControllerSignIn extends BaseController {
     public Button signUp;
     private SignInPresenter presenter;
 
-    public ControllerSignIn() {
+    public SignInController() {
         presenter = new SignInPresenter(this);
     }
 

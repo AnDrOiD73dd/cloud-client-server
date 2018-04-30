@@ -11,7 +11,7 @@ public class SignUpPresenter implements ResponseListener, RequestHandler, Respon
     private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
-    private ControllerSignUp controller;
+    private SignUpController controller;
     private ConnectionService connectionService;
     private RequestMessage lastRequest;
     private ConnectionStateListener connectionStateListener;
@@ -21,7 +21,7 @@ public class SignUpPresenter implements ResponseListener, RequestHandler, Respon
     private String lastName;
     private String email;
 
-    public SignUpPresenter(ControllerSignUp controller) {
+    public SignUpPresenter(SignUpController controller) {
         this.controller = controller;
         connectionStateListener = new ConnectionStateListener() {
             @Override
