@@ -15,6 +15,8 @@ public class CloudController implements Initializable {
     public Button btAdd;
     @FXML
     public Button btDelete;
+    @FXML
+    public Button btDownload;
 
     private CloudPresenter presenter;
 
@@ -34,6 +36,10 @@ public class CloudController implements Initializable {
 
     public void onClickDelete(ActionEvent actionEvent) {
         presenter.onClickDelete(actionEvent);
+    }
+
+    public void onClickDownload(ActionEvent actionEvent) {
+        presenter.onClickDownload(actionEvent);
     }
 
 //    private void configureClientListView() {

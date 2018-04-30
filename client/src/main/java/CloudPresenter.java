@@ -13,4 +13,7 @@ public class CloudPresenter {
 
     public void onClickDelete(Event event) {
     }
+
+    public void onClickDownload(Event event) {
+    }
 }

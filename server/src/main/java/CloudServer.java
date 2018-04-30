@@ -26,7 +26,6 @@ public class CloudServer {
 
     public static void main(String[] args) {
 //        test();
-//        System.out.println(Paths.get(Utils.getWorkingDirectory() + "/user1"));
         ConnectionHandler.getInstance().prepareDb();
         ConnectionHandler.getInstance().listenConnections();
     }
