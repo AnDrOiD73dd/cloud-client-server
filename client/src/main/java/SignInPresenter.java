@@ -18,19 +18,7 @@ public class SignInPresenter implements ResponseListener, RequestHandler, Respon
         connectionStateListener = new ConnectionStateListener() {
             @Override
             public void onConnected() {
-                try {
-                    RequestMessage newRequest;
-                    do {
-                        newRequest = (RequestMessage) RequestMessageFactory.getLoginMessage(MessageUtil.getId(), username, password);
-                    } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
-                    lastRequest = newRequest;
-                    connectionService.getOut().writeUTF(lastRequest.toString());
-                    controller.setUsername("");
-                    controller.setPassword("");
-                } catch (IOException e) {
-                    System.out.println(e.getMessage());
-                    controller.showAlert("Произошла ошибка при отправке данных на сервер");
-                }
+                signIn();
             }
 
             @Override
@@ -43,6 +31,22 @@ public class SignInPresenter implements ResponseListener, RequestHandler, Respon
                 controller.showAlert(error);
             }
         };
+    }
+
+    private void signIn() {
+        try {
+            RequestMessage newRequest;
+            do {
+                newRequest = (RequestMessage) RequestMessageFactory.getLoginMessage(MessageUtil.getId(), username, password);
+            } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
+            lastRequest = newRequest;
+            connectionService.getOut().writeUTF(lastRequest.toString());
+            controller.setUsername("");
+            controller.setPassword("");
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            controller.showAlert("Произошла ошибка при отправке данных на сервер");
+        }
     }
 
     public void onSignUpClick(Event event) {
@@ -63,7 +67,9 @@ public class SignInPresenter implements ResponseListener, RequestHandler, Respon
         connectionService = ConnectionService.getInstance();
         connectionService.setResponseListener(this);
         connectionService.addConnectionStateListener(connectionStateListener);
-        connectionService.connect(Constants.SERVER_IP, Constants.SERVER_PORT);
+        if (connectionService.isConnected())
+            signIn();
+        else connectionService.connect(Constants.SERVER_IP, Constants.SERVER_PORT);
     }
 
     private boolean isValidCredentials(String username, String password) {
@@ -129,6 +135,7 @@ public class SignInPresenter implements ResponseListener, RequestHandler, Respon
     }
 
     public void onClose() {
+        // TODO: intercept close controller
         connectionService.removeConnectionStateListener(connectionStateListener);
     }
 }
