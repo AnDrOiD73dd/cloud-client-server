@@ -1,74 +1,134 @@
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.event.Event;
+import protocol.*;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.net.Socket;
 
-public class SignInPresenter {
+public class SignInPresenter implements ResponseListener, RequestHandler, ResponseHandler {
 
-    private static Socket socket;
-    private static DataInputStream in;
-    private static DataOutputStream out;
-    private static ObservableList<Object> clientList;
-    private static Thread readFromServer;
+    private ControllerSignIn controller;
+    private ConnectionService connectionService;
+    private RequestMessage lastRequest;
+    private ConnectionStateListener connectionStateListener;
+    private String username;
+    private String password;
 
-    public static void onSignInClick() {
-
-    }
-
-    private static void connect() {
-        try {
-            socket = new Socket(Constants.SERVER_IP, Constants.SERVER_PORT);
-            in = new DataInputStream(socket.getInputStream());
-            out = new DataOutputStream(socket.getOutputStream());
-            clientList = FXCollections.observableArrayList();
-            readFromServer = new Thread(() -> {
+    public SignInPresenter(ControllerSignIn controller) {
+        this.controller = controller;
+        connectionStateListener = new ConnectionStateListener() {
+            @Override
+            public void onConnected() {
                 try {
-                    while (!Thread.currentThread().isInterrupted()) {
-                        String s = in.readUTF();
-                        parseMsg(s);
-                    }
+                    RequestMessage newRequest;
+                    do {
+                        newRequest = (RequestMessage) RequestMessageFactory.getLoginMessage(MessageUtil.getId(), username, password);
+                    } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
+                    lastRequest = newRequest;
+                    connectionService.getOut().writeUTF(lastRequest.toString());
+                    controller.setUsername("");
+                    controller.setPassword("");
                 } catch (IOException e) {
-//                    e.printStackTrace();
-                    showAlert("Сервер перестал отвечать");
-                    setAuthorized(false);
-                    disconnect();
-                } finally {
-                    try {
-                        socket.close();
-                    } catch (IOException e) {
-                        System.err.println("Не удалось закрыть сокет: ");
-                        e.printStackTrace();
-                    }
+                    System.out.println(e.getMessage());
+                    controller.showAlert("Произошла ошибка при отправке данных на сервер");
                 }
-            });
-            readFromServer.setDaemon(true);
-            readFromServer.start();
-        } catch (IOException e) {
-//            e.printStackTrace();
-            showAlert("Не удалось подключиться к серверу. Проверьте сетевое соединение.");
+            }
+
+            @Override
+            public void onDisconnected() {
+//                controller.showAlert("Подключение с сервером разорвано");
+            }
+
+            @Override
+            public void onError(String error) {
+                controller.showAlert(error);
+            }
+        };
+    }
+
+    public void onSignUpClick(Event event) {
+        controller.showSignUp(event);
+    }
+
+    public void onSignInClick(String username, String password) {
+        this.username = username.trim();
+        this.password = password.trim();
+        if (!isValidCredentials(this.username, this.password)) {
+            controller.showAlert("Указаны неполные данные авторизации");
+            return;
         }
+        initConnection();
     }
 
-    private static void setAuthorized(boolean b) {
+    private void initConnection() {
+        connectionService = ConnectionService.getInstance();
+        connectionService.setResponseListener(this);
+        connectionService.addConnectionStateListener(connectionStateListener);
+        connectionService.connect(Constants.SERVER_IP, Constants.SERVER_PORT);
     }
 
-    private static void showAlert(String s) {
+    private boolean isValidCredentials(String username, String password) {
+        return !username.isEmpty() && !password.isEmpty();
     }
 
-    private static void parseMsg(String s) {
+    @Override
+    public void onNewFile(File requestFile) {
+
     }
 
-    private static void disconnect() {
-        try {
-            in.close();
-            out.close();
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    @Override
+    public void onNewMessage(String message) {
+        System.out.println("parseCommand: " + message);
+        MessageParser.parse(message, lastRequest, this, this);
+    }
+
+    @Override
+    public void handleRequest(RequestMessage requestMessage) {
+
+    }
+
+    @Override
+    public void handleResponse(ResponseMessage responseMessage, String command) {
+        if (lastRequest.getId() == responseMessage.getId()) {
+            switch (lastRequest.getCmd()) {
+                case CommandList.SIGN_IN:
+                    switch (responseMessage.getResponseCode()) {
+                        case 0:
+                            // TODO: show progress
+                            controller.updateUI(false);
+                            break;
+                        case 1:
+                            controller.showCloudClient();
+                            break;
+                        case 2:
+                            // TODO: hide progress
+                            controller.updateUI(true);
+                            Utils.showAlert("Неверый формат данных. Обратитесь к разработчику.");
+                            break;
+                        case 3:
+                            // TODO: hide progress
+                            controller.updateUI(true);
+                            Utils.showAlert("Неверный логин и/или пароль");
+                            break;
+                        case 4:
+                            // TODO: hide progress
+                            controller.updateUI(true);
+                            Utils.showAlert("Произошла внутрення ошибка на сервере");
+                            break;
+                        default:
+                            System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
+                                    + ", cmd=" + CommandList.SIGN_IN);
+                            break;
+                    }
+                    break;
+                default:
+                    System.out.println(("Unknown command=" + command));
+                    break;
+            }
         }
-        readFromServer.interrupt();
+        else System.out.println("Unknown response id: " + responseMessage);
+    }
+
+    public void onClose() {
+        connectionService.removeConnectionStateListener(connectionStateListener);
     }
 }

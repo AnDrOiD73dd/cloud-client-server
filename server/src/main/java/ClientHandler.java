@@ -2,7 +2,9 @@ import db.UserDAOImpl;
 import model.User;
 import protocol.*;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.sql.Connection;
 import java.util.HashMap;
@@ -35,11 +37,12 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
         authTimeoutThread = new Thread(() -> {
             try {
                 Thread.sleep(AUTH_TIMEOUT);
+                if (!authorized) {
+                    disconnect();
+                }
             } catch (InterruptedException e) {
                 System.out.println("Произошла ошибка во время ожидания аутентификации: " + e.getMessage());
             }
-            if (!authorized)
-                disconnect();
         });
         authTimeoutThread.setDaemon(true);
         authTimeoutThread.start();
