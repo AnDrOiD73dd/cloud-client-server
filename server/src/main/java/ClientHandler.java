@@ -42,7 +42,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
                     disconnect();
                 }
             } catch (InterruptedException e) {
-                System.out.println("Произошла ошибка во время ожидания аутентификации: " + e.getMessage());
+                System.out.println("Ожидание аутентификации прервано");
             }
         });
         authTimeoutThread.setDaemon(true);
@@ -73,7 +73,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
-                System.out.println("messageListener ERROR: " + e);
+                System.out.println("Exception in data listener: " + e);
             } finally {
                 disconnect();
             }
