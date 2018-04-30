@@ -5,7 +5,7 @@ import protocol.*;
 import java.io.File;
 import java.io.IOException;
 
-public class SignInPresenter implements ResponseListener, RequestHandler, ResponseHandler {
+public class SignInPresenter implements ResponseListener, ResponseHandler {
 
     private SignInController controller;
     private ConnectionService connectionService;
@@ -86,58 +86,50 @@ public class SignInPresenter implements ResponseListener, RequestHandler, Respon
     @Override
     public void onNewMessage(String message) {
         System.out.println("parseCommand: " + message);
-        MessageParser.parse(message, lastRequest, this, this);
-    }
-
-    @Override
-    public void handleRequest(RequestMessage requestMessage) {
-
+        MessageParser.parse(message, lastRequest, null, this);
     }
 
     @Override
     public void handleResponse(ResponseMessage responseMessage, String command) {
-        if (lastRequest.getId() == responseMessage.getId()) {
-            switch (lastRequest.getCmd()) {
-                case CommandList.SIGN_IN:
-                    switch (responseMessage.getResponseCode()) {
-                        case 0:
-                            // TODO: show progress
-                            controller.updateUI(false);
-                            break;
-                        case 1:
-                            Platform.runLater(() -> controller.showCloudClient());
-                            break;
-                        case 2:
-                            // TODO: hide progress
-                            controller.updateUI(true);
-                            Utils.showAlert("Неверый формат данных. Обратитесь к разработчику.");
-                            break;
-                        case 3:
-                            // TODO: hide progress
-                            controller.updateUI(true);
-                            Utils.showAlert("Неверный логин и/или пароль");
-                            break;
-                        case 4:
-                            // TODO: hide progress
-                            controller.updateUI(true);
-                            Utils.showAlert("Произошла внутрення ошибка на сервере");
-                            break;
-                        default:
-                            System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
-                                    + ", cmd=" + CommandList.SIGN_IN);
-                            break;
-                    }
-                    break;
-                default:
-                    System.out.println(("Unknown command=" + command));
-                    break;
-            }
+        if (lastRequest.getId() != responseMessage.getId()) {
+            System.out.println("Unknown response id: " + responseMessage);
+            return;
         }
-        else System.out.println("Unknown response id: " + responseMessage);
-    }
-
-    public void onClose() {
-        // TODO: intercept close controller
-        connectionService.removeConnectionStateListener(connectionStateListener);
+        switch (lastRequest.getCmd()) {
+            case CommandList.SIGN_IN:
+                switch (responseMessage.getResponseCode()) {
+                    case 0:
+                        // TODO: show progress
+                        controller.updateUI(false);
+                        break;
+                    case 1:
+                        connectionService.removeConnectionStateListener(connectionStateListener);
+                        Platform.runLater(() -> controller.showCloudClient());
+                        break;
+                    case 2:
+                        // TODO: hide progress
+                        controller.updateUI(true);
+                        Utils.showAlert("Неверый формат данных. Обратитесь к разработчику.");
+                        break;
+                    case 3:
+                        // TODO: hide progress
+                        controller.updateUI(true);
+                        Utils.showAlert("Неверный логин и/или пароль");
+                        break;
+                    case 4:
+                        // TODO: hide progress
+                        controller.updateUI(true);
+                        Utils.showAlert("Произошла внутрення ошибка на сервере");
+                        break;
+                    default:
+                        System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
+                                + ", cmd=" + CommandList.SIGN_IN);
+                        break;
+                }
+                break;
+            default:
+                System.out.println(("Unknown command=" + command));
+                break;
+        }
     }
 }

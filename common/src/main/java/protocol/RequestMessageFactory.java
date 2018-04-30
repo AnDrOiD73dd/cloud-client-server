@@ -47,5 +47,9 @@ public class RequestMessageFactory {
         dataMap.put(KEY_EMAIL, email);
         return new RequestMessage(id, CommandList.SIGN_UP, dataMap);
     }
+
+    public static Message getFilesListRequest(int id) {
+        return new RequestMessage(id, CommandList.FILES_LIST);
+    }
 }
 

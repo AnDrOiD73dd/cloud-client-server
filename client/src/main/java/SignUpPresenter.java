@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SignUpPresenter implements ResponseListener, RequestHandler, ResponseHandler {
+public class SignUpPresenter implements ResponseListener, ResponseHandler {
 
     private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
@@ -110,58 +110,55 @@ public class SignUpPresenter implements ResponseListener, RequestHandler, Respon
     @Override
     public void onNewMessage(String message) {
         System.out.println("parseCommand: " + message);
-        MessageParser.parse(message, lastRequest, this, this);
-    }
-
-    @Override
-    public void handleRequest(RequestMessage requestMessage) {
-
+        MessageParser.parse(message, lastRequest, null, this);
     }
 
     @Override
     public void handleResponse(ResponseMessage responseMessage, String command) {
-        if (lastRequest.getId() == responseMessage.getId()) {
-            switch (lastRequest.getCmd()) {
-                case CommandList.SIGN_UP:
-                    switch (responseMessage.getResponseCode()) {
-                        case 0:
-                            // TODO: show progress
-                            controller.updateUI(false);
-                            break;
-                        case 1:
-                            Platform.runLater(() -> controller.showCloudClient());
-                            break;
-                        case 2:
-                            // TODO: hide progress
-                            controller.updateUI(true);
-                            Utils.showAlert("Неверый формат данных. Обратитесь к разработчику.");
-                            break;
-                        case 3:
-                            // TODO: hide progress
-                            controller.updateUI(true);
-                            controller.showAlert("Произошла внутрення ошибка на сервере");
-                            break;
-                        case 4:
-                            // TODO: hide progress
-                            controller.updateUI(true);
-                            controller.showAlert("Пользователь с таким логином уже существует");
-                            break;
-                        case 5:
-                            // TODO: hide progress
-                            controller.updateUI(true);
-                            controller.showAlert("Пользователь с таким e-mail уже существует");
-                            break;
-                        default:
-                            System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
-                                    + ", cmd=" + CommandList.SIGN_IN);
-                            break;
-                    }
-                    break;
-                default:
-                    System.out.println(("Unknown command=" + command));
-                    break;
-            }
+        if (lastRequest.getId() != responseMessage.getId()) {
+            System.out.println("Unknown response id: " + responseMessage);
+            return;
         }
-        else System.out.println("Unknown response id: " + responseMessage);
+        switch (lastRequest.getCmd()) {
+            case CommandList.SIGN_UP:
+                switch (responseMessage.getResponseCode()) {
+                    case 0:
+                        // TODO: show progress
+                        controller.updateUI(false);
+                        break;
+                    case 1:
+                        connectionService.removeConnectionStateListener(connectionStateListener);
+                        Platform.runLater(() -> controller.showCloudClient());
+                        break;
+                    case 2:
+                        // TODO: hide progress
+                        controller.updateUI(true);
+                        Utils.showAlert("Неверый формат данных. Обратитесь к разработчику.");
+                        break;
+                    case 3:
+                        // TODO: hide progress
+                        controller.updateUI(true);
+                        controller.showAlert("Произошла внутрення ошибка на сервере");
+                        break;
+                    case 4:
+                        // TODO: hide progress
+                        controller.updateUI(true);
+                        controller.showAlert("Пользователь с таким логином уже существует");
+                        break;
+                    case 5:
+                        // TODO: hide progress
+                        controller.updateUI(true);
+                        controller.showAlert("Пользователь с таким e-mail уже существует");
+                        break;
+                    default:
+                        System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
+                                + ", cmd=" + CommandList.SIGN_IN);
+                        break;
+                }
+                break;
+            default:
+                System.out.println(("Unknown command=" + command));
+                break;
+        }
     }
 }

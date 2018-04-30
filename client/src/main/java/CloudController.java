@@ -7,7 +7,7 @@ import javafx.scene.control.TableView;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class CloudController implements Initializable {
+public class CloudController extends BaseController implements Initializable {
 
     @FXML
     public TableView fileTable;
@@ -22,8 +22,7 @@ public class CloudController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        Platform.runLater(() -> login.requestFocus());
-//        setAuthorized(false);
+        presenter.initialize();
     }
 
     public CloudController() {
