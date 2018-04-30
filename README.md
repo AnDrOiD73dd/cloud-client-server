@@ -2,18 +2,24 @@
 Client and server side for cloud storage
 
 # Протокол взаимодействия
-Пример содержания пакета:
+Пример запроса на логин
 ```
 {
-  "id": 1000,
+  "id": 528,
   "request": {
-    "cmd": "some cmd",
+    "cmd": "signin",
     "data": {
-      "field1": "value1",
-      "filed2": 100
+      "login": "Vasya",
+      "password": "159753"
     }
-  },
-  "responseCode": 200
+  }
+}
+```
+Пример ответа:
+```
+{
+  "id": 528,
+  "responseCode": 1
 }
 ```
 Описание:
@@ -55,4 +61,3 @@ Client and server side for cloud storage
     * file_list
         * 0 - ошибок нет, принято в обработку
         * 1 - неверный формат данных (неверный тип требуемого параметра или он отсутствует)
-
