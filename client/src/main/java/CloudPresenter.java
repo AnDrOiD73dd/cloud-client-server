@@ -137,6 +137,10 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
                         break;
                     case 1:
                         // SUCCESS
+                        String filePath = lastRequest.getRequest().getOrDefault(RequestFilesList.KEY_FILE_PATH, "");
+                        if (!filePath.isEmpty()) {
+                            sendFile(filePath);
+                        }
                         break;
                     case 2:
                         controller.showAlert("Ошибка аутентификации");
@@ -160,6 +164,18 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             default:
                 System.out.println(("Unknown command=" + command));
                 break;
+        }
+    }
+
+    private void sendFile(String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            try {
+                connectionService.getOut().writeObject(file);
+            } catch (IOException e) {
+                controller.showAlert("Произошла ошибка при отправке файла на сервер. Попробуйте еще раз");
+                // TODO delete file from DB
+            }
         }
     }
 

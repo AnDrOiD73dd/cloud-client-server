@@ -9,6 +9,8 @@ Client and server side for cloud storage
 * Check free space before download file
 * Remove files, which transferring was broken
 * Split big files
+* Add choose client cloud directory
+* Scan client cloud directory and check files
 
 # Протокол взаимодействия
 Пример запроса на логин

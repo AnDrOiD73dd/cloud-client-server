@@ -70,7 +70,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
                     Object request = in.readObject();
                     if (request instanceof File) {
                         File requestFile = (File) request;
-                        // TODO load file
+                        obtainNewFile(requestFile);
                     } else if (request instanceof String) {
                         String question = request.toString();
                         parseCommand(question);
@@ -84,6 +84,10 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
         });
 //        messageListener.setDaemon(true);
         messageListener.start();
+    }
+
+    private void obtainNewFile(File requestFile) {
+        System.out.println("NEW FILE: " + requestFile);
     }
 
     private void parseCommand(String message) {
