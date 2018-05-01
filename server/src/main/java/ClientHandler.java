@@ -176,12 +176,10 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
             return;
         }
         // Create user directory
-        Path userPath = Paths.get(Utils.getWorkingDirectory() + "/" + CLOUD_DIR_NAME + "/" + username).normalize();
-        try {
-            userPath = Files.createDirectories(userPath);
-        } catch (IOException e) {
-            System.out.println("Не могу создать директорию: " + userPath.toString());
+        Path userPath = Paths.get(FileService.getWorkingDirectory() + "/" + CLOUD_DIR_NAME + "/" + username).normalize();
+        if (!FileService.createDirectories(userPath)) {
             sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
+            return;
         }
         // add user to DB
         user = new User.Builder()
