@@ -27,13 +27,13 @@ public class CloudController extends BaseController implements Initializable {
     @FXML
     public Button btAdd;
     @FXML
+    public Button btUpdate;
+    @FXML
     public Button btDelete;
     @FXML
     public Button btDeleteAll;
     @FXML
     public Button btDownload;
-    @FXML
-    public Button btUpdate;
 
     private CloudPresenter presenter;
 
