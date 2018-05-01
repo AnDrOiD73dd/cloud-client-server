@@ -10,7 +10,9 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
@@ -97,6 +99,40 @@ public class CloudController extends BaseController implements Initializable {
         fileStatusCol.setCellValueFactory(
                 new PropertyValueFactory<ClientFile, String>("status")
         );
+        fileStatusCol.setCellFactory((Callback<TableColumn<ClientFile, String>, TableCell<ClientFile, String>>) param -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                if (!empty) {
+                    int currentIndex = indexProperty()
+                            .getValue() < 0 ? 0
+                            : indexProperty().getValue();
+                    String clmStatus = param
+                            .getTableView().getItems()
+                            .get(currentIndex).getStatus();
+                    if (clmStatus.equals(ClientFile.STATUS_SYNCED)) {
+//                        setTextFill(Color.BLACK);
+//                        setStyle("-fx-font-weight: bold");
+                        setStyle("-fx-background-color: #FFFFFF");
+                        setText(clmStatus);
+                    } else if (clmStatus.equals(ClientFile.STATUS_FILE_NOT_FOUND)) {
+//                        setTextFill(Color.RED);
+//                        setStyle("-fx-font-weight: bold");
+                        setStyle("-fx-background-color: #F44336");
+                        setText(clmStatus);
+                    } else if (clmStatus.equals(ClientFile.STATUS_SIZE_IS_MORE) || clmStatus.equals(ClientFile.STATUS_SIZE_IS_SMALLER)) {
+//                        setTextFill(Color.BLACK);
+//                        setStyle("-fx-font-weight: bold");
+                        setStyle("-fx-background-color: #FFEB3B");
+                        setText(clmStatus);
+                    } else {
+//                        setTextFill(Color.WHITE);
+//                        setStyle("-fx-font-weight: bold");
+                        setStyle("-fx-background-color: #BDBDBD");
+                        setText(clmStatus);
+                    }
+                }
+            }
+        });
         fileStatusCol.setEditable(false);
         fileStatusCol.setMinWidth(COLUMN_MIN_WIDTH);
         fileTable.getColumns().addAll(fileNameCol, filePathCol, fileSizeCol, fileDateCol, fileStatusCol);

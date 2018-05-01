@@ -7,6 +7,13 @@ import java.util.Date;
 
 public class ClientFile {
 
+    public static final String STATUS_SYNCED = "Синхронизировано";
+    public static final String STATUS_FILE_NOT_FOUND = "Файл отсутствует";
+    public static final String STATUS_CHECK_SIZE_ERROR = "Ошибка при проверке размера файла";
+    public static final String STATUS_TIME_IS_DIFFERENT = "Времена изменения файлов раличаются";
+    public static final String STATUS_SIZE_IS_MORE = "Размер файла в облаке больше";
+    public static final String STATUS_SIZE_IS_SMALLER = "Размер локального файла больше";
+
     private String fileName;
     private String filePath;
     private Date fileDate;
@@ -50,7 +57,7 @@ public class ClientFile {
     }
 
     private static ClientFile map(model.File file) {
-        String status = "Синхронизировано";
+        String status = STATUS_SYNCED;
         String filePath = file.getFilePath();
         String fileName = FileService.getName(filePath);
         if (FileService.isExists(filePath)) {
@@ -59,17 +66,17 @@ public class ClientFile {
                 long localSize = FileService.getSize(filePath);
                 if (cloudSize == localSize) {
                     if (file.getFileDate() != FileService.getDate(filePath))
-                        status = "Времена изменения файлов раличаются";
+                        status = STATUS_TIME_IS_DIFFERENT;
                 }
                 else {
                     if (cloudSize > localSize)
-                        status = "Размер файла в облаке больше";
-                    else status = "Размер локального файла больше";
+                        status = STATUS_SIZE_IS_MORE;
+                    else status = STATUS_SIZE_IS_SMALLER;
                 }
             } catch (IOException e) {
-                status = "Ошибка при проверке размера файла";
+                status = STATUS_CHECK_SIZE_ERROR;
             }
-        } else status = "Файл отсутствует";
+        } else status = STATUS_FILE_NOT_FOUND;
 //        Date fileDate = Utils.getDate(file.getFileDate());
         Date fileDate = Utils.getDate(System.currentTimeMillis());
         String fileSize = FileService.getHumanSize(file.getFileSize());
