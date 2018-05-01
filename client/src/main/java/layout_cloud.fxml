@@ -8,11 +8,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane stylesheets="@style_cloud.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CloudController">
-    <SplitPane dividerPositions="0.75" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<AnchorPane fx:id="rootAnchorPane" stylesheets="@style_cloud.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CloudController">
+    <SplitPane fx:id="splitPane" dividerPositions="0.75" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="300.0">
-                <TableView id="fileTable" prefHeight="300.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane fx:id="tableAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="300.0">
+                <TableView fx:id="fileTable" prefHeight="300.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
                         <TableColumn prefWidth="75.0" text="№" />
                         <TableColumn prefWidth="75.0" text="Имя файла" />
@@ -22,29 +22,29 @@
                     </columns>
                 </TableView>
             </AnchorPane>
-            <AnchorPane minHeight="0.0" minWidth="0.0">
+            <AnchorPane fx:id="buttonsAnchorPane" minHeight="0.0" minWidth="0.0">
                 <VBox>
-                    <Button id="btAdd" onAction="#onClickAdd" prefWidth="70.0" text="Добавить">
+                    <Button fx:id="btAdd" onAction="#onClickAdd" prefWidth="70.0" text="Добавить">
                         <VBox.margin>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="30.0" />
                         </VBox.margin>
                     </Button>
-                    <Button id="btDelete" onAction="#onClickDelete" prefWidth="70.0" text="Удалить из облака">
+                    <Button fx:id="btDelete" onAction="#onClickDelete" prefWidth="70.0" text="Удалить из облака">
                         <VBox.margin>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                         </VBox.margin>
                     </Button>
-                    <Button id="btDeleteAll" onAction="#onClickDeleteAll" prefWidth="70.0" text="Удалить полностью">
+                    <Button fx:id="btDeleteAll" onAction="#onClickDeleteAll" prefWidth="70.0" text="Удалить полностью">
                         <VBox.margin>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                         </VBox.margin>
                     </Button>
-                    <Button id="btDownload" onAction="#onClickDownload" prefWidth="70.0" text="Скачать">
+                    <Button fx:id="btDownload" onAction="#onClickDownload" prefWidth="70.0" text="Скачать">
                         <VBox.margin>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                         </VBox.margin>
                     </Button>
-                    <Button id="btUpdate" onAction="#onClickUpdate" prefWidth="70.0" text="Обновить на облаке">
+                    <Button fx:id="btUpdate" onAction="#onClickUpdate" prefWidth="70.0" text="Обновить на облаке">
                         <VBox.margin>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                         </VBox.margin>

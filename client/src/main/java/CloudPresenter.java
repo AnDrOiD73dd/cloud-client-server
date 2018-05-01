@@ -1,4 +1,4 @@
-import javafx.event.ActionEvent;
+import javafx.application.Platform;
 import javafx.event.Event;
 import protocol.*;
 
@@ -29,6 +29,7 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
 
             @Override
             public void onDisconnected() {
+                Platform.runLater(() -> controller.showSignIn());
                 controller.showAlert("Соединение с сервером разорвано");
             }
 
