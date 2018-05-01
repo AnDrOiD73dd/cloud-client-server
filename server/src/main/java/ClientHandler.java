@@ -235,6 +235,10 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
                 sendMessage(new ResponseMessage(requestMessage.getId(), 4).toString());
                 return;
             }
+            if (fileSize > Utils.getFreeSpace()) {
+                sendMessage(new ResponseMessage(requestMessage.getId(), 5).toString());
+                return;
+            }
             FileDAOImpl.getInstance().create(dbConnection, file);
             sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
         } catch (SQLException e) {
