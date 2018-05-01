@@ -24,4 +24,16 @@ public class FileService {
         }
         return true;
     }
+
+    public static long getSize(String path) throws IOException {
+        return Files.size(Paths.get(path));
+    }
+
+    public static long getDate(String path) throws IOException {
+        return Files.getLastModifiedTime(Paths.get(path)).toMillis();
+    }
+
+    public static String getName(String path) {
+        return Paths.get(path).getFileName().toString();
+    }
 }

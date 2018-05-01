@@ -1,10 +1,10 @@
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import protocol.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class CloudPresenter implements RequestHandler, ResponseHandler, ResponseListener, FilesRequestHandler {
@@ -12,7 +12,7 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
     private CloudController controller;
     private ConnectionService connectionService;
     private RequestMessage lastRequest;
-    private ArrayList<model.File> filesList;
+    private ObservableList<ClientFile> filesList;
 
     CloudPresenter(CloudController controller) {
         this.controller = controller;
@@ -121,7 +121,8 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
 
     @Override
     public void handleFilesListRequest(RequestFilesList requestFilesList) {
-        this.filesList = requestFilesList.getFilesList();
+        this.filesList = ClientFile.map(requestFilesList.getFilesList());
+        controller.setClientFiles(filesList);
 //        System.out.println(filesList);
 //        controller.onFileListChanged(this.filesList);
     }

@@ -1,25 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <AnchorPane fx:id="rootAnchorPane" stylesheets="@style_cloud.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CloudController">
     <SplitPane fx:id="splitPane" dividerPositions="0.75" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
             <AnchorPane fx:id="tableAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="300.0">
                 <TableView fx:id="fileTable" prefHeight="300.0" prefWidth="300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <columns>
-                        <TableColumn prefWidth="75.0" text="№" />
-                        <TableColumn prefWidth="75.0" text="Имя файла" />
-                        <TableColumn prefWidth="75.0" text="Путь" />
-                        <TableColumn prefWidth="75.0" text="Размер" />
-                        <TableColumn prefWidth="75.0" text="Статус" />
-                    </columns>
                 </TableView>
             </AnchorPane>
             <AnchorPane fx:id="buttonsAnchorPane" minHeight="0.0" minWidth="0.0">

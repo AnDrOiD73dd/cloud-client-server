@@ -1,3 +1,4 @@
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -5,7 +6,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -13,6 +16,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class CloudController extends BaseController implements Initializable {
+
+    private static final int COLUMN_MIN_WIDTH = 50;
 
     @FXML
     public TableView fileTable;
@@ -29,9 +34,51 @@ public class CloudController extends BaseController implements Initializable {
 
     private CloudPresenter presenter;
 
+    private ObservableList<ClientFile> clientFiles;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         presenter.initialize();
+        fileTable.setEditable(true);
+
+        TableColumn fileNameCol = new TableColumn("Имя");
+        TableColumn filePathCol = new TableColumn("Путь");
+        TableColumn fileSizeCol = new TableColumn("Размер");
+        TableColumn fileDateCol = new TableColumn("Дата");
+        TableColumn fileStatusCol = new TableColumn("Статус");
+
+        fileNameCol.setCellValueFactory(
+                new PropertyValueFactory<ClientFile, String>("fileName")
+        );
+        fileNameCol.setEditable(false);
+        fileNameCol.setMinWidth(COLUMN_MIN_WIDTH);
+
+        filePathCol.setCellValueFactory(
+                new PropertyValueFactory<ClientFile, String>("filePath")
+        );
+        filePathCol.setEditable(false);
+        filePathCol.setMinWidth(COLUMN_MIN_WIDTH);
+
+        fileSizeCol.setCellValueFactory(
+                new PropertyValueFactory<ClientFile, Long>("fileDate")
+        );
+        fileSizeCol.setEditable(false);
+        fileSizeCol.setMinWidth(COLUMN_MIN_WIDTH);
+
+        fileDateCol.setCellValueFactory(
+                new PropertyValueFactory<ClientFile, Long>("fileSize")
+        );
+        fileDateCol.setEditable(false);
+        fileDateCol.setMinWidth(COLUMN_MIN_WIDTH);
+
+        fileStatusCol.setCellValueFactory(
+                new PropertyValueFactory<ClientFile, String>("status")
+        );
+        fileStatusCol.setEditable(false);
+        fileStatusCol.setMinWidth(COLUMN_MIN_WIDTH);
+
+        fileTable.setItems(clientFiles);
+        fileTable.getColumns().addAll(fileNameCol, filePathCol, fileSizeCol, fileDateCol, fileStatusCol);
     }
 
     public CloudController() {
@@ -73,6 +120,10 @@ public class CloudController extends BaseController implements Initializable {
         catch (IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public void setClientFiles(ObservableList<ClientFile> clientFiles) {
+        this.clientFiles = clientFiles;
     }
 
 //    private void configureClientListView() {
