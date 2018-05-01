@@ -13,6 +13,10 @@ public class RequestFilesList extends RequestMessage {
     public static final String KEY_REQUEST_BODY = "request";
     private static final String KEY_COMMAND = "cmd";
     private static final String KEY_REQUEST_DATA = "data";
+    private static final String KEY_FILE_PATH = "filePath";
+    private static final String KEY_FILE_DATE = "fileDate";
+    private static final String KEY_FILE_SIZE = "fileSize";
+    private static final String KEY_SYNCED = "synced";
 
     private int id;
     private String cmd;
@@ -43,10 +47,10 @@ public class RequestFilesList extends RequestMessage {
             for (int i = 0; i < dataBody.length(); i++) {
                 JSONObject jsonFile = dataBody.getJSONObject(i);
                 File file = new File.Builder()
-                        .setFilePath(jsonFile.getString("filePath"))
-                        .setFileDate(jsonFile.getLong("fileDate"))
-                        .setFileSize(jsonFile.getLong("fileSize"))
-                        .setSynced(jsonFile.getBoolean("synced"))
+                        .setFilePath(jsonFile.getString(KEY_FILE_PATH))
+                        .setFileDate(jsonFile.getLong(KEY_FILE_DATE))
+                        .setFileSize(jsonFile.getLong(KEY_FILE_SIZE))
+                        .setSynced(jsonFile.getBoolean(KEY_SYNCED))
                         .create();
                 filesList.add(file);
             }
@@ -113,10 +117,10 @@ public class RequestFilesList extends RequestMessage {
         for (File file : filesList)
         {
             JSONObject jsonFile = new JSONObject();
-            jsonFile.put("filePath", file.getFilePath());
-            jsonFile.put("fileDate", file.getFileDate());
-            jsonFile.put("fileSize", file.getFileSize());
-            jsonFile.put("synced", file.isSynced());
+            jsonFile.put(KEY_FILE_PATH, file.getFilePath());
+            jsonFile.put(KEY_FILE_DATE, file.getFileDate());
+            jsonFile.put(KEY_FILE_SIZE, file.getFileSize());
+            jsonFile.put(KEY_SYNCED, file.isSynced());
             result.put(jsonFile);
         }
         return result;

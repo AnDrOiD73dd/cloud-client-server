@@ -29,12 +29,22 @@
                             <Insets bottom="5.0" left="5.0" right="5.0" top="30.0" />
                         </VBox.margin>
                     </Button>
-                    <Button id="btDelete" onAction="#onClickDelete" prefWidth="70.0" text="Удалить">
+                    <Button id="btDelete" onAction="#onClickDelete" prefWidth="70.0" text="Удалить из облака">
+                        <VBox.margin>
+                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                        </VBox.margin>
+                    </Button>
+                    <Button id="btDeleteAll" onAction="#onClickDeleteAll" prefWidth="70.0" text="Удалить полностью">
                         <VBox.margin>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                         </VBox.margin>
                     </Button>
                     <Button id="btDownload" onAction="#onClickDownload" prefWidth="70.0" text="Скачать">
+                        <VBox.margin>
+                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                        </VBox.margin>
+                    </Button>
+                    <Button id="btUpdate" onAction="#onClickUpdate" prefWidth="70.0" text="Обновить на облаке">
                         <VBox.margin>
                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                         </VBox.margin>

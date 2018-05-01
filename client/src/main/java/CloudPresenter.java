@@ -1,3 +1,4 @@
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import protocol.*;
 
@@ -45,7 +46,13 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
     void onClickDelete(Event event) {
     }
 
+    public void onClickDeleteAll(Event event) {
+    }
+
     void onClickDownload(Event event) {
+    }
+
+    public void onClickUpdate(Event event) {
     }
 
     private void requestFilesList() {
