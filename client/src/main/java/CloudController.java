@@ -89,7 +89,7 @@ public class CloudController extends BaseController implements Initializable {
         fileDateCol.setMinWidth(COLUMN_MIN_WIDTH);
 
         fileSizeCol.setCellValueFactory(
-                new PropertyValueFactory<ClientFile, Date>("fileSize")
+                new PropertyValueFactory<ClientFile, String>("fileSize")
         );
         fileSizeCol.setEditable(false);
         fileSizeCol.setMinWidth(COLUMN_MIN_WIDTH);
@@ -151,6 +151,10 @@ public class CloudController extends BaseController implements Initializable {
     public void updateTableData(ObservableList<ClientFile> clientFiles) {
         setClientFiles(clientFiles);
         fileTable.setItems(clientFiles);
+    }
+
+    public ClientFile getSelectedItem() {
+        return (ClientFile) fileTable.getSelectionModel().getSelectedItem();
     }
 
 //    private void configureClientListView() {

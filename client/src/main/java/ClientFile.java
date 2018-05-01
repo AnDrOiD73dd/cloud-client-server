@@ -10,10 +10,10 @@ public class ClientFile {
     private String fileName;
     private String filePath;
     private Date fileDate;
-    private long fileSize;
+    private String fileSize;
     private String status;
 
-    public ClientFile(String fileName, String filePath, Date fileDate, long fileSize, String status) {
+    public ClientFile(String fileName, String filePath, Date fileDate, String fileSize, String status) {
         this.fileName = fileName;
         this.filePath = filePath;
         this.fileDate = fileDate;
@@ -33,7 +33,7 @@ public class ClientFile {
         return fileDate;
     }
 
-    public long getFileSize() {
+    public String getFileSize() {
         return fileSize;
     }
 
@@ -72,6 +72,18 @@ public class ClientFile {
         } else status = "Файл отсутствует";
 //        Date fileDate = Utils.getDate(file.getFileDate());
         Date fileDate = Utils.getDate(System.currentTimeMillis());
-        return new ClientFile(fileName, filePath, fileDate, file.getFileSize(), status);
+        String fileSize = FileService.getHumanSize(file.getFileSize());
+        return new ClientFile(fileName, filePath, fileDate, fileSize, status);
+    }
+
+    @Override
+    public String toString() {
+        return "ClientFile{" +
+                "fileName='" + fileName + '\'' +
+                ", filePath='" + filePath + '\'' +
+                ", fileDate=" + fileDate +
+                ", fileSize=" + fileSize +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

@@ -29,6 +29,33 @@ public class FileService {
         return Files.size(Paths.get(path));
     }
 
+    public static String getHumanSize(long fileSize) {
+        double size = (double) fileSize;
+        String res = String.valueOf(size) + " B";
+        double divider = 1024.0;
+        if(size > divider) {
+            size /= divider;
+            String strSize = String.valueOf(size);
+            res = strSize.substring(0, strSize.indexOf('.') + 3) + " KB";
+            if (size > divider) {
+                size /= divider;
+                strSize = String.valueOf(size);
+                res = strSize.substring(0, strSize.indexOf('.') + 3) + " MB";
+                if (size > divider) {
+                    size /= divider;
+                    strSize = String.valueOf(size);
+                    res = strSize.substring(0, strSize.indexOf('.') + 3) + " GB";
+                    if (size > divider) {
+                        size /= divider;
+                        strSize = String.valueOf(size);
+                        res = strSize.substring(0, strSize.indexOf('.') + 3) + " TB";
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
     public static long getDate(String path) throws IOException {
         return Files.getLastModifiedTime(Paths.get(path)).toMillis();
     }
