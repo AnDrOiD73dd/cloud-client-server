@@ -10,8 +10,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SignUpController extends BaseController {
 
@@ -46,7 +44,7 @@ public class SignUpController extends BaseController {
             Parent root = FXMLLoader.load(getClass().getResource("layout_cloud.fxml"));
             Stage stage = new Stage();
             stage.setTitle(Constants.APP_NAME);
-            Utils.setupIcon(stage, getClass());
+            ClientUtils.setupIcon(stage, getClass());
             stage.setScene(new Scene(root));
             stage.show();
             // Hide this current window (if this is what you want)

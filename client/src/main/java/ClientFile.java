@@ -3,16 +3,17 @@ import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ClientFile {
 
     private String fileName;
     private String filePath;
-    private long fileDate;
+    private Date fileDate;
     private long fileSize;
     private String status;
 
-    public ClientFile(String fileName, String filePath, long fileDate, long fileSize, String status) {
+    public ClientFile(String fileName, String filePath, Date fileDate, long fileSize, String status) {
         this.fileName = fileName;
         this.filePath = filePath;
         this.fileDate = fileDate;
@@ -28,7 +29,7 @@ public class ClientFile {
         return filePath;
     }
 
-    public long getFileDate() {
+    public Date getFileDate() {
         return fileDate;
     }
 
@@ -69,6 +70,8 @@ public class ClientFile {
                 status = "Ошибка при проверке размера файла";
             }
         } else status = "Файл отсутствует";
-        return new ClientFile(fileName, filePath, file.getFileDate(), file.getFileSize(), status);
+//        Date fileDate = Utils.getDate(file.getFileDate());
+        Date fileDate = Utils.getDate(System.currentTimeMillis());
+        return new ClientFile(fileName, filePath, fileDate, file.getFileSize(), status);
     }
 }

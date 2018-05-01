@@ -45,7 +45,7 @@ public class SignInController extends BaseController {
             Parent root = FXMLLoader.load(getClass().getResource("layout_sign_up.fxml"));
             Stage stage = new Stage();
             stage.setTitle(Constants.APP_NAME + ": Регистрация");
-            Utils.setupIcon(stage, getClass());
+            ClientUtils.setupIcon(stage, getClass());
             stage.setScene(new Scene(root));
             stage.show();
             // Hide this current window (if this is what you want)
@@ -61,7 +61,7 @@ public class SignInController extends BaseController {
             Parent root = FXMLLoader.load(getClass().getResource("layout_cloud.fxml"));
             Stage stage = new Stage();
             stage.setTitle(Constants.APP_NAME);
-            Utils.setupIcon(stage, getClass());
+            ClientUtils.setupIcon(stage, getClass());
             stage.setScene(new Scene(root));
             stage.show();
             // Hide this current window (if this is what you want)

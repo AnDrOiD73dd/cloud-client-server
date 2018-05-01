@@ -4,6 +4,6 @@ public abstract class BaseController {
     }
 
     public void showAlert(String message) {
-        Utils.showAlert(message);
+        ClientUtils.showAlert(message);
     }
 }

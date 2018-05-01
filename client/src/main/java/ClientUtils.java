@@ -1,10 +1,9 @@
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-public class Utils {
+public class ClientUtils {
 
     public static void showAlert(String msg){
         Platform.runLater(() -> {

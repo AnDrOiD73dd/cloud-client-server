@@ -109,17 +109,17 @@ public class SignInPresenter implements ResponseListener, ResponseHandler {
                     case 2:
                         // TODO: hide progress
                         controller.updateUI(true);
-                        Utils.showAlert("Неверый формат данных. Обратитесь к разработчику.");
+                        ClientUtils.showAlert("Неверый формат данных. Обратитесь к разработчику.");
                         break;
                     case 3:
                         // TODO: hide progress
                         controller.updateUI(true);
-                        Utils.showAlert("Неверный логин и/или пароль");
+                        ClientUtils.showAlert("Неверный логин и/или пароль");
                         break;
                     case 4:
                         // TODO: hide progress
                         controller.updateUI(true);
-                        Utils.showAlert("Произошла внутрення ошибка на сервере");
+                        ClientUtils.showAlert("Произошла внутрення ошибка на сервере");
                         break;
                     default:
                         System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
