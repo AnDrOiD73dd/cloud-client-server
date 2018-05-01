@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -119,10 +118,16 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
         String cmd = requestMessage.getCmd();
         switch (cmd) {
             case CommandList.SIGN_IN:
+                sendMessage(new ResponseMessage(requestMessage.getId(), 0).toString());
                 parseSignIn(requestMessage);
                 break;
             case CommandList.SIGN_UP:
+                sendMessage(new ResponseMessage(requestMessage.getId(), 0).toString());
                 parseSignUp(requestMessage);
+                break;
+            case CommandList.FILE_ADD:
+                sendMessage(new ResponseMessage(requestMessage.getId(), 0).toString());
+                parseFileAdd(requestMessage);
                 break;
             default:
                 System.out.println("Unknown command = " + cmd);
@@ -206,6 +211,35 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
     private void sendFilesList() {
         List<model.File> filesList = FileDAOImpl.getInstance().getAll(dbConnection, currentUser.getId());
         sendMessage(new RequestFilesList(MessageUtil.getId(), new ArrayList<>(filesList)).toString());
+    }
+
+    private void parseFileAdd(RequestMessage requestMessage) {
+        if (!authorized) {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 2).toString());
+            return;
+        }
+        HashMap<String, String> body = requestMessage.getRequest();
+        String filePath = body.getOrDefault(RequestFilesList.KEY_FILE_PATH, "");
+        long fileDate = Long.valueOf(body.getOrDefault(RequestFilesList.KEY_FILE_DATE, ""));
+        long fileSize = Long.valueOf(body.getOrDefault(RequestFilesList.KEY_FILE_SIZE, ""));
+        model.File file = new model.File.Builder()
+                .setUserId(currentUser.getId())
+                .setFilePath(filePath)
+                .setFileDate(fileDate)
+                .setFileSize(fileSize)
+                .setSynced(false)
+                .create();
+        try {
+            model.File checkedFile = FileDAOImpl.getInstance().get(dbConnection, currentUser.getId(), filePath);
+            if (checkedFile != null) {
+                sendMessage(new ResponseMessage(requestMessage.getId(), 4).toString());
+                return;
+            }
+            FileDAOImpl.getInstance().create(dbConnection, file);
+            sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
+        } catch (SQLException e) {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
+        }
     }
 
     @Override

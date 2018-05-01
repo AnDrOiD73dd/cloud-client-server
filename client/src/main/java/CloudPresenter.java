@@ -42,6 +42,24 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
     }
 
     void onClickAdd(Event event) {
+        controller.showFileChooser();
+    }
+
+    public void onFileSelected(File file) {
+        try {
+            RequestMessage newRequest;
+            String path = file.getAbsolutePath();
+            long size = FileService.getSize(path);
+            long date = FileService.getDate(path);
+            do {
+                newRequest = (RequestMessage) RequestMessageFactory.getFileAddRequest(MessageUtil.getId(), path, date, size);
+            } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
+            lastRequest = newRequest;
+            connectionService.getOut().writeObject(lastRequest.toString());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            controller.showAlert("Произошла ошибка при отправке данных на сервер");
+        }
     }
 
     void onClickDelete(Event event) {
@@ -106,6 +124,29 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
                         break;
                     case 1:
                         controller.showAlert("Произошла ошибка при запросе файлов, обратитесь к системному администратору");
+                        break;
+                    default:
+                        System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
+                                + ", cmd=" + CommandList.SIGN_IN);
+                        break;
+                }
+                break;
+            case CommandList.FILE_ADD:
+                switch (responseMessage.getResponseCode()) {
+                    case 0:
+                        break;
+                    case 1:
+                        // SUCCESS
+                        break;
+                    case 2:
+                        controller.showAlert("Ошибка аутентификации");
+                        controller.showSignIn();
+                        break;
+                    case 3:
+                        controller.showAlert("При добавлении файла произошла ошибка, попробуйте еще раз");
+                        break;
+                    case 4:
+                        controller.showAlert("Файл не добавлен: такой файл уже существует");
                         break;
                     default:
                         System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()

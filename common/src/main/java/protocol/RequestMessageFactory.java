@@ -58,5 +58,13 @@ public class RequestMessageFactory {
     public static Message getFilesListRequest(int id, ArrayList<File> filesList) {
         return new RequestFilesList(id, filesList);
     }
+
+    public static Message getFileAddRequest(int id, String filepath, long fileDate, long fileSize) {
+        HashMap<String, String> dataMap = new HashMap<>();
+        dataMap.put(RequestFilesList.KEY_FILE_PATH, filepath);
+        dataMap.put(RequestFilesList.KEY_FILE_DATE, String.valueOf(fileDate));
+        dataMap.put(RequestFilesList.KEY_FILE_SIZE, String.valueOf(fileSize));
+        return new RequestMessage(id, CommandList.FILE_ADD, dataMap);
+    }
 }
 

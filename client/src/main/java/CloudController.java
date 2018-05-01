@@ -10,10 +10,11 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -40,6 +41,7 @@ public class CloudController extends BaseController implements Initializable {
     private CloudPresenter presenter;
 
     private ObservableList<ClientFile> clientFiles;
+    private final FileChooser fileChooser = new FileChooser();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -191,6 +193,13 @@ public class CloudController extends BaseController implements Initializable {
 
     public ClientFile getSelectedItem() {
         return (ClientFile) fileTable.getSelectionModel().getSelectedItem();
+    }
+
+    public void showFileChooser() {
+        File file = fileChooser.showOpenDialog(fileTable.getScene().getWindow());
+        if (file != null) {
+            presenter.onFileSelected(file);
+        }
     }
 
 //    private void configureClientListView() {

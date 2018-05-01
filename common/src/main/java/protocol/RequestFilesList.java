@@ -13,9 +13,9 @@ public class RequestFilesList extends RequestMessage {
     public static final String KEY_REQUEST_BODY = "request";
     private static final String KEY_COMMAND = "cmd";
     private static final String KEY_REQUEST_DATA = "data";
-    private static final String KEY_FILE_PATH = "filePath";
-    private static final String KEY_FILE_DATE = "fileDate";
-    private static final String KEY_FILE_SIZE = "fileSize";
+    public static final String KEY_FILE_PATH = "filePath";
+    public static final String KEY_FILE_DATE = "fileDate";
+    public static final String KEY_FILE_SIZE = "fileSize";
     private static final String KEY_SYNCED = "synced";
 
     private int id;
