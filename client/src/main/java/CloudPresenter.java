@@ -1,22 +1,23 @@
-import javafx.application.Platform;
 import javafx.event.Event;
 import protocol.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class CloudPresenter implements RequestHandler, ResponseHandler, ResponseListener {
+public class CloudPresenter implements RequestHandler, ResponseHandler, ResponseListener, FilesRequestHandler {
 
     private CloudController controller;
     private ConnectionService connectionService;
     private RequestMessage lastRequest;
+    private ArrayList<model.File> filesList;
 
-    public CloudPresenter(CloudController controller) {
+    CloudPresenter(CloudController controller) {
         this.controller = controller;
     }
 
-    public void initialize() {
+    void initialize() {
         connectionService = ConnectionService.getInstance();
         connectionService.setResponseListener(this);
         connectionService.addConnectionStateListener(new ConnectionStateListener() {
@@ -35,22 +36,23 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
 
             }
         });
+        requestFilesList();
     }
 
-    public void onClickAdd(Event event) {
+    void onClickAdd(Event event) {
     }
 
-    public void onClickDelete(Event event) {
+    void onClickDelete(Event event) {
     }
 
-    public void onClickDownload(Event event) {
+    void onClickDownload(Event event) {
     }
 
     private void requestFilesList() {
         try {
-            RequestMessage newRequest;
+            RequestFilesList newRequest;
             do {
-                newRequest = (RequestMessage) RequestMessageFactory.getFilesListRequest(MessageUtil.getId());
+                newRequest = (RequestFilesList) RequestMessageFactory.getEmptyFilesListRequest(MessageUtil.getId());
             } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
             lastRequest = newRequest;
             connectionService.getOut().writeObject(lastRequest.toString());
@@ -68,7 +70,7 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
     @Override
     public void onNewMessage(String message) {
         System.out.println("parseCommand: " + message);
-        MessageParser.parse(message, lastRequest, this, this);
+        MessageParser.parse(message, lastRequest, this, this, this);
     }
 
     @Override
@@ -107,5 +109,12 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
                 System.out.println(("Unknown command=" + command));
                 break;
         }
+    }
+
+    @Override
+    public void handleFilesListRequest(RequestFilesList requestFilesList) {
+        this.filesList = requestFilesList.getFilesList();
+//        System.out.println(filesList);
+//        controller.onFileListChanged(this.filesList);
     }
 }

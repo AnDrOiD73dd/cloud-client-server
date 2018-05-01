@@ -1,6 +1,7 @@
 package db;
 
 import model.File;
+import model.FileAdapter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -80,7 +81,7 @@ public class FileDAOImpl implements FileDAO {
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                file = File.map(rs);
+                file = FileAdapter.map(rs);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -108,7 +109,7 @@ public class FileDAOImpl implements FileDAO {
             ps.setString(2, filepath);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                file = File.map(rs);
+                file = FileAdapter.map(rs);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -184,7 +185,7 @@ public class FileDAOImpl implements FileDAO {
             ps = connection.prepareStatement(selectSQL);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                File file = File.map(rs);
+                File file = FileAdapter.map(rs);
                 files.add(file);
             }
         } catch (SQLException e) {
@@ -210,7 +211,7 @@ public class FileDAOImpl implements FileDAO {
             ps.setLong(1, userId);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                File file = File.map(rs);
+                File file = FileAdapter.map(rs);
                 files.add(file);
             }
         } catch (SQLException e) {

@@ -1,5 +1,8 @@
 package protocol;
 
+import model.File;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class RequestMessageFactory {
@@ -48,8 +51,12 @@ public class RequestMessageFactory {
         return new RequestMessage(id, CommandList.SIGN_UP, dataMap);
     }
 
-    public static Message getFilesListRequest(int id) {
-        return new RequestMessage(id, CommandList.FILES_LIST);
+    public static Message getEmptyFilesListRequest(int id) {
+        return new RequestFilesList(id);
+    }
+
+    public static Message getFilesListRequest(int id, ArrayList<File> filesList) {
+        return new RequestFilesList(id, filesList);
     }
 }
 

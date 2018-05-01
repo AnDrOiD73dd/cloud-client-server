@@ -1,6 +1,7 @@
 package db;
 
 import model.User;
+import model.UserAdapter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -79,7 +80,7 @@ public class UserDAOImpl implements UserDAO {
             ps.setLong(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                user = User.map(rs);
+                user = UserAdapter.map(rs);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -106,7 +107,7 @@ public class UserDAOImpl implements UserDAO {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                user = User.map(rs);
+                user = UserAdapter.map(rs);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -134,7 +135,7 @@ public class UserDAOImpl implements UserDAO {
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                user = User.map(rs);
+                user = UserAdapter.map(rs);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -209,7 +210,7 @@ public class UserDAOImpl implements UserDAO {
             ps = connection.prepareStatement(selectSQL);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                User user = User.map(rs);
+                User user = UserAdapter.map(rs);
                 users.add(user);
             }
         } catch (SQLException e) {

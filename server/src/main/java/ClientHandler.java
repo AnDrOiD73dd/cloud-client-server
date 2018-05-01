@@ -1,3 +1,4 @@
+import db.FileDAOImpl;
 import db.UserDAOImpl;
 import model.User;
 import protocol.*;
@@ -10,13 +11,13 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
-import java.nio.file.attribute.FileStoreAttributeView;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-public class ClientHandler implements RequestHandler, ResponseHandler {
+public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequestHandler {
 
     private static final String CLOUD_DIR_NAME = "storage";
 
@@ -87,7 +88,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
     }
 
     private void parseCommand(String message) {
-        MessageParser.parse(message, lastRequest, this, this);
+        MessageParser.parse(message, lastRequest, this, this, this);
     }
 
     private void disconnect() {
@@ -126,6 +127,29 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
             default:
                 System.out.println("Unknown command = " + cmd);
                 break;
+        }
+    }
+
+    private void parseSignIn(RequestMessage requestMessage) {
+        HashMap<String, String> body = requestMessage.getRequest();
+        if (body.containsKey(RequestMessageFactory.KEY_LOGIN) && body.containsKey(RequestMessageFactory.KEY_PASSWORD)) {
+            String username = body.get(RequestMessageFactory.KEY_LOGIN);
+            String password = body.get(RequestMessageFactory.KEY_PASSWORD);
+            if (username.isEmpty() || password.isEmpty()) {
+                sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
+                return;
+            }
+            User user = UserDAOImpl.getInstance().get(dbConnection, username);
+            if (user != null && user.getPassword().equals(password)) {
+                onAuthorized(true);
+                currentUser = user;
+                sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
+            }
+            else {
+                sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
+            }
+        } else {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 2).toString());
         }
     }
 
@@ -181,27 +205,9 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
         }
     }
 
-    private void parseSignIn(RequestMessage requestMessage) {
-        HashMap<String, String> body = requestMessage.getRequest();
-        if (body.containsKey(RequestMessageFactory.KEY_LOGIN) && body.containsKey(RequestMessageFactory.KEY_PASSWORD)) {
-            String username = body.get(RequestMessageFactory.KEY_LOGIN);
-            String password = body.get(RequestMessageFactory.KEY_PASSWORD);
-            if (username.isEmpty() || password.isEmpty()) {
-                sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
-                return;
-            }
-            User user = UserDAOImpl.getInstance().get(dbConnection, username);
-            if (user != null && user.getPassword().equals(password)) {
-                onAuthorized(true);
-                currentUser = user;
-                sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
-            }
-            else {
-                sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
-            }
-        } else {
-            sendMessage(new ResponseMessage(requestMessage.getId(), 2).toString());
-        }
+    private void sendFilesList() {
+        List<model.File> filesList = FileDAOImpl.getInstance().getAll(dbConnection, currentUser.getId());
+        sendMessage(new RequestFilesList(MessageUtil.getId(), new ArrayList<>(filesList)).toString());
     }
 
     @Override
@@ -224,5 +230,11 @@ public class ClientHandler implements RequestHandler, ResponseHandler {
             authTimeoutThread.interrupt();
         }
         else connectionHandler.unSubscribe(this);
+    }
+
+    @Override
+    public void handleFilesListRequest(RequestFilesList requestFilesList) {
+        sendMessage(new ResponseMessage(requestFilesList.getId(), 0).toString());
+        sendFilesList();
     }
 }

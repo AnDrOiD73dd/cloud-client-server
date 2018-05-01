@@ -110,7 +110,7 @@ public class SignUpPresenter implements ResponseListener, ResponseHandler {
     @Override
     public void onNewMessage(String message) {
         System.out.println("parseCommand: " + message);
-        MessageParser.parse(message, lastRequest, null, this);
+        MessageParser.parse(message, lastRequest, null, this, null);
     }
 
     @Override

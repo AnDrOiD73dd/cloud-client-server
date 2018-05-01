@@ -1,76 +1,70 @@
 package protocol;
 
+import model.File;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.ArrayList;
 
-public class RequestMessage implements Message {
+public class RequestFilesList extends RequestMessage {
 
     public static final String KEY_REQUEST_BODY = "request";
-    public static final String KEY_COMMAND = "cmd";
+    private static final String KEY_COMMAND = "cmd";
     private static final String KEY_REQUEST_DATA = "data";
 
     private int id;
     private String cmd;
-    private HashMap<String, String> request;
+    private ArrayList<File> filesList;
 
-    public RequestMessage(int id, String cmd, HashMap<String, String> request) {
+    public RequestFilesList(int id) {
+        super(id, CommandList.FILES_LIST);
         this.id = id;
-        this.cmd = cmd;
-        this.request = request;
+        this.cmd = CommandList.FILES_LIST;
+        this.filesList = new ArrayList<>();
     }
 
-    public RequestMessage(int id, String cmd) {
+    public RequestFilesList(int id, ArrayList<File> filesList) {
+        super(id, CommandList.FILES_LIST);
         this.id = id;
-        this.cmd = cmd;
-        this.request = new HashMap<>();
+        this.cmd = CommandList.FILES_LIST;
+        this.filesList = filesList;
     }
 
-    /**
-     * Parse and convert string JSON to @{@link RequestMessage} instance
-     * @param jsonMessage JSON string, which correspond to protocol
-     * @throws JSONException
-     */
-    public static RequestMessage parse(String jsonMessage) throws JSONException {
+    public static RequestFilesList parse(String jsonMessage) throws JSONException {
         JSONObject jsonObject = new JSONObject(jsonMessage);
         int id = jsonObject.getInt(Message.KEY_ID);
         JSONObject requestBody = jsonObject.getJSONObject(KEY_REQUEST_BODY);
-        String cmd = requestBody.getString(KEY_COMMAND);
-        JSONObject dataBody = requestBody.getJSONObject(KEY_REQUEST_DATA);
-        HashMap<String, String> request = new HashMap<>();
-        for (Iterator<String> it = dataBody.keys(); it.hasNext(); ) {
-            String key = it.next();
-            request.put(key, dataBody.getString(key));
+//        String cmd = requestBody.getString(KEY_COMMAND);
+        ArrayList<File> filesList = new ArrayList<>();
+        if (requestBody.has(KEY_REQUEST_DATA)) {
+            JSONArray dataBody = requestBody.getJSONArray(KEY_REQUEST_DATA);
+            for (int i = 0; i < dataBody.length(); i++) {
+                JSONObject jsonFile = dataBody.getJSONObject(i);
+                File file = new File.Builder()
+                        .setFilePath(jsonFile.getString("filePath"))
+                        .setFileDate(jsonFile.getLong("fileDate"))
+                        .setFileSize(jsonFile.getLong("fileSize"))
+                        .setSynced(jsonFile.getBoolean("synced"))
+                        .create();
+                filesList.add(file);
+            }
         }
-        return new RequestMessage(id, cmd, request);
+        return new RequestFilesList(id, filesList);
     }
 
-    /**
-     * Return request id
-     * @return request id
-     */
     @Override
     public int getId() {
         return id;
     }
 
-    /**
-     * Get command
-     * @return command
-     */
     public String getCmd() {
         return cmd;
     }
 
-    /**
-     * Get message request only
-     * @return request representation
-     */
-    public HashMap<String, String> getRequest() {
-        return request;
+    public ArrayList<File> getFilesList() {
+        return filesList;
     }
 
     /**
@@ -104,7 +98,7 @@ public class RequestMessage implements Message {
     private JSONObject generateRequest() throws JSONException {
         JSONObject result = new JSONObject();
         result.put(KEY_COMMAND, cmd);
-        if (!request.isEmpty())
+        if (filesList.size() > 0)
             result.put(KEY_REQUEST_DATA, generateRequestData());
         return result;
     }
@@ -114,11 +108,16 @@ public class RequestMessage implements Message {
      * @return JSON representation of low level
      * @throws JSONException
      */
-    private JSONObject generateRequestData() throws JSONException {
-        JSONObject result = new JSONObject();
-        for (HashMap.Entry<String, String> entry : request.entrySet())
+    private JSONArray generateRequestData() throws JSONException {
+        JSONArray result = new JSONArray();
+        for (File file : filesList)
         {
-            result.put(entry.getKey(), entry.getValue());
+            JSONObject jsonFile = new JSONObject();
+            jsonFile.put("filePath", file.getFilePath());
+            jsonFile.put("fileDate", file.getFileDate());
+            jsonFile.put("fileSize", file.getFileSize());
+            jsonFile.put("synced", file.isSynced());
+            result.put(jsonFile);
         }
         return result;
     }

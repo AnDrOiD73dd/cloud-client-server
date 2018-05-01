@@ -43,6 +43,12 @@ public class MessageUtil {
         return res;
     }
 
+    static String getRequestCmd(String jsonMessage) {
+        JSONObject jsonObject = new JSONObject(jsonMessage);
+        JSONObject requestBody = jsonObject.getJSONObject(RequestMessage.KEY_REQUEST_BODY);
+        return requestBody.getString(RequestMessage.KEY_COMMAND);
+    }
+
     /**
      * Convert byte array representation of message to String
      * @param messageData message in byte array
