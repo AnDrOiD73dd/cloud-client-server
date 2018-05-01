@@ -33,22 +33,23 @@ public class FileService {
         double size = (double) fileSize;
         String res = String.valueOf(size) + " B";
         double divider = 1024.0;
+        int decimalPlaces = 2;
         if(size > divider) {
             size /= divider;
             String strSize = String.valueOf(size);
-            res = strSize.substring(0, strSize.indexOf('.') + 3) + " KB";
+            res = strSize.substring(0, strSize.indexOf('.') + decimalPlaces) + " KB";
             if (size > divider) {
                 size /= divider;
                 strSize = String.valueOf(size);
-                res = strSize.substring(0, strSize.indexOf('.') + 3) + " MB";
+                res = strSize.substring(0, strSize.indexOf('.') + decimalPlaces) + " MB";
                 if (size > divider) {
                     size /= divider;
                     strSize = String.valueOf(size);
-                    res = strSize.substring(0, strSize.indexOf('.') + 3) + " GB";
+                    res = strSize.substring(0, strSize.indexOf('.') + decimalPlaces) + " GB";
                     if (size > divider) {
                         size /= divider;
                         strSize = String.valueOf(size);
-                        res = strSize.substring(0, strSize.indexOf('.') + 3) + " TB";
+                        res = strSize.substring(0, strSize.indexOf('.') + decimalPlaces) + " TB";
                     }
                 }
             }
