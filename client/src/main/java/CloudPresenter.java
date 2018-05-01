@@ -148,6 +148,9 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
                     case 4:
                         controller.showAlert("Файл не добавлен: такой файл уже существует");
                         break;
+                    case 5:
+                        controller.showAlert("Файл не добавлен: отсутствует свободное место в облаке");
+                        break;
                     default:
                         System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
                                 + ", cmd=" + CommandList.SIGN_IN);
