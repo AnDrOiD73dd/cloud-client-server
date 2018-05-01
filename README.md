@@ -1,6 +1,15 @@
 # Cloud: client & server
 Client and server side for cloud storage
 
+# TODO
+* SSL sockets or requests
+* Store password hash
+* Use Logger instead of System.out.println
+* Drag & drop file
+* Check free space before download file
+* Remove files, which transferring was broken
+* Split big files
+
 # Протокол взаимодействия
 Пример запроса на логин
 ```

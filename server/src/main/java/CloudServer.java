@@ -14,16 +14,6 @@ import java.util.Vector;
 
 public class CloudServer {
 
-    /* TODO:
-    create tables if not exists,
-    clean files table: remove files, which transferring was broken
-    check free space before load file
-    drag&drop files
-    сортировка файлов
-    выбор файла
-    TODO v2: add size limit, current size, check free space before load file
-    */
-
     public static void main(String[] args) {
 //        test();
         ConnectionHandler.getInstance().prepareDb();
