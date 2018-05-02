@@ -65,7 +65,26 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
         }
     }
 
-    void onClickDelete(Event event) {
+    void onClickDelete(Event event, ClientFile selectedItem) {
+        requestDeleteFile(selectedItem);
+    }
+
+    private void requestDeleteFile(ClientFile selectedItem) {
+        if (selectedItem == null) {
+            controller.showAlert("Укажите файл из списка");
+            return;
+        }
+        try {
+            RequestMessage newRequest;
+            do {
+                newRequest = (RequestMessage) RequestMessageFactory.getFileDeleteRequest(MessageUtil.getId(), selectedItem.getFilePath());
+            } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
+            lastRequest = newRequest;
+            connectionService.getOut().writeObject(lastRequest.toString());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            controller.showAlert("Произошла ошибка при удалении файла, возможно файл не найден.");
+        }
     }
 
     public void onClickDeleteAll(Event event) {
@@ -137,9 +156,9 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             case CommandList.FILE_ADD:
                 switch (responseMessage.getResponseCode()) {
                     case 0:
+                        // Upload in progress
                         break;
                     case 1:
-                        // SUCCESS
                         String filePath = lastRequest.getRequest().getOrDefault(RequestFilesList.KEY_FILE_PATH, "");
                         if (!filePath.isEmpty()) {
                             sendFile(filePath);
@@ -157,6 +176,32 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
                         break;
                     case 5:
                         controller.showAlert("Файл не добавлен: отсутствует свободное место в облаке");
+                        break;
+                    case 6:
+                        controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
+                        break;
+                    default:
+                        System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
+                                + ", cmd=" + CommandList.SIGN_IN);
+                        break;
+                }
+                break;
+            case CommandList.FILE_DELETE:
+                switch (responseMessage.getResponseCode()) {
+                    case 0:
+                        break;
+                    case 1:
+//                        controller.showAlert("Файл успешно удален");
+                        break;
+                    case 2:
+                        controller.showAlert("Ошибка аутентификации");
+                        controller.showSignIn();
+                        break;
+                    case 3:
+                        controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
+                        break;
+                    case 4:
+                        controller.showAlert("При удалении файла произошла ошибка, попробуйте еще раз");
                         break;
                     default:
                         System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
@@ -186,7 +231,7 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
     @Override
     public void handleFilesListRequest(RequestFilesList requestFilesList) {
         ObservableList<ClientFile> newList = ClientFile.map(requestFilesList.getFilesList());
-        if (this.filesList == null) {
+        if (this.filesList == null || this.filesList.size() > newList.size()) {
             this.filesList = newList;
             controller.updateTableData(filesList);
         } else {

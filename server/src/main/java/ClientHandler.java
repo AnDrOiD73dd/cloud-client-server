@@ -1,5 +1,7 @@
+import db.FileDAO;
 import db.FileDAOImpl;
 import db.UserDAOImpl;
+import model.File;
 import model.TransferringFile;
 import model.User;
 import protocol.*;
@@ -155,6 +157,10 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
                 sendMessage(new ResponseMessage(requestMessage.getId(), 0).toString());
                 parseFileAdd(requestMessage);
                 break;
+            case CommandList.FILE_DELETE:
+                sendMessage(new ResponseMessage(requestMessage.getId(), 0).toString());
+                parseFileDelete(requestMessage);
+                break;
             default:
                 System.out.println("Unknown command = " + cmd);
                 break;
@@ -248,6 +254,10 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
         String filePath = body.getOrDefault(RequestFilesList.KEY_FILE_PATH, "");
         long fileDate = Long.valueOf(body.getOrDefault(RequestFilesList.KEY_FILE_DATE, ""));
         long fileSize = Long.valueOf(body.getOrDefault(RequestFilesList.KEY_FILE_SIZE, ""));
+        if (filePath.isEmpty() || fileDate == 0) {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 6).toString());
+            return;
+        }
         String serverFileName = FileHelper.generateServerFileName(filePath);
         model.File file = new model.File.Builder()
                 .setUserId(currentUser.getId())
@@ -271,6 +281,50 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
             sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
         } catch (SQLException e) {
             sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
+        }
+    }
+
+    private void parseFileDelete(RequestMessage requestMessage) {
+        if (!authorized) {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 2).toString());
+            return;
+        }
+        HashMap<String, String> body = requestMessage.getRequest();
+        String filePath = body.getOrDefault(RequestFilesList.KEY_FILE_PATH, "");
+        if (filePath.isEmpty()) {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
+            return;
+        }
+        File file = FileDAOImpl.getInstance().get(dbConnection, currentUser.getId(), filePath);
+        if (file == null) {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 4).toString());
+            sendFilesList();
+            return;
+        }
+        String serverFilePath = Paths.get(FileHelper.getUserDirectory(CLOUD_DIR_NAME, currentUser.getUsername())
+                        .toAbsolutePath().toString(), file.getServerFileName()).toAbsolutePath().toString();
+        java.io.File serverFile = new java.io.File(serverFilePath);
+        if (serverFile.exists()) {
+            if (serverFile.delete()) {
+                if (FileDAOImpl.getInstance().delete(dbConnection, file.getId())) {
+                    sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
+                    sendFilesList();
+                } else {
+                    sendMessage(new ResponseMessage(requestMessage.getId(), 4).toString());
+                    sendFilesList();
+                }
+            } else {
+                sendMessage(new ResponseMessage(requestMessage.getId(), 4).toString());
+            }
+        }
+        else {
+            if (FileDAOImpl.getInstance().delete(dbConnection, file.getId())) {
+                sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
+                sendFilesList();
+            } else {
+                sendMessage(new ResponseMessage(requestMessage.getId(), 4).toString());
+                sendFilesList();
+            }
         }
     }
 

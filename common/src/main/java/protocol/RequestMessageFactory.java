@@ -66,5 +66,11 @@ public class RequestMessageFactory {
         dataMap.put(RequestFilesList.KEY_FILE_SIZE, String.valueOf(fileSize));
         return new RequestMessage(id, CommandList.FILE_ADD, dataMap);
     }
+
+    public static Message getFileDeleteRequest(int id, String filepath) {
+        HashMap<String, String> dataMap = new HashMap<>();
+        dataMap.put(RequestFilesList.KEY_FILE_PATH, filepath);
+        return new RequestMessage(id, CommandList.FILE_DELETE, dataMap);
+    }
 }
 

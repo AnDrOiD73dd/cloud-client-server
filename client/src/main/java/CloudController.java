@@ -147,7 +147,7 @@ public class CloudController extends BaseController implements Initializable {
     }
 
     public void onClickDelete(ActionEvent actionEvent) {
-        presenter.onClickDelete(actionEvent);
+        presenter.onClickDelete(actionEvent, getSelectedItem());
     }
 
     public void onClickDeleteAll(ActionEvent actionEvent) {
