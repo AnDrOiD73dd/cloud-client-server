@@ -4,6 +4,7 @@ public class File {
 
     private long id;
     private long userId;
+    private String serverPath;
     private String filePath;
     private long fileSize;
     private long fileDate;
@@ -17,9 +18,10 @@ public class File {
         SYNCED
     }
 
-    private File(long id, long userId, String filePath, long fileSize, long fileDate, boolean synced, String lastAction) {
+    private File(long id, long userId, String serverPath, String filePath, long fileSize, long fileDate, boolean synced, String lastAction) {
         this.id = id;
         this.userId = userId;
+        this.serverPath = serverPath;
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.fileDate = fileDate;
@@ -33,6 +35,10 @@ public class File {
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    public void setServerPath(String serverPath) {
+        this.serverPath = serverPath;
     }
 
     public void setFilePath(String filePath) {
@@ -61,6 +67,10 @@ public class File {
 
     public long getUserId() {
         return userId;
+    }
+
+    public String getServerPath() {
+        return serverPath;
     }
 
     public String getFilePath() {
@@ -99,6 +109,7 @@ public class File {
     public static class Builder {
         private long id;
         private long userId;
+        private String serverPath;
         private String filePath;
         private long fileSize;
         private long fileDate;
@@ -112,6 +123,11 @@ public class File {
 
         public Builder setUserId(long userId) {
             this.userId = userId;
+            return this;
+        }
+
+        public Builder setServerPath(String serverPath) {
+            this.serverPath = serverPath;
             return this;
         }
 
@@ -141,7 +157,7 @@ public class File {
         }
 
         public File create() {
-            return new File(id, userId, filePath, fileSize, fileDate, synced, lastAction);
+            return new File(id, userId, serverPath, filePath, fileSize, fileDate, synced, lastAction);
         }
     }
 }

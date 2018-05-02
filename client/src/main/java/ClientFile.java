@@ -77,8 +77,7 @@ public class ClientFile {
                 status = STATUS_CHECK_SIZE_ERROR;
             }
         } else status = STATUS_FILE_NOT_FOUND;
-//        Date fileDate = Utils.getDate(file.getFileDate());
-        Date fileDate = Utils.getDate(System.currentTimeMillis());
+        Date fileDate = Utils.getDate(file.getFileDate());
         String fileSize = FileService.getHumanSize(file.getFileSize());
         return new ClientFile(fileName, filePath, fileDate, fileSize, status);
     }

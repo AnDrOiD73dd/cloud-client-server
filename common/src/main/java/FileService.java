@@ -11,6 +11,16 @@ public class FileService {
 //        return System.getProperty("user.dir");
     }
 
+    public static Path getUserDirectory(String rootCloudDirName, String username) {
+        return Paths.get(getWorkingDirectory(), rootCloudDirName, username);
+    }
+
+    public static Path generateServerFilePath(String rootCloudDirName, String username, String filePath) {
+        Path filename = Paths.get(filePath).getFileName();
+        long time = System.currentTimeMillis();
+        return Paths.get(getWorkingDirectory(), rootCloudDirName, username, String.valueOf(time) + "-" + filename.toString());
+    }
+
     public static boolean isExists(String path) {
         return Files.exists(Paths.get(path));
     }

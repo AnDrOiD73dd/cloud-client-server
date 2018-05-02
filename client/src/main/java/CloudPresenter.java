@@ -1,10 +1,13 @@
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
+import model.TransferringFile;
 import protocol.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 
 public class CloudPresenter implements RequestHandler, ResponseHandler, ResponseListener, FilesRequestHandler {
@@ -171,7 +174,8 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
         File file = new File(filePath);
         if (file.exists()) {
             try {
-                connectionService.getOut().writeObject(file);
+                byte[] fileArray = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+                connectionService.getOut().writeObject(new TransferringFile(filePath, fileArray));
             } catch (IOException e) {
                 controller.showAlert("Произошла ошибка при отправке файла на сервер. Попробуйте еще раз");
                 // TODO delete file from DB

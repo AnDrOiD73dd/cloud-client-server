@@ -104,33 +104,30 @@ public class CloudController extends BaseController implements Initializable {
         fileStatusCol.setCellFactory((Callback<TableColumn<ClientFile, String>, TableCell<ClientFile, String>>) param -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
-                if (!empty) {
-                    int currentIndex = indexProperty()
-                            .getValue() < 0 ? 0
-                            : indexProperty().getValue();
-                    String clmStatus = param
-                            .getTableView().getItems()
-                            .get(currentIndex).getStatus();
-                    if (clmStatus.equals(ClientFile.STATUS_SYNCED)) {
+                if (item == null || empty) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    if (item.equals(ClientFile.STATUS_SYNCED)) {
 //                        setTextFill(Color.BLACK);
 //                        setStyle("-fx-font-weight: bold");
                         setStyle("-fx-background-color: #FFFFFF");
-                        setText(clmStatus);
-                    } else if (clmStatus.equals(ClientFile.STATUS_FILE_NOT_FOUND)) {
+                        setText(item);
+                    } else if (item.equals(ClientFile.STATUS_FILE_NOT_FOUND)) {
 //                        setTextFill(Color.RED);
 //                        setStyle("-fx-font-weight: bold");
                         setStyle("-fx-background-color: #F44336");
-                        setText(clmStatus);
-                    } else if (clmStatus.equals(ClientFile.STATUS_SIZE_IS_MORE) || clmStatus.equals(ClientFile.STATUS_SIZE_IS_SMALLER)) {
+                        setText(item);
+                    } else if (item.equals(ClientFile.STATUS_SIZE_IS_MORE) || item.equals(ClientFile.STATUS_SIZE_IS_SMALLER)) {
 //                        setTextFill(Color.BLACK);
 //                        setStyle("-fx-font-weight: bold");
                         setStyle("-fx-background-color: #FFEB3B");
-                        setText(clmStatus);
+                        setText(item);
                     } else {
 //                        setTextFill(Color.WHITE);
 //                        setStyle("-fx-font-weight: bold");
                         setStyle("-fx-background-color: #BDBDBD");
-                        setText(clmStatus);
+                        setText(item);
                     }
                 }
             }
@@ -182,13 +179,22 @@ public class CloudController extends BaseController implements Initializable {
         }
     }
 
-    public void setClientFiles(ObservableList<ClientFile> clientFiles) {
+    private void setClientFiles(ObservableList<ClientFile> clientFiles) {
         this.clientFiles = clientFiles;
     }
 
     public void updateTableData(ObservableList<ClientFile> clientFiles) {
         setClientFiles(clientFiles);
         fileTable.setItems(clientFiles);
+//        if (this.clientFiles == null) {
+//            setClientFiles(clientFiles);
+//            fileTable.setItems(clientFiles);
+//        } else {
+//            for (ClientFile clientFile : clientFiles) {
+//                if (!this.clientFiles.contains(clientFile))
+//                    this.clientFiles.add(clientFile);
+//            }
+//        }
     }
 
     public ClientFile getSelectedItem() {

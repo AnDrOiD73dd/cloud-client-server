@@ -1,13 +1,12 @@
 import db.FileDAOImpl;
 import db.UserDAOImpl;
+import model.TransferringFile;
 import model.User;
 import protocol.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -68,8 +67,8 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     Object request = in.readObject();
-                    if (request instanceof File) {
-                        File requestFile = (File) request;
+                    if (request instanceof TransferringFile) {
+                        TransferringFile requestFile = (TransferringFile) request;
                         obtainNewFile(requestFile);
                     } else if (request instanceof String) {
                         String question = request.toString();
@@ -86,8 +85,29 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
         messageListener.start();
     }
 
-    private void obtainNewFile(File requestFile) {
-        System.out.println("NEW FILE: " + requestFile);
+    private void obtainNewFile(TransferringFile requestFile) {
+        System.out.println("NEW FILE: " + requestFile.getFilePath());
+        model.File checkedFile = FileDAOImpl.getInstance().get(dbConnection, currentUser.getId(), requestFile.getFilePath());
+        if (checkedFile != null) {
+            String serverPath = checkedFile.getServerPath();
+            FileOutputStream stream = null;
+            try {
+                Files.createDirectories(Paths.get(serverPath).getParent());
+                stream = new FileOutputStream(serverPath);
+                stream.write(requestFile.getFile());
+                sendFilesList();
+            } catch (FileNotFoundException e) {
+                System.out.println("Файл не найден: " + e.getMessage());
+            } catch (IOException e) {
+                System.out.println("Не удалось записать файл: " + e.getMessage());
+            } finally {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    System.out.println("Не удалось закрыть файл: " + e.getMessage());
+                }
+            }
+        }
     }
 
     private void parseCommand(String message) {
@@ -226,8 +246,10 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
         String filePath = body.getOrDefault(RequestFilesList.KEY_FILE_PATH, "");
         long fileDate = Long.valueOf(body.getOrDefault(RequestFilesList.KEY_FILE_DATE, ""));
         long fileSize = Long.valueOf(body.getOrDefault(RequestFilesList.KEY_FILE_SIZE, ""));
+        Path serverPath = FileService.generateServerFilePath(CLOUD_DIR_NAME, currentUser.getUsername(), filePath);
         model.File file = new model.File.Builder()
                 .setUserId(currentUser.getId())
+                .setServerPath(serverPath.toAbsolutePath().toString())
                 .setFilePath(filePath)
                 .setFileDate(fileDate)
                 .setFileSize(fileSize)
