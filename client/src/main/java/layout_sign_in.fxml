@@ -15,6 +15,8 @@
       fx:id="rootSignIn">
     <TextField fx:id="loginField" promptText="Логин" HBox.hgrow="ALWAYS"/>
     <PasswordField fx:id="passwordField" promptText="Пароль" onAction="#onClickSignIn"/>
+    <TextField fx:id="serverAddress" promptText="Адрес сервера" HBox.hgrow="ALWAYS"/>
+    <TextField fx:id="serverPort" promptText="Порт сервера" HBox.hgrow="ALWAYS"/>
     <Button fx:id="signIn" text="Войти" onAction="#onClickSignIn"/>
     <Label text="Нет аккаунта?"/>
     <Button fx:id="signUp" text="Регистрация" onAction="#onClickSignUp"/>

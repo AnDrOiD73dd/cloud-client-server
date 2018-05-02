@@ -2,6 +2,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,8 +13,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class SignInController extends BaseController {
+public class SignInController extends BaseController implements Initializable {
 
     @FXML
     public VBox rootSignIn;
@@ -25,6 +28,10 @@ public class SignInController extends BaseController {
     public Button signIn;
     @FXML
     public Button signUp;
+    @FXML
+    public TextField serverAddress;
+    @FXML
+    public TextField serverPort;
 
     private SignInPresenter presenter;
 
@@ -32,8 +39,14 @@ public class SignInController extends BaseController {
         presenter = new SignInPresenter(this);
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        serverAddress.setText(Constants.SERVER_IP);
+        serverPort.setText(String.valueOf(Constants.SERVER_PORT));
+    }
+
     public void onClickSignIn(ActionEvent actionEvent) {
-        presenter.onSignInClick(loginField.getText(), passwordField.getText());
+        presenter.onSignInClick(loginField.getText(), passwordField.getText(), serverAddress.getText(), serverPort.getText());
     }
 
     public void onClickSignUp(ActionEvent actionEvent) {

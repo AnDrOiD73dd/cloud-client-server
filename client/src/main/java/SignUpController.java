@@ -1,6 +1,7 @@
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -10,8 +11,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class SignUpController extends BaseController {
+public class SignUpController extends BaseController implements Initializable {
 
     @FXML
     public VBox rootSignUp;
@@ -27,6 +30,10 @@ public class SignUpController extends BaseController {
     public TextField emailField;
     @FXML
     public Button signUp;
+    @FXML
+    public TextField serverAddress;
+    @FXML
+    public TextField serverPort;
 
     private final SignUpPresenter presenter;
 
@@ -36,7 +43,7 @@ public class SignUpController extends BaseController {
 
     public void onClickSignUp(ActionEvent actionEvent) {
         presenter.onClickSignUp(actionEvent, loginField.getText(), passwordField.getText(), firstNameField.getText(),
-                lastNameField.getText(), emailField.getText());
+                lastNameField.getText(), emailField.getText(), serverAddress.getText(), serverPort.getText());
     }
 
     void showCloudClient() {
@@ -62,5 +69,11 @@ public class SignUpController extends BaseController {
         lastNameField.setEditable(flag);
         emailField.setEditable(flag);
         signUp.setDisable(!flag);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        serverAddress.setText(Constants.SERVER_IP);
+        serverPort.setText(String.valueOf(Constants.SERVER_PORT));
     }
 }

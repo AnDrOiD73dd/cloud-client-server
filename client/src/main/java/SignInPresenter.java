@@ -5,7 +5,7 @@ import protocol.*;
 
 import java.io.IOException;
 
-public class SignInPresenter implements ResponseListener, ResponseHandler {
+public class SignInPresenter extends BasePresenter implements ResponseListener, ResponseHandler {
 
     private SignInController controller;
     private ConnectionService connectionService;
@@ -25,11 +25,13 @@ public class SignInPresenter implements ResponseListener, ResponseHandler {
             @Override
             public void onDisconnected() {
 //                controller.showAlert("Подключение с сервером разорвано");
+                controller.updateUI(true);
             }
 
             @Override
             public void onError(String error) {
                 controller.showAlert(error);
+                controller.updateUI(true);
             }
         };
     }
@@ -55,23 +57,31 @@ public class SignInPresenter implements ResponseListener, ResponseHandler {
         controller.showSignUp(event);
     }
 
-    public void onSignInClick(String username, String password) {
+    public void onSignInClick(String username, String password, String serverAddress, String serverPort) {
+        serverAddress = serverAddress.trim();
+        serverPort = serverPort.trim();
+        if (!isValidServerAddress(serverAddress, serverPort)) {
+            controller.showAlert("Указаны невалидные данные сервера");
+            return;
+        }
         this.username = username.trim();
         this.password = password.trim();
         if (!isValidCredentials(this.username, this.password)) {
             controller.showAlert("Указаны неполные данные авторизации");
             return;
         }
-        initConnection();
+        initConnection(serverAddress, Integer.valueOf(serverPort));
     }
 
-    private void initConnection() {
+    @Override
+    protected void initConnection(String host, Integer port) {
         connectionService = ConnectionService.getInstance();
         connectionService.setResponseListener(this);
         connectionService.addConnectionStateListener(connectionStateListener);
         if (connectionService.isConnected())
             signIn();
-        else connectionService.connect(Constants.SERVER_IP, Constants.SERVER_PORT);
+        else connectionService.connect(host, port);
+
     }
 
     private boolean isValidCredentials(String username, String password) {

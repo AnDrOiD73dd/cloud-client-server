@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SignUpPresenter implements ResponseListener, ResponseHandler {
+public class SignUpPresenter extends BasePresenter implements ResponseListener, ResponseHandler {
 
     private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
@@ -32,12 +32,13 @@ public class SignUpPresenter implements ResponseListener, ResponseHandler {
 
             @Override
             public void onDisconnected() {
-
+                controller.updateUI(true);
             }
 
             @Override
             public void onError(String error) {
                 controller.showAlert(error);
+                controller.updateUI(true);
             }
         };
     }
@@ -57,9 +58,15 @@ public class SignUpPresenter implements ResponseListener, ResponseHandler {
         }
     }
 
-    public void onClickSignUp(ActionEvent actionEvent, String username, String password, String firstName, String lastName, String email) {
+    public void onClickSignUp(ActionEvent actionEvent, String username, String password, String firstName, String lastName, String email, String serverAddress, String serverPort) {
+        serverAddress = serverAddress.trim();
+        serverPort = serverPort.trim();
+        if (!isValidServerAddress(serverAddress, serverPort)) {
+            controller.showAlert("Указаны невалидные данные сервера");
+            return;
+        }
         if (isValidCredentials(username, password, firstName, lastName, email)) {
-            initConnection();
+            initConnection(serverAddress, Integer.valueOf(serverPort));
         }
     }
 
@@ -93,13 +100,13 @@ public class SignUpPresenter implements ResponseListener, ResponseHandler {
         return true;
     }
 
-    private void initConnection() {
+    protected void initConnection(String host, Integer port) {
         connectionService = ConnectionService.getInstance();
         connectionService.setResponseListener(this);
         connectionService.addConnectionStateListener(connectionStateListener);
         if (connectionService.isConnected())
             signUp();
-        else connectionService.connect(Constants.SERVER_IP, Constants.SERVER_PORT);
+        else connectionService.connect(host, port);
     }
 
     @Override
