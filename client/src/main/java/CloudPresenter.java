@@ -3,6 +3,11 @@ import javafx.collections.ObservableList;
 import javafx.event.Event;
 import model.TransferringFile;
 import protocol.*;
+import protocol.handler.FilesRequestHandler;
+import protocol.handler.RequestHandler;
+import protocol.handler.ResponseHandler;
+import protocol.request.RequestFilesList;
+import protocol.request.RequestMessage;
 
 import java.io.File;
 import java.io.FileOutputStream;

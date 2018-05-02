@@ -1,6 +1,11 @@
 package protocol;
 
 import org.json.JSONException;
+import protocol.handler.FilesRequestHandler;
+import protocol.handler.RequestHandler;
+import protocol.handler.ResponseHandler;
+import protocol.request.RequestFilesList;
+import protocol.request.RequestMessage;
 
 public class MessageParser {
 

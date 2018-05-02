@@ -1,6 +1,8 @@
 package protocol;
 
 import model.File;
+import protocol.request.RequestFilesList;
+import protocol.request.RequestMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -2,6 +2,8 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import model.TransferringFile;
 import protocol.*;
+import protocol.handler.ResponseHandler;
+import protocol.request.RequestMessage;
 
 import java.io.IOException;
 import java.util.regex.Matcher;

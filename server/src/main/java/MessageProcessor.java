@@ -1,4 +1,7 @@
 import protocol.*;
+import protocol.handler.RequestHandler;
+import protocol.handler.ResponseHandler;
+import protocol.request.RequestMessage;
 
 public class MessageProcessor implements RequestHandler, ResponseHandler {
 

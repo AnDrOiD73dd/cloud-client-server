@@ -1,7 +1,8 @@
-package protocol;
+package protocol.request;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import protocol.Message;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;

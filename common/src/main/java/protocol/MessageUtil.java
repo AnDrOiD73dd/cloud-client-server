@@ -2,6 +2,7 @@ package protocol;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import protocol.request.RequestMessage;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Random;

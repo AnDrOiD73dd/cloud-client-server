@@ -1,4 +1,7 @@
-package protocol;
+package protocol.handler;
+
+import protocol.CommandList;
+import protocol.ResponseMessage;
 
 public interface ResponseHandler {
 

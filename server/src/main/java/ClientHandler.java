@@ -4,6 +4,11 @@ import model.File;
 import model.TransferringFile;
 import model.User;
 import protocol.*;
+import protocol.handler.FilesRequestHandler;
+import protocol.handler.RequestHandler;
+import protocol.handler.ResponseHandler;
+import protocol.request.RequestFilesList;
+import protocol.request.RequestMessage;
 
 import java.io.*;
 import java.net.Socket;

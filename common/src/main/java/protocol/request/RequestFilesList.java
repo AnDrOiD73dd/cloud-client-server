@@ -1,9 +1,11 @@
-package protocol;
+package protocol.request;
 
 import model.File;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import protocol.CommandList;
+import protocol.Message;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
