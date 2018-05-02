@@ -66,14 +66,14 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
     }
 
     void onClickDelete(Event event, ClientFile selectedItem) {
-        requestDeleteFile(selectedItem);
-    }
-
-    private void requestDeleteFile(ClientFile selectedItem) {
         if (selectedItem == null) {
             controller.showAlert("Укажите файл из списка");
             return;
         }
+        requestDeleteFile(selectedItem);
+    }
+
+    private void requestDeleteFile(ClientFile selectedItem) {
         try {
             RequestMessage newRequest;
             do {
@@ -87,13 +87,30 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
         }
     }
 
-    public void onClickDeleteAll(Event event) {
+    public void onClickDeleteAll(Event event, ClientFile selectedItem) {
+        if (selectedItem == null) {
+            controller.showAlert("Укажите файл из списка");
+            return;
+        }
+        if (!selectedItem.getStatus().equals(ClientFile.STATUS_FILE_NOT_FOUND)) {
+            if (!FileHelper.deleteLocalFile(selectedItem.getFilePath()))
+                controller.showAlert("Не удалось удалить локальный файл: " + selectedItem.getFilePath() + " Файл не найден, либо недостаточно прав");
+        }
+        requestDeleteFile(selectedItem);
     }
 
-    void onClickDownload(Event event) {
+    void onClickDownload(Event event, ClientFile selectedItem) {
+        if (selectedItem == null) {
+            controller.showAlert("Укажите файл из списка");
+            return;
+        }
     }
 
-    public void onClickUpdate(Event event) {
+    public void onClickUpdate(Event event, ClientFile selectedItem) {
+        if (selectedItem == null) {
+            controller.showAlert("Укажите файл из списка");
+            return;
+        }
     }
 
     private void requestFilesList() {
