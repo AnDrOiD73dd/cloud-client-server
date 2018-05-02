@@ -49,15 +49,15 @@ public class ClientFile {
         return status;
     }
 
-    public static ObservableList<ClientFile> map(ArrayList<model.File> arrayList) {
+    public static ObservableList<ClientFile> map(ArrayList<adapter.File> arrayList) {
         ArrayList<ClientFile> clientFiles = new ArrayList<>();
-        for (model.File file : arrayList) {
+        for (adapter.File file : arrayList) {
             clientFiles.add(map(file));
         }
         return FXCollections.observableArrayList(clientFiles);
     }
 
-    private static ClientFile map(model.File file) {
+    private static ClientFile map(adapter.File file) {
         String status = STATUS_SYNCED;
         String filePath = file.getFilePath();
         String fileName = FileHelper.getName(filePath);

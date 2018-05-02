@@ -1,7 +1,7 @@
 package db;
 
-import model.User;
-import model.UserAdapter;
+import adapter.User;
+import adapter.UserAdapter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

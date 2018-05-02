@@ -1,7 +1,7 @@
 package db;
 
-import model.File;
-import model.FileAdapter;
+import adapter.File;
+import adapter.FileAdapter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

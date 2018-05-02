@@ -1,6 +1,6 @@
 package protocol.request;
 
-import model.File;
+import adapter.File;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

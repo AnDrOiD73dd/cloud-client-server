@@ -1,7 +1,7 @@
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
-import model.TransferringFile;
+import adapter.TransferringFile;
 import protocol.*;
 import protocol.handler.FilesRequestHandler;
 import protocol.handler.RequestHandler;

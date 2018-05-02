@@ -1,8 +1,8 @@
 import db.FileDAOImpl;
 import db.UserDAOImpl;
-import model.File;
-import model.TransferringFile;
-import model.User;
+import adapter.File;
+import adapter.TransferringFile;
+import adapter.User;
 import protocol.*;
 import protocol.handler.FilesRequestHandler;
 import protocol.handler.RequestHandler;
@@ -93,7 +93,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
 
     private void obtainNewFile(TransferringFile requestFile) {
         System.out.println("NEW FILE: " + requestFile.getFilePath());
-        model.File checkedFile = FileDAOImpl.getInstance().get(dbConnection, currentUser.getId(), requestFile.getFilePath());
+        adapter.File checkedFile = FileDAOImpl.getInstance().get(dbConnection, currentUser.getId(), requestFile.getFilePath());
         if (checkedFile != null) {
             Path userDir = FileHelper.getUserDirectory(CLOUD_DIR_NAME, currentUser.getUsername());
             String serverFileName = checkedFile.getServerFileName();
@@ -242,7 +242,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
     }
 
     private void sendFilesList() {
-        List<model.File> filesList = FileDAOImpl.getInstance().getAll(dbConnection, currentUser.getId());
+        List<adapter.File> filesList = FileDAOImpl.getInstance().getAll(dbConnection, currentUser.getId());
         sendMessage(new RequestFilesList(MessageUtil.getId(), new ArrayList<>(filesList)).toString());
     }
 
@@ -260,7 +260,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
             return;
         }
         String serverFileName = FileHelper.generateServerFileName(filePath);
-        model.File file = new model.File.Builder()
+        adapter.File file = new adapter.File.Builder()
                 .setUserId(currentUser.getId())
                 .setServerFileName(serverFileName)
                 .setFilePath(filePath)
@@ -269,7 +269,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
                 .setSynced(false)
                 .create();
         try {
-            model.File checkedFile = FileDAOImpl.getInstance().get(dbConnection, currentUser.getId(), filePath);
+            adapter.File checkedFile = FileDAOImpl.getInstance().get(dbConnection, currentUser.getId(), filePath);
             if (checkedFile != null) {
                 sendMessage(new ResponseMessage(requestMessage.getId(), 4).toString());
                 return;

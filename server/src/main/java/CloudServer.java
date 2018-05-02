@@ -1,16 +1,11 @@
 import db.DBHelper;
 import db.FileDAOImpl;
 import db.UserDAOImpl;
-import model.File;
-import model.User;
+import adapter.File;
+import adapter.User;
 
-import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Vector;
 
 public class CloudServer {
 

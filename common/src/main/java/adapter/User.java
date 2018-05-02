@@ -1,4 +1,4 @@
-package model;
+package adapter;
 
 public class User {
 

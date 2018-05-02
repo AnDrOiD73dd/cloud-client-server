@@ -1,6 +1,6 @@
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import model.TransferringFile;
+import adapter.TransferringFile;
 import protocol.*;
 import protocol.handler.ResponseHandler;
 import protocol.request.RequestMessage;

@@ -1,6 +1,6 @@
 package protocol;
 
-import model.File;
+import adapter.File;
 import protocol.request.RequestFilesList;
 import protocol.request.RequestMessage;
 

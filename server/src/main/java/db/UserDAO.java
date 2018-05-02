@@ -1,6 +1,6 @@
 package db;
 
-import model.User;
+import adapter.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;
