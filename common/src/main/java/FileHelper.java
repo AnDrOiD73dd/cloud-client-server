@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -73,5 +74,12 @@ public class FileHelper {
 
     public static String getName(String filePath) {
         return Paths.get(filePath).getFileName().toString();
+    }
+
+    public static boolean deleteLocalFile(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists())
+            return false;
+        return file.delete();
     }
 }

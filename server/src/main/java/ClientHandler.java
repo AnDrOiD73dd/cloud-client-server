@@ -303,21 +303,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
         }
         String serverFilePath = Paths.get(FileHelper.getUserDirectory(CLOUD_DIR_NAME, currentUser.getUsername())
                         .toAbsolutePath().toString(), file.getServerFileName()).toAbsolutePath().toString();
-        java.io.File serverFile = new java.io.File(serverFilePath);
-        if (serverFile.exists()) {
-            if (serverFile.delete()) {
-                if (FileDAOImpl.getInstance().delete(dbConnection, file.getId())) {
-                    sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
-                    sendFilesList();
-                } else {
-                    sendMessage(new ResponseMessage(requestMessage.getId(), 4).toString());
-                    sendFilesList();
-                }
-            } else {
-                sendMessage(new ResponseMessage(requestMessage.getId(), 4).toString());
-            }
-        }
-        else {
+        if (FileHelper.deleteLocalFile(serverFilePath)) {
             if (FileDAOImpl.getInstance().delete(dbConnection, file.getId())) {
                 sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
                 sendFilesList();
@@ -325,6 +311,8 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
                 sendMessage(new ResponseMessage(requestMessage.getId(), 4).toString());
                 sendFilesList();
             }
+        } else {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 4).toString());
         }
     }
 
