@@ -1,10 +1,10 @@
 package base;
 
-import db.FileDAOImpl;
-import db.UserDAOImpl;
 import adapter.File;
 import adapter.TransferringFile;
 import adapter.User;
+import db.FileDAOImpl;
+import db.UserDAOImpl;
 import protocol.*;
 import protocol.handler.FilesRequestHandler;
 import protocol.handler.RequestHandler;
@@ -25,7 +25,7 @@ import java.util.List;
 
 public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequestHandler {
 
-    private static final String CLOUD_DIR_NAME = "storage";
+    public static final String CLOUD_DIR_NAME = "storage";
 
     private static final long AUTH_TIMEOUT = 120 * 1000L;
 

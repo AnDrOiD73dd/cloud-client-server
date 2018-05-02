@@ -181,8 +181,33 @@ public class FileDAOImpl implements FileDAO {
         return res > 0;
     }
 
+    public ArrayList<File> getBrokenFiles(Connection connection) {
+        PreparedStatement ps = null;
+        ArrayList<File> files = new ArrayList<>();
+        try {
+            ps = connection.prepareStatement(String.format("SELECT * FROM %s WHERE %s = ?", TABLE_NAME, COLUMN_SYNCED));
+            ps.setBoolean(1, false);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                File file = FileAdapter.map(rs);
+                files.add(file);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+        }
+        return files;
+    }
+
     public List<File> getAll(Connection connection) {
-        List<File> files = new ArrayList<File>();
+        List<File> files = new ArrayList<>();
         PreparedStatement ps = null;
         String selectSQL = String.format("SELECT * FROM %s;", TABLE_NAME);
         try {
