@@ -1,3 +1,5 @@
+package model;
+
 import base.FileHelper;
 import base.Utils;
 import javafx.collections.FXCollections;
@@ -105,7 +107,7 @@ public class ClientFile {
 
     @Override
     public String toString() {
-        return "ClientFile{" +
+        return "model.ClientFile{" +
                 "fileName='" + fileName + '\'' +
                 ", filePath='" + filePath + '\'' +
                 ", fileDate=" + fileDate +

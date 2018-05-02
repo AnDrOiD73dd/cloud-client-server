@@ -1,3 +1,5 @@
+package presenter;
+
 public abstract class BasePresenter {
 
     protected boolean isValidServerAddress(String serverAddress, String serverPort) {

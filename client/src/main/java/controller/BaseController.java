@@ -1,3 +1,7 @@
+package controller;
+
+import base.ClientUtils;
+
 public abstract class BaseController {
 
     public BaseController() {

@@ -1,3 +1,6 @@
+package controller;
+
+import base.ClientUtils;
 import base.Constants;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,6 +13,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import presenter.SignUpPresenter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,9 +51,9 @@ public class SignUpController extends BaseController implements Initializable {
                 lastNameField.getText(), emailField.getText(), serverAddress.getText(), serverPort.getText());
     }
 
-    void showCloudClient() {
+    public void showCloudClient() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("layout_cloud.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/layout/layout_cloud.fxml"));
             Stage stage = new Stage();
             stage.setTitle(Constants.APP_NAME);
             ClientUtils.setupIcon(stage, getClass());
@@ -63,7 +67,7 @@ public class SignUpController extends BaseController implements Initializable {
         }
     }
 
-    void updateUI(boolean flag) {
+    public void updateUI(boolean flag) {
         loginField.setEditable(flag);
         passwordField.setEditable(flag);
         firstNameField.setEditable(flag);

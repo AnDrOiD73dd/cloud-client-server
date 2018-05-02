@@ -1,3 +1,5 @@
+package base;
+
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;

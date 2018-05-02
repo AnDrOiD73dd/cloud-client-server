@@ -1,3 +1,5 @@
+package listener;
+
 public interface ConnectionStateListener {
     void onConnected();
     void onDisconnected();

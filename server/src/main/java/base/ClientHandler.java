@@ -1,5 +1,5 @@
-import base.FileHelper;
-import base.Utils;
+package base;
+
 import db.FileDAOImpl;
 import db.UserDAOImpl;
 import adapter.File;

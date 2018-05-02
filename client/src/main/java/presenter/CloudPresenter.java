@@ -1,8 +1,15 @@
+package presenter;
+
+import base.ConnectionService;
 import base.FileHelper;
+import controller.CloudController;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import adapter.TransferringFile;
+import listener.ConnectionStateListener;
+import listener.ResponseListener;
+import model.ClientFile;
 import protocol.*;
 import protocol.handler.FilesRequestHandler;
 import protocol.handler.RequestHandler;
@@ -26,12 +33,12 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
     private RequestMessage lastRequest;
     private HashMap<Integer, RequestMessage> requestMap;
 
-    CloudPresenter(CloudController controller) {
+    public CloudPresenter(CloudController controller) {
         this.controller = controller;
         requestMap = new HashMap<>();
     }
 
-    void initialize() {
+    public void initialize() {
         connectionService = ConnectionService.getInstance();
         connectionService.setResponseListener(this);
         connectionService.addConnectionStateListener(new ConnectionStateListener() {
@@ -54,7 +61,7 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
         requestFilesList();
     }
 
-    void onClickAdd(Event event) {
+    public void onClickAdd(Event event) {
         File file = controller.showFileOpenDialog();
         if (file != null) {
             onFileSelected(file);
@@ -79,7 +86,7 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
         }
     }
 
-    void onClickDelete(Event event, ClientFile selectedItem) {
+    public void onClickDelete(Event event, ClientFile selectedItem) {
         if (selectedItem == null) {
             controller.showAlert("Укажите файл из списка");
             return;
@@ -126,7 +133,7 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
         } else controller.showAlert("Файл не найден: " + filePath);
     }
 
-    void onClickDownload(Event event, ClientFile selectedItem) {
+    public void onClickDownload(Event event, ClientFile selectedItem) {
         if (selectedItem == null) {
             controller.showAlert("Укажите файл из списка");
             return;

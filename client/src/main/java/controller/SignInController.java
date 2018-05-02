@@ -1,3 +1,6 @@
+package controller;
+
+import base.ClientUtils;
 import base.Constants;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -12,6 +15,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import presenter.SignInPresenter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -54,9 +58,9 @@ public class SignInController extends BaseController implements Initializable {
         presenter.onSignUpClick(actionEvent);
     }
 
-    void showSignUp(Event event) {
+    public void showSignUp(Event event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("layout_sign_up.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/layout/layout_sign_up.fxml"));
             Stage stage = new Stage();
             stage.setTitle(Constants.APP_NAME + ": Регистрация");
             ClientUtils.setupIcon(stage, getClass());
@@ -70,9 +74,9 @@ public class SignInController extends BaseController implements Initializable {
         }
     }
 
-    void showCloudClient() {
+    public void showCloudClient() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("layout_cloud.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/layout/layout_cloud.fxml"));
             Stage stage = new Stage();
             stage.setTitle(Constants.APP_NAME);
             ClientUtils.setupIcon(stage, getClass());
@@ -86,7 +90,7 @@ public class SignInController extends BaseController implements Initializable {
         }
     }
 
-    void updateUI(boolean flag) {
+    public void updateUI(boolean flag) {
         loginField.setEditable(flag);
         passwordField.setEditable(flag);
         signIn.setDisable(!flag);

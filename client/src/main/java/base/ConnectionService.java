@@ -1,4 +1,8 @@
+package base;
+
 import adapter.TransferringFile;
+import listener.ConnectionStateListener;
+import listener.ResponseListener;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -22,13 +26,13 @@ public class ConnectionService {
         connectionStateListeners = new ArrayList<>();
     }
 
-    static synchronized ConnectionService getInstance() {
+    public static synchronized ConnectionService getInstance() {
         if (instance == null)
             instance = new ConnectionService();
         return instance;
     }
 
-    ObjectOutputStream getOut() {
+    public ObjectOutputStream getOut() {
         return out;
     }
 
@@ -36,11 +40,11 @@ public class ConnectionService {
         return isConnected;
     }
 
-    void setResponseListener(ResponseListener responseListener) {
+    public void setResponseListener(ResponseListener responseListener) {
         this.responseListener = responseListener;
     }
 
-    void connect(String host, int port) {
+    public void connect(String host, int port) {
         if (isConnected)
             return;
         try {
@@ -110,12 +114,12 @@ public class ConnectionService {
         }
     }
 
-    void addConnectionStateListener(ConnectionStateListener listener) {
+    public void addConnectionStateListener(ConnectionStateListener listener) {
         if (!connectionStateListeners.contains(listener))
             connectionStateListeners.add(listener);
     }
 
-    void removeConnectionStateListener(ConnectionStateListener listener) {
+    public void removeConnectionStateListener(ConnectionStateListener listener) {
         connectionStateListeners.remove(listener);
     }
 }

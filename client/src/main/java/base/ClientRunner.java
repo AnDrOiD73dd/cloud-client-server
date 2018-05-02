@@ -1,4 +1,5 @@
-import base.Constants;
+package base;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,7 +10,7 @@ public class ClientRunner extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("layout_sign_in.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/layout/layout_sign_in.fxml"));
         primaryStage.setTitle(Constants.APP_NAME + ": Вход в систему");
 //        primaryStage.setScene(new Scene(root, 500, 400));
         ClientUtils.setupIcon(primaryStage, getClass());

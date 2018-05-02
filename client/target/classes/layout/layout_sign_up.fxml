@@ -5,8 +5,8 @@
 <?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="SignUpController"
-      stylesheets="@style_auth.css"
+      fx:controller="controller.SignUpController"
+      stylesheets="@../style/style_auth.css"
       fx:id="rootSignUp"
       alignment="CENTER">
     <TextField fx:id="loginField" promptText="Логин" HBox.hgrow="ALWAYS"/>

@@ -1,3 +1,6 @@
+package controller;
+
+import base.ClientUtils;
 import base.Constants;
 import base.Utils;
 import javafx.collections.ObservableList;
@@ -13,6 +16,8 @@ import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import model.ClientFile;
+import presenter.CloudPresenter;
 
 import java.io.File;
 import java.io.IOException;
@@ -163,9 +168,9 @@ public class CloudController extends BaseController implements Initializable {
         presenter.onClickUpdate(actionEvent, getSelectedItem());
     }
 
-    void showSignIn() {
+    public void showSignIn() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("layout_sign_in.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/layout/layout_sign_in.fxml"));
             Stage stage = new Stage();
             stage.setTitle(Constants.APP_NAME + ": Вход в систему");
             ClientUtils.setupIcon(stage, getClass());
@@ -184,14 +189,14 @@ public class CloudController extends BaseController implements Initializable {
         this.clientFiles = clientFiles;
     }
 
-    void updateTableData(ObservableList<ClientFile> clientFiles) {
+    public void updateTableData(ObservableList<ClientFile> clientFiles) {
         setClientFiles(clientFiles);
         fileTable.setItems(clientFiles);
 //        if (this.clientFiles == null) {
 //            setClientFiles(clientFiles);
 //            fileTable.setItems(clientFiles);
 //        } else {
-//            for (ClientFile clientFile : clientFiles) {
+//            for (model.ClientFile clientFile : clientFiles) {
 //                if (!this.clientFiles.contains(clientFile))
 //                    this.clientFiles.add(clientFile);
 //            }
@@ -202,7 +207,7 @@ public class CloudController extends BaseController implements Initializable {
         return (ClientFile) fileTable.getSelectionModel().getSelectedItem();
     }
 
-    File showFileOpenDialog() {
+    public File showFileOpenDialog() {
         return fileChooser.showOpenDialog(fileTable.getScene().getWindow());
     }
 
@@ -210,7 +215,7 @@ public class CloudController extends BaseController implements Initializable {
         return fileChooser.showSaveDialog(fileTable.getScene().getWindow());
     }
 
-    void showReplaceDialog(String filePath) {
+    public void showReplaceDialog(String filePath) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Выберите действие");
         alert.setHeaderText("Файл уже существует, что будем делать?");

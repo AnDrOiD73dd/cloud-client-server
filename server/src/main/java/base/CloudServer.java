@@ -1,3 +1,5 @@
+package base;
+
 import db.DBHelper;
 import db.FileDAOImpl;
 import db.UserDAOImpl;

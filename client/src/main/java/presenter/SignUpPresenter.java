@@ -1,6 +1,14 @@
+package presenter;
+
+import base.ClientUtils;
+import base.ConnectionService;
+import controller.SignUpController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import adapter.TransferringFile;
+import listener.ConnectionStateListener;
+import listener.ResponseListener;
+import presenter.BasePresenter;
 import protocol.*;
 import protocol.handler.ResponseHandler;
 import protocol.request.RequestMessage;

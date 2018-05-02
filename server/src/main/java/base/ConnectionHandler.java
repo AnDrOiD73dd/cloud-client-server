@@ -1,4 +1,5 @@
-import base.Constants;
+package base;
+
 import db.DBHelper;
 
 import java.io.IOException;
