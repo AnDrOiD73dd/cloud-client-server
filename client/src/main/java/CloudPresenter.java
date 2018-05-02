@@ -185,9 +185,17 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
 
     @Override
     public void handleFilesListRequest(RequestFilesList requestFilesList) {
-        this.filesList = ClientFile.map(requestFilesList.getFilesList());
+        ObservableList<ClientFile> newList = ClientFile.map(requestFilesList.getFilesList());
+        if (this.filesList == null) {
+            this.filesList = newList;
+            controller.updateTableData(filesList);
+        } else {
+            for (ClientFile clientFile : newList) {
+                if (!this.filesList.contains(clientFile))
+                    this.filesList.add(clientFile);
+            }
+        }
 //        controller.setClientFiles(filesList);
-        controller.updateTableData(filesList);
 //        System.out.println(filesList);
 //        controller.onFileListChanged(this.filesList);
     }

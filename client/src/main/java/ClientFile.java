@@ -4,6 +4,7 @@ import javafx.collections.ObservableList;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
 public class ClientFile {
 
@@ -80,6 +81,24 @@ public class ClientFile {
         Date fileDate = Utils.getDate(file.getFileDate());
         String fileSize = FileHelper.getHumanSize(file.getFileSize());
         return new ClientFile(fileName, filePath, fileDate, fileSize, status);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ClientFile)) return false;
+        ClientFile that = (ClientFile) o;
+        return Objects.equals(getFileName(), that.getFileName()) &&
+                Objects.equals(getFilePath(), that.getFilePath()) &&
+                Objects.equals(getFileDate(), that.getFileDate()) &&
+                Objects.equals(getFileSize(), that.getFileSize()) &&
+                Objects.equals(getStatus(), that.getStatus());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getFileName(), getFilePath(), getFileDate(), getFileSize(), getStatus());
     }
 
     @Override
