@@ -206,107 +206,123 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
         }
         switch (requestMap.get(responseMessage.getId()).getCmd()) {
             case CommandList.FILES_LIST:
-                switch (responseMessage.getResponseCode()) {
-                    case 0:
-                        break;
-                    case 1:
-                        controller.showAlert("Произошла ошибка при запросе файлов, обратитесь к системному администратору");
-                        break;
-                    default:
-                        System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
-                                + ", cmd=" + CommandList.SIGN_IN);
-                        break;
-                }
+                handleResponseFilesList(responseMessage);
                 break;
             case CommandList.FILE_ADD:
-                switch (responseMessage.getResponseCode()) {
-                    case 0:
-                        // Upload in progress
-                        break;
-                    case 1:
-                        String filePath = lastRequest.getRequest().getOrDefault(RequestFilesList.KEY_FILE_PATH, "");
-                        if (!filePath.isEmpty()) {
-                            sendFile(filePath);
-                        }
-                        requestMap.remove(responseMessage.getId());
-                        break;
-                    case 2:
-                        onAuthError(responseMessage);
-                        break;
-                    case 3:
-                        controller.showAlert("При добавлении файла произошла ошибка, попробуйте еще раз");
-                        requestMap.remove(responseMessage.getId());
-                        break;
-                    case 4:
-                        controller.showAlert("Файл не добавлен: такой файл уже существует");
-                        requestMap.remove(responseMessage.getId());
-                        break;
-                    case 5:
-                        controller.showAlert("Файл не добавлен: отсутствует свободное место в облаке");
-                        requestMap.remove(responseMessage.getId());
-                        break;
-                    case 6:
-                        controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
-                        requestMap.remove(responseMessage.getId());
-                        break;
-                    default:
-                        System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
-                                + ", cmd=" + CommandList.SIGN_IN);
-                        break;
-                }
+                handleResponseFileAdd(responseMessage);
                 break;
             case CommandList.FILE_DELETE:
-                switch (responseMessage.getResponseCode()) {
-                    case 0:
-                        break;
-                    case 1:
-//                        controller.showAlert("Файл успешно удален");
-                        requestMap.remove(responseMessage.getId());
-                        break;
-                    case 2:
-                        onAuthError(responseMessage);
-                        break;
-                    case 3:
-                        controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
-                        requestMap.remove(responseMessage.getId());
-                        break;
-                    case 4:
-                        controller.showAlert("При удалении файла произошла ошибка, попробуйте еще раз");
-                        requestMap.remove(responseMessage.getId());
-                        break;
-                    default:
-                        System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
-                                + ", cmd=" + CommandList.SIGN_IN);
-                        break;
-                }
+                handleResponseFileDelete(responseMessage);
                 break;
             case CommandList.FILE_DOWNLOAD:
-                switch (responseMessage.getResponseCode()) {
-                    case 0:
-                        break;
-                    case 1:
-                        controller.showAlert("К сожалению, файл не найден");
-                        requestMap.remove(responseMessage.getId());
-                        break;
-                    case 2:
-                        onAuthError(responseMessage);
-                        break;
-                    case 3:
-                        controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
-                        requestMap.remove(responseMessage.getId());
-                        break;
-                    case 4:
-                        controller.showAlert("При загрузке файла произошла ошибка, попробуйте еще раз");
-                        requestMap.remove(responseMessage.getId());
-                        break;
-                    default:
-                        System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
-                                + ", cmd=" + CommandList.SIGN_IN);
-                        break;
-                }
+                handleResponseFileDownload(responseMessage);
                 break;
             default:
                 System.out.println(("Unknown command=" + command));
+                break;
+        }
+    }
+
+    private void handleResponseFilesList(ResponseMessage responseMessage) {
+        switch (responseMessage.getResponseCode()) {
+            case 0:
+                break;
+            case 1:
+                controller.showAlert("Произошла ошибка при запросе файлов, обратитесь к системному администратору");
+                break;
+            default:
+                System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
+                        + ", cmd=" + CommandList.SIGN_IN);
+                break;
+        }
+    }
+
+    private void handleResponseFileAdd(ResponseMessage responseMessage) {
+        switch (responseMessage.getResponseCode()) {
+            case 0:
+                // Upload in progress
+                break;
+            case 1:
+                String filePath = lastRequest.getRequest().getOrDefault(RequestFilesList.KEY_FILE_PATH, "");
+                if (!filePath.isEmpty()) {
+                    sendFile(filePath);
+                }
+                requestMap.remove(responseMessage.getId());
+                break;
+            case 2:
+                onAuthError(responseMessage);
+                break;
+            case 3:
+                controller.showAlert("При добавлении файла произошла ошибка, попробуйте еще раз");
+                requestMap.remove(responseMessage.getId());
+                break;
+            case 4:
+                controller.showAlert("Файл не добавлен: такой файл уже существует");
+                requestMap.remove(responseMessage.getId());
+                break;
+            case 5:
+                controller.showAlert("Файл не добавлен: отсутствует свободное место в облаке");
+                requestMap.remove(responseMessage.getId());
+                break;
+            case 6:
+                controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
+                requestMap.remove(responseMessage.getId());
+                break;
+            default:
+                System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
+                        + ", cmd=" + CommandList.SIGN_IN);
+                break;
+        }
+    }
+
+    private void handleResponseFileDelete(ResponseMessage responseMessage) {
+        switch (responseMessage.getResponseCode()) {
+            case 0:
+                break;
+            case 1:
+//                controller.showAlert("Файл успешно удален");
+                requestMap.remove(responseMessage.getId());
+                break;
+            case 2:
+                onAuthError(responseMessage);
+                break;
+            case 3:
+                controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
+                requestMap.remove(responseMessage.getId());
+                break;
+            case 4:
+                controller.showAlert("При удалении файла произошла ошибка, попробуйте еще раз");
+                requestMap.remove(responseMessage.getId());
+                break;
+            default:
+                System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
+                        + ", cmd=" + CommandList.SIGN_IN);
+                break;
+        }
+    }
+
+    private void handleResponseFileDownload(ResponseMessage responseMessage) {
+        switch (responseMessage.getResponseCode()) {
+            case 0:
+                break;
+            case 1:
+                controller.showAlert("К сожалению, файл не найден");
+                requestMap.remove(responseMessage.getId());
+                break;
+            case 2:
+                onAuthError(responseMessage);
+                break;
+            case 3:
+                controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
+                requestMap.remove(responseMessage.getId());
+                break;
+            case 4:
+                controller.showAlert("При загрузке файла произошла ошибка, попробуйте еще раз");
+                requestMap.remove(responseMessage.getId());
+                break;
+            default:
+                System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
+                        + ", cmd=" + CommandList.SIGN_IN);
                 break;
         }
     }
