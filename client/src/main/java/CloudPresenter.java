@@ -231,9 +231,7 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
                         requestMap.remove(responseMessage.getId());
                         break;
                     case 2:
-                        controller.showAlert("Ошибка аутентификации");
-                        controller.showSignIn();
-                        requestMap.remove(responseMessage.getId());
+                        onAuthError(responseMessage);
                         break;
                     case 3:
                         controller.showAlert("При добавлении файла произошла ошибка, попробуйте еще раз");
@@ -266,9 +264,7 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
                         requestMap.remove(responseMessage.getId());
                         break;
                     case 2:
-                        controller.showAlert("Ошибка аутентификации");
-                        controller.showSignIn();
-                        requestMap.remove(responseMessage.getId());
+                        onAuthError(responseMessage);
                         break;
                     case 3:
                         controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
@@ -293,9 +289,7 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
                         requestMap.remove(responseMessage.getId());
                         break;
                     case 2:
-                        controller.showAlert("Ошибка аутентификации");
-                        controller.showSignIn();
-                        requestMap.remove(responseMessage.getId());
+                        onAuthError(responseMessage);
                         break;
                     case 3:
                         controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
@@ -355,5 +349,11 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
 //        controller.setClientFiles(filesList);
 //        System.out.println(filesList);
 //        controller.onFileListChanged(this.filesList);
+    }
+
+    private void onAuthError(ResponseMessage responseMessage) {
+        controller.showAlert("Ошибка аутентификации");
+        controller.showSignIn();
+        requestMap.remove(responseMessage.getId());
     }
 }
