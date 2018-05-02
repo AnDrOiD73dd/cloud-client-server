@@ -59,13 +59,13 @@ public class ClientFile {
     private static ClientFile map(model.File file) {
         String status = STATUS_SYNCED;
         String filePath = file.getFilePath();
-        String fileName = FileService.getName(filePath);
-        if (FileService.isExists(filePath)) {
+        String fileName = FileHelper.getName(filePath);
+        if (FileHelper.isExists(filePath)) {
             try {
                 long cloudSize = file.getFileSize();
-                long localSize = FileService.getSize(filePath);
+                long localSize = FileHelper.getSize(filePath);
                 if (cloudSize == localSize) {
-                    if (file.getFileDate() != FileService.getDate(filePath))
+                    if (file.getFileDate() != FileHelper.getDate(filePath))
                         status = STATUS_TIME_IS_DIFFERENT;
                 }
                 else {
@@ -78,7 +78,7 @@ public class ClientFile {
             }
         } else status = STATUS_FILE_NOT_FOUND;
         Date fileDate = Utils.getDate(file.getFileDate());
-        String fileSize = FileService.getHumanSize(file.getFileSize());
+        String fileSize = FileHelper.getHumanSize(file.getFileSize());
         return new ClientFile(fileName, filePath, fileDate, fileSize, status);
     }
 

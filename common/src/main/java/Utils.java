@@ -13,7 +13,7 @@ public class Utils {
     }
 
     public static long getFreeSpace() {
-        File file = new File(FileService.getWorkingDirectory());
+        File file = new File(FileHelper.getWorkingDirectory());
         return file.getUsableSpace();
     }
 

@@ -2,6 +2,7 @@
 Client and server side for cloud storage
 
 # TODO
+* Loading queue
 * SSL sockets or requests
 * Store password hash
 * Use Logger instead of System.out.println

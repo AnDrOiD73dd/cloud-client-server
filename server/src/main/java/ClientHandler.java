@@ -207,8 +207,8 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
             return;
         }
         // Create user directory
-        Path userPath = Paths.get(FileService.getWorkingDirectory() + "/" + CLOUD_DIR_NAME + "/" + username).normalize();
-        if (!FileService.createDirectories(userPath)) {
+        Path userPath = Paths.get(FileHelper.getWorkingDirectory() + "/" + CLOUD_DIR_NAME + "/" + username).normalize();
+        if (!FileHelper.createDirectories(userPath)) {
             sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
             return;
         }
@@ -248,7 +248,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
         String filePath = body.getOrDefault(RequestFilesList.KEY_FILE_PATH, "");
         long fileDate = Long.valueOf(body.getOrDefault(RequestFilesList.KEY_FILE_DATE, ""));
         long fileSize = Long.valueOf(body.getOrDefault(RequestFilesList.KEY_FILE_SIZE, ""));
-        Path serverPath = FileService.generateServerFilePath(CLOUD_DIR_NAME, currentUser.getUsername(), filePath);
+        Path serverPath = FileHelper.generateServerFilePath(CLOUD_DIR_NAME, currentUser.getUsername(), filePath);
         model.File file = new model.File.Builder()
                 .setUserId(currentUser.getId())
                 .setServerPath(serverPath.toAbsolutePath().toString())

@@ -3,7 +3,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class FileService {
+public class FileHelper {
 
     public static String getWorkingDirectory() {
         Path currentRelativePath = Paths.get("");

@@ -52,8 +52,8 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
         try {
             RequestMessage newRequest;
             String path = file.getAbsolutePath();
-            long size = FileService.getSize(path);
-            long date = FileService.getDate(path);
+            long size = FileHelper.getSize(path);
+            long date = FileHelper.getDate(path);
             do {
                 newRequest = (RequestMessage) RequestMessageFactory.getFileAddRequest(MessageUtil.getId(), path, date, size);
             } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
