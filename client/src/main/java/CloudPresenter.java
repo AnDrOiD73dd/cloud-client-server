@@ -111,6 +111,11 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             controller.showAlert("Укажите файл из списка");
             return;
         }
+        String filePath = selectedItem.getFilePath();
+        if (FileHelper.isExists(filePath)) {
+            requestDeleteFile(selectedItem);
+            onFileSelected(new File(filePath));
+        } else controller.showAlert("Файл не найден: " + filePath);
     }
 
     private void requestFilesList() {
