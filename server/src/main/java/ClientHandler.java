@@ -95,6 +95,8 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
                 Files.createDirectories(Paths.get(serverPath).getParent());
                 stream = new FileOutputStream(serverPath);
                 stream.write(requestFile.getFile());
+                checkedFile.setSynced(true);
+                FileDAOImpl.getInstance().update(dbConnection, checkedFile);
                 sendFilesList();
             } catch (FileNotFoundException e) {
                 System.out.println("Файл не найден: " + e.getMessage());
