@@ -77,10 +77,16 @@ public class FileHelper {
     }
 
     public static boolean deleteLocalFile(String filePath) {
-        File file = new File(filePath);
-        if (!file.exists())
+        Path path = Paths.get(filePath);
+        if (!isExists(path.toAbsolutePath().toString()))
             return false;
-        return file.delete();
+        try {
+            Files.delete(path);
+            return true;
+        } catch (IOException e) {
+            System.out.println("Не могу удалить файл: " + e.getMessage());
+            return false;
+        }
     }
 
     public static byte[] convertToByteArray(String filePath) {

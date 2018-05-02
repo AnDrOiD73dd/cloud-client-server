@@ -101,7 +101,7 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             controller.showAlert("Укажите файл из списка");
             return;
         }
-        if (!selectedItem.getStatus().equals(ClientFile.STATUS_FILE_NOT_FOUND)) {
+        if (FileHelper.isExists(selectedItem.getFilePath())) {
             if (!FileHelper.deleteLocalFile(selectedItem.getFilePath()))
                 controller.showAlert("Не удалось удалить локальный файл: " + selectedItem.getFilePath() + "\nФайл не найден, либо недостаточно прав");
         }
@@ -169,14 +169,23 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
 
     @Override
     public void onNewFile(TransferringFile file) {
+        FileOutputStream stream = null;
         try {
             Path dirPath = Paths.get(file.getFilePath());
             Files.createDirectories(dirPath.getParent());
-            FileOutputStream stream = new FileOutputStream(Paths.get(file.getFilePath()).toAbsolutePath().toString());
+            stream = new FileOutputStream(Paths.get(file.getFilePath()).toAbsolutePath().toString());
             stream.write(file.getFile());
         } catch (IOException e) {
             System.out.println("Ошибка при сохранении файла: " + e.getMessage());
             controller.showAlert("Не удалось сохранить файл " + file.getFilePath());
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    System.out.println("Не могу закрыть поток записи в файл: " + file.getFilePath());
+                }
+            }
         }
     }
 

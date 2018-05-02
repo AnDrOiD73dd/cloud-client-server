@@ -15,7 +15,6 @@ public class UserAdapter {
                 .setFirstName(rs.getString(UserDAOImpl.COLUMN_FIRST_NAME))
                 .setLastName(rs.getString(UserDAOImpl.COLUMN_LAST_NAME))
                 .setEmail(rs.getString(UserDAOImpl.COLUMN_EMAIL))
-                .setRootDir(rs.getString(UserDAOImpl.COLUMN_ROOT_DIR))
                 .create();
     }
 }

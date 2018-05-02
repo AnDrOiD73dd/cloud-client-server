@@ -19,7 +19,6 @@ public class UserDAOImpl implements UserDAO {
     public static final String COLUMN_FIRST_NAME = "firstname";
     public static final String COLUMN_LAST_NAME = "lastname";
     public static final String COLUMN_EMAIL = "email";
-    public static final String COLUMN_ROOT_DIR = "rootdir";
 
     private static UserDAOImpl instance;
 
@@ -36,14 +35,13 @@ public class UserDAOImpl implements UserDAO {
         PreparedStatement ps = null;
         User res;
         try {
-            ps = connection.prepareStatement(String.format("INSERT INTO %s (%s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?);",
-                    TABLE_NAME, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_FIRST_NAME, COLUMN_LAST_NAME, COLUMN_EMAIL, COLUMN_ROOT_DIR));
+            ps = connection.prepareStatement(String.format("INSERT INTO %s (%s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?);",
+                    TABLE_NAME, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_FIRST_NAME, COLUMN_LAST_NAME, COLUMN_EMAIL));
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getFirstName());
             ps.setString(4, user.getLastName());
             ps.setString(5, user.getEmail());
-            ps.setString(6, user.getRootDir());
             int count = ps.executeUpdate();
             if (count <= 0)
                 return null;
@@ -54,7 +52,6 @@ public class UserDAOImpl implements UserDAO {
                     .setFirstName(user.getFirstName())
                     .setLastName(user.getLastName())
                     .setEmail(user.getEmail())
-                    .setRootDir(user.getRootDir())
                     .create();
         } catch (SQLException e) {
             throw new SQLException(e);
@@ -72,9 +69,9 @@ public class UserDAOImpl implements UserDAO {
     public User get(Connection connection, long id) {
         PreparedStatement ps = null;
         User user = null;
-        String selectSQL = String.format("SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = ?;",
+        String selectSQL = String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s WHERE %s = ?;",
                 COLUMN_ID, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_FIRST_NAME, COLUMN_LAST_NAME, COLUMN_EMAIL,
-                COLUMN_ROOT_DIR, TABLE_NAME, COLUMN_ID);
+                TABLE_NAME, COLUMN_ID);
         try {
             ps = connection.prepareStatement(selectSQL);
             ps.setLong(1, id);
@@ -99,9 +96,9 @@ public class UserDAOImpl implements UserDAO {
     public User get(Connection connection, String username) {
         PreparedStatement ps = null;
         User user = null;
-        String selectSQL = String.format("SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = ?;",
+        String selectSQL = String.format("SELECT %s, %s, %s, %s, %s, %s FROM %s WHERE %s = ?;",
                 COLUMN_ID, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_FIRST_NAME, COLUMN_LAST_NAME, COLUMN_EMAIL,
-                COLUMN_ROOT_DIR, TABLE_NAME, COLUMN_USERNAME);
+                TABLE_NAME, COLUMN_USERNAME);
         try {
             ps = connection.prepareStatement(selectSQL);
             ps.setString(1, username);
@@ -127,9 +124,9 @@ public class UserDAOImpl implements UserDAO {
     public User getByEmail(Connection connection, String email) {
         PreparedStatement ps = null;
         User user = null;
-        String selectSQL = String.format("SELECT %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = ?;",
+        String selectSQL = String.format("SELECT %s, %s, %s, %s, %s, %s, FROM %s WHERE %s = ?;",
                 COLUMN_ID, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_FIRST_NAME, COLUMN_LAST_NAME, COLUMN_EMAIL,
-                COLUMN_ROOT_DIR, TABLE_NAME, COLUMN_EMAIL);
+                TABLE_NAME, COLUMN_EMAIL);
         try {
             ps = connection.prepareStatement(selectSQL);
             ps.setString(1, email);
@@ -156,16 +153,15 @@ public class UserDAOImpl implements UserDAO {
         int res = -1;
         try {
             ps = connection.prepareStatement(String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, " +
-                            "%s = ?, %s = ?, %s = ? WHERE %s = ?;",
+                            "%s = ?, %s = ? WHERE %s = ?;",
                     TABLE_NAME, COLUMN_USERNAME, COLUMN_PASSWORD, COLUMN_FIRST_NAME, COLUMN_LAST_NAME, COLUMN_EMAIL,
-                    COLUMN_ROOT_DIR, COLUMN_ID));
+                    COLUMN_ID));
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
             ps.setString(3, user.getFirstName());
             ps.setString(4, user.getLastName());
             ps.setString(5, user.getEmail());
-            ps.setString(6, user.getRootDir());
-            ps.setLong(7, user.getId());
+            ps.setLong(6, user.getId());
             res = ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

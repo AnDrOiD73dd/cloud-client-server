@@ -8,16 +8,14 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
-    private String rootDir;
 
-    private User(long id, String username, String password, String firstName, String lastName, String email, String rootDir) {
+    private User(long id, String username, String password, String firstName, String lastName, String email) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.rootDir = rootDir;
     }
 
     public void setId(long id) {
@@ -44,10 +42,6 @@ public class User {
         this.email = email;
     }
 
-    public void setRootDir(String rootDir) {
-        this.rootDir = rootDir;
-    }
-
     public long getId() {
         return id;
     }
@@ -72,10 +66,6 @@ public class User {
         return email;
     }
 
-    public String getRootDir() {
-        return rootDir;
-    }
-
     @Override
     public String toString() {
         return "User{" +
@@ -85,7 +75,6 @@ public class User {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
-                ", rootDir='" + rootDir + '\'' +
                 '}';
     }
 
@@ -96,7 +85,6 @@ public class User {
         private String firstName;
         private String lastName;
         private String email;
-        private String rootDir;
 
         public Builder setId(long id) {
             this.id = id;
@@ -128,13 +116,8 @@ public class User {
             return this;
         }
 
-        public Builder setRootDir(String rootDir) {
-            this.rootDir = rootDir;
-            return this;
-        }
-
         public User create() {
-            return new User(id, username, password, firstName, lastName, email, rootDir);
+            return new User(id, username, password, firstName, lastName, email);
         }
     }
 }

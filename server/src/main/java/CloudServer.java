@@ -31,7 +31,6 @@ public class CloudServer {
                     .setFirstName("first name")
                     .setLastName("last name")
                     .setEmail("email")
-                    .setRootDir("/home/sdfsd")
                     .create();
 
             File file = new File.Builder()
@@ -53,7 +52,6 @@ public class CloudServer {
 
             // CREATE
             user.setUsername("Thomas");
-            user.setRootDir("/root/home/thomas");
             UserDAOImpl.getInstance().create(connection, user);
             file.setFilePath("/thomas/path/to/file");
             FileDAOImpl.getInstance().create(connection, file);

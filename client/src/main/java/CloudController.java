@@ -182,7 +182,7 @@ public class CloudController extends BaseController implements Initializable {
         this.clientFiles = clientFiles;
     }
 
-    public void updateTableData(ObservableList<ClientFile> clientFiles) {
+    void updateTableData(ObservableList<ClientFile> clientFiles) {
         setClientFiles(clientFiles);
         fileTable.setItems(clientFiles);
 //        if (this.clientFiles == null) {
@@ -196,15 +196,15 @@ public class CloudController extends BaseController implements Initializable {
 //        }
     }
 
-    public ClientFile getSelectedItem() {
+    ClientFile getSelectedItem() {
         return (ClientFile) fileTable.getSelectionModel().getSelectedItem();
     }
 
-    public File showFileOpenDialog() {
+    File showFileOpenDialog() {
         return fileChooser.showOpenDialog(fileTable.getScene().getWindow());
     }
 
-    public File showFileSaveDialog() {
+    File showFileSaveDialog() {
         return fileChooser.showSaveDialog(fileTable.getScene().getWindow());
     }
 
@@ -234,28 +234,4 @@ public class CloudController extends BaseController implements Initializable {
             }
         }
     }
-
-//    private void configureClientListView() {
-//        clientsListView.setItems(clientList);
-//        clientsListView.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-//            @Override
-//            public ListCell<String> call(ListView<String> param) {
-//                return new ListCell<String>(){
-//                    @Override
-//                    protected void updateItem(String item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        if (!empty){
-//                            setText(item);
-//                            if (item.equals(myNick)) {
-//                                setStyle("-fx-font-weight: bold; -fx-background-color: #607D8B;");
-//                            }
-//                        }else{
-//                            setGraphic(null);
-//                            setText(null);
-//                        }
-//                    }
-//                };
-//            }
-//        });
-//    }
 }

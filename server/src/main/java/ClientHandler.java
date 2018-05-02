@@ -215,12 +215,6 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
             sendMessage(new ResponseMessage(requestMessage.getId(), 5).toString());
             return;
         }
-        // Create user directory
-        Path userPath = Paths.get(FileHelper.getWorkingDirectory() + "/" + CLOUD_DIR_NAME + "/" + username).normalize();
-        if (!FileHelper.createDirectories(userPath)) {
-            sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
-            return;
-        }
         // add user to DB
         user = new User.Builder()
                 .setUsername(username)
@@ -228,7 +222,6 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
                 .setFirstName(firstName)
                 .setLastName(lastName)
                 .setEmail(email)
-                .setRootDir(userPath.toString())
                 .create();
         try {
             User newUser = UserDAOImpl.getInstance().create(dbConnection, user);
