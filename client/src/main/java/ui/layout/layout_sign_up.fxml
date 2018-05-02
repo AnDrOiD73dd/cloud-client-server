@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="ui.controller.SignUpController"
+      stylesheets="@../style/style_auth.css"
+      fx:id="rootSignUp"
+      alignment="CENTER">
+    <TextField fx:id="loginField" promptText="Логин" HBox.hgrow="ALWAYS"/>
+    <PasswordField fx:id="passwordField" promptText="Пароль" HBox.hgrow="ALWAYS"/>
+    <TextField fx:id="firstNameField" promptText="Имя" HBox.hgrow="ALWAYS"/>
+    <TextField fx:id="lastNameField" promptText="Фамилия" HBox.hgrow="ALWAYS"/>
+    <TextField fx:id="emailField" promptText="E-mail" HBox.hgrow="ALWAYS"/>
+    <TextField fx:id="serverAddress" promptText="Адрес сервера" HBox.hgrow="ALWAYS"/>
+    <TextField fx:id="serverPort" promptText="Порт сервера" HBox.hgrow="ALWAYS"/>
+    <Button fx:id="signUp" text="Зарегистрироваться" onAction="#onClickSignUp"/>
+    <padding>
+        <Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/>
+    </padding>
+</VBox>
