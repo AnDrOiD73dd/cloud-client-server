@@ -14,11 +14,13 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
 
     private CloudController controller;
     private ConnectionService connectionService;
-    private RequestMessage lastRequest;
     private ObservableList<ClientFile> filesList;
+    private RequestMessage lastRequest;
+    private HashMap<Integer, RequestMessage> requestMap;
 
     CloudPresenter(CloudController controller) {
         this.controller = controller;
+        requestMap = new HashMap<>();
     }
 
     void initialize() {
@@ -57,6 +59,7 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             do {
                 newRequest = (RequestMessage) RequestMessageFactory.getFileAddRequest(MessageUtil.getId(), path, date, size);
             } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
+            requestMap.put(newRequest.getId(), newRequest);
             lastRequest = newRequest;
             connectionService.getOut().writeObject(lastRequest.toString());
         } catch (IOException e) {
@@ -79,6 +82,7 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             do {
                 newRequest = (RequestMessage) RequestMessageFactory.getFileDeleteRequest(MessageUtil.getId(), selectedItem.getFilePath());
             } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
+            requestMap.put(newRequest.getId(), newRequest);
             lastRequest = newRequest;
             connectionService.getOut().writeObject(lastRequest.toString());
         } catch (IOException e) {
@@ -124,6 +128,7 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             do {
                 newRequest = (RequestFilesList) RequestMessageFactory.getEmptyFilesListRequest(MessageUtil.getId());
             } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
+            requestMap.put(newRequest.getId(), newRequest);
             lastRequest = newRequest;
             connectionService.getOut().writeObject(lastRequest.toString());
         } catch (IOException e) {
@@ -157,11 +162,11 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
 
     @Override
     public void handleResponse(ResponseMessage responseMessage, String command) {
-        if (lastRequest.getId() != responseMessage.getId()) {
+        if (!requestMap.containsKey(responseMessage.getId())) {
             System.out.println("Unknown response id: " + responseMessage);
             return;
         }
-        switch (lastRequest.getCmd()) {
+        switch (requestMap.get(responseMessage.getId()).getCmd()) {
             case CommandList.FILES_LIST:
                 switch (responseMessage.getResponseCode()) {
                     case 0:
@@ -185,22 +190,28 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
                         if (!filePath.isEmpty()) {
                             sendFile(filePath);
                         }
+                        requestMap.remove(responseMessage.getId());
                         break;
                     case 2:
                         controller.showAlert("Ошибка аутентификации");
                         controller.showSignIn();
+                        requestMap.remove(responseMessage.getId());
                         break;
                     case 3:
                         controller.showAlert("При добавлении файла произошла ошибка, попробуйте еще раз");
+                        requestMap.remove(responseMessage.getId());
                         break;
                     case 4:
                         controller.showAlert("Файл не добавлен: такой файл уже существует");
+                        requestMap.remove(responseMessage.getId());
                         break;
                     case 5:
                         controller.showAlert("Файл не добавлен: отсутствует свободное место в облаке");
+                        requestMap.remove(responseMessage.getId());
                         break;
                     case 6:
                         controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
+                        requestMap.remove(responseMessage.getId());
                         break;
                     default:
                         System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
@@ -214,16 +225,20 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
                         break;
                     case 1:
 //                        controller.showAlert("Файл успешно удален");
+                        requestMap.remove(responseMessage.getId());
                         break;
                     case 2:
                         controller.showAlert("Ошибка аутентификации");
                         controller.showSignIn();
+                        requestMap.remove(responseMessage.getId());
                         break;
                     case 3:
                         controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
+                        requestMap.remove(responseMessage.getId());
                         break;
                     case 4:
                         controller.showAlert("При удалении файла произошла ошибка, попробуйте еще раз");
+                        requestMap.remove(responseMessage.getId());
                         break;
                     default:
                         System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
