@@ -15,7 +15,7 @@ public class FileDAOImpl implements FileDAO {
     public static final String TABLE_NAME = "files";
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_USER_ID = "user";
-    public static final String COLUMN_SERVER_PATH = "serverpath";
+    public static final String COLUMN_SERVER_FILE_NAME = "server_filename";
     public static final String COLUMN_FILE_PATH = "filepath";
     public static final String COLUMN_FILE_SIZE = "filesize";
     public static final String COLUMN_FILE_DATE = "filedate";
@@ -38,9 +38,9 @@ public class FileDAOImpl implements FileDAO {
         File res = null;
         try {
             ps = connection.prepareStatement(String.format("INSERT INTO %s (%s, %s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?, ?);",
-                    TABLE_NAME, COLUMN_USER_ID, COLUMN_SERVER_PATH, COLUMN_FILE_PATH, COLUMN_FILE_SIZE, COLUMN_FILE_DATE, COLUMN_SYNCED, COLUMN_LAST_ACTION));
+                    TABLE_NAME, COLUMN_USER_ID, COLUMN_SERVER_FILE_NAME, COLUMN_FILE_PATH, COLUMN_FILE_SIZE, COLUMN_FILE_DATE, COLUMN_SYNCED, COLUMN_LAST_ACTION));
             ps.setLong(1, file.getUserId());
-            ps.setString(2, file.getServerPath());
+            ps.setString(2, file.getServerFileName());
             ps.setString(3, file.getFilePath());
             ps.setLong(4, file.getFileSize());
             ps.setLong(5, file.getFileDate());
@@ -52,8 +52,9 @@ public class FileDAOImpl implements FileDAO {
             res = new File.Builder()
                     .setId(get(connection, file.getUserId(), file.getFilePath()).getId())
                     .setUserId(file.getUserId())
-                    .setFileDate(file.getFileDate())
+                    .setServerFileName(file.getServerFileName())
                     .setFilePath(file.getFilePath())
+                    .setFileDate(file.getFileDate())
                     .setFileSize(file.getFileSize())
                     .setSynced(file.isSynced())
                     .setLastAction(file.getLastAction())
@@ -76,7 +77,7 @@ public class FileDAOImpl implements FileDAO {
         PreparedStatement ps = null;
         File file = null;
         String selectSQL = String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = ?;",
-                COLUMN_ID, COLUMN_USER_ID, COLUMN_SERVER_PATH, COLUMN_FILE_PATH, COLUMN_FILE_SIZE, COLUMN_FILE_DATE, COLUMN_SYNCED,
+                COLUMN_ID, COLUMN_USER_ID, COLUMN_SERVER_FILE_NAME, COLUMN_FILE_PATH, COLUMN_FILE_SIZE, COLUMN_FILE_DATE, COLUMN_SYNCED,
                 COLUMN_LAST_ACTION, TABLE_NAME, COLUMN_ID);
         try {
             ps = connection.prepareStatement(selectSQL);
@@ -103,7 +104,7 @@ public class FileDAOImpl implements FileDAO {
         PreparedStatement ps = null;
         File file = null;
         String selectSQL = String.format("SELECT %s, %s, %s, %s, %s, %s, %s, %s FROM %s WHERE %s = ? AND %s = ?;",
-                COLUMN_ID, COLUMN_USER_ID, COLUMN_SERVER_PATH, COLUMN_FILE_PATH, COLUMN_FILE_SIZE, COLUMN_FILE_DATE, COLUMN_SYNCED,
+                COLUMN_ID, COLUMN_USER_ID, COLUMN_SERVER_FILE_NAME, COLUMN_FILE_PATH, COLUMN_FILE_SIZE, COLUMN_FILE_DATE, COLUMN_SYNCED,
                 COLUMN_LAST_ACTION, TABLE_NAME, COLUMN_USER_ID, COLUMN_FILE_PATH);
         try {
             ps = connection.prepareStatement(selectSQL);
@@ -133,10 +134,10 @@ public class FileDAOImpl implements FileDAO {
         try {
             ps = connection.prepareStatement(String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, " +
                             "%s = ?, %s = ?, %s = ?, %s = ? WHERE %s = ?;",
-                    TABLE_NAME, COLUMN_USER_ID, COLUMN_SERVER_PATH, COLUMN_FILE_PATH, COLUMN_FILE_SIZE, COLUMN_FILE_DATE, COLUMN_SYNCED,
+                    TABLE_NAME, COLUMN_USER_ID, COLUMN_SERVER_FILE_NAME, COLUMN_FILE_PATH, COLUMN_FILE_SIZE, COLUMN_FILE_DATE, COLUMN_SYNCED,
                     COLUMN_LAST_ACTION, COLUMN_ID));
             ps.setLong(1, file.getUserId());
-            ps.setString(3, file.getServerPath());
+            ps.setString(2, file.getServerFileName());
             ps.setString(3, file.getFilePath());
             ps.setLong(4, file.getFileSize());
             ps.setLong(5, file.getFileDate());
@@ -160,7 +161,7 @@ public class FileDAOImpl implements FileDAO {
 
     public boolean delete(Connection connection, long id) {
         PreparedStatement preparedStatement = null;
-        int res = -1;
+        int res;
         try {
             preparedStatement = connection.prepareStatement(String.format("DELETE FROM %s WHERE %s = ?;", TABLE_NAME, COLUMN_ID));
             preparedStatement.setLong(1, id);

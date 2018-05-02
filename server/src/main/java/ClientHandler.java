@@ -89,11 +89,12 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
         System.out.println("NEW FILE: " + requestFile.getFilePath());
         model.File checkedFile = FileDAOImpl.getInstance().get(dbConnection, currentUser.getId(), requestFile.getFilePath());
         if (checkedFile != null) {
-            String serverPath = checkedFile.getServerPath();
+            Path userDir = FileHelper.getUserDirectory(CLOUD_DIR_NAME, currentUser.getUsername());
+            String serverFileName = checkedFile.getServerFileName();
             FileOutputStream stream = null;
             try {
-                Files.createDirectories(Paths.get(serverPath).getParent());
-                stream = new FileOutputStream(serverPath);
+                Files.createDirectories(userDir);
+                stream = new FileOutputStream(Paths.get(userDir.toAbsolutePath().toString(), serverFileName).toAbsolutePath().toString());
                 stream.write(requestFile.getFile());
                 checkedFile.setSynced(true);
                 FileDAOImpl.getInstance().update(dbConnection, checkedFile);
@@ -117,7 +118,6 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
     }
 
     private void disconnect() {
-//        connectionHandler.unsubscribe(this);
         messageListener.interrupt();
         authTimeoutThread.interrupt();
         try {
@@ -248,10 +248,10 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
         String filePath = body.getOrDefault(RequestFilesList.KEY_FILE_PATH, "");
         long fileDate = Long.valueOf(body.getOrDefault(RequestFilesList.KEY_FILE_DATE, ""));
         long fileSize = Long.valueOf(body.getOrDefault(RequestFilesList.KEY_FILE_SIZE, ""));
-        Path serverPath = FileHelper.generateServerFilePath(CLOUD_DIR_NAME, currentUser.getUsername(), filePath);
+        String serverFileName = FileHelper.generateServerFileName(filePath);
         model.File file = new model.File.Builder()
                 .setUserId(currentUser.getId())
-                .setServerPath(serverPath.toAbsolutePath().toString())
+                .setServerFileName(serverFileName)
                 .setFilePath(filePath)
                 .setFileDate(fileDate)
                 .setFileSize(fileSize)

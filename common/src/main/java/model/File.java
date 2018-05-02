@@ -4,7 +4,7 @@ public class File {
 
     private long id;
     private long userId;
-    private String serverPath;
+    private String serverFileName;
     private String filePath;
     private long fileSize;
     private long fileDate;
@@ -18,10 +18,10 @@ public class File {
         SYNCED
     }
 
-    private File(long id, long userId, String serverPath, String filePath, long fileSize, long fileDate, boolean synced, String lastAction) {
+    private File(long id, long userId, String serverFileName, String filePath, long fileSize, long fileDate, boolean synced, String lastAction) {
         this.id = id;
         this.userId = userId;
-        this.serverPath = serverPath;
+        this.serverFileName = serverFileName;
         this.filePath = filePath;
         this.fileSize = fileSize;
         this.fileDate = fileDate;
@@ -37,8 +37,8 @@ public class File {
         this.userId = userId;
     }
 
-    public void setServerPath(String serverPath) {
-        this.serverPath = serverPath;
+    public void setServerFileName(String serverFileName) {
+        this.serverFileName = serverFileName;
     }
 
     public void setFilePath(String filePath) {
@@ -69,8 +69,8 @@ public class File {
         return userId;
     }
 
-    public String getServerPath() {
-        return serverPath;
+    public String getServerFileName() {
+        return serverFileName;
     }
 
     public String getFilePath() {
@@ -93,23 +93,10 @@ public class File {
         return lastAction;
     }
 
-    @Override
-    public String toString() {
-        return "File{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", filePath='" + filePath + '\'' +
-                ", fileSize=" + fileSize +
-                ", fileDate=" + fileDate +
-                ", synced=" + synced +
-                ", lastAction='" + lastAction + '\'' +
-                '}';
-    }
-
     public static class Builder {
         private long id;
         private long userId;
-        private String serverPath;
+        private String serverFileName;
         private String filePath;
         private long fileSize;
         private long fileDate;
@@ -126,8 +113,8 @@ public class File {
             return this;
         }
 
-        public Builder setServerPath(String serverPath) {
-            this.serverPath = serverPath;
+        public Builder setServerFileName(String serverFileName) {
+            this.serverFileName = serverFileName;
             return this;
         }
 
@@ -157,7 +144,7 @@ public class File {
         }
 
         public File create() {
-            return new File(id, userId, serverPath, filePath, fileSize, fileDate, synced, lastAction);
+            return new File(id, userId, serverFileName, filePath, fileSize, fileDate, synced, lastAction);
         }
     }
 }

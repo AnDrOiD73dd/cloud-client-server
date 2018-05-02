@@ -11,7 +11,7 @@ public class FileAdapter {
         return new File.Builder()
                 .setId(rs.getLong(FileDAOImpl.COLUMN_ID))
                 .setUserId(rs.getLong(FileDAOImpl.COLUMN_USER_ID))
-                .setServerPath(rs.getString(FileDAOImpl.COLUMN_SERVER_PATH))
+                .setServerFileName(rs.getString(FileDAOImpl.COLUMN_SERVER_FILE_NAME))
                 .setFilePath(rs.getString(FileDAOImpl.COLUMN_FILE_PATH))
                 .setFileSize(rs.getLong(FileDAOImpl.COLUMN_FILE_SIZE))
                 .setFileDate(rs.getLong(FileDAOImpl.COLUMN_FILE_DATE))

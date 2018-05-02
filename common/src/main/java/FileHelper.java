@@ -15,10 +15,10 @@ public class FileHelper {
         return Paths.get(getWorkingDirectory(), rootCloudDirName, username);
     }
 
-    public static Path generateServerFilePath(String rootCloudDirName, String username, String filePath) {
+    public static String generateServerFileName(String filePath) {
         Path filename = Paths.get(filePath).getFileName();
         long time = System.currentTimeMillis();
-        return Paths.get(getWorkingDirectory(), rootCloudDirName, username, String.valueOf(time) + "-" + filename.toString());
+        return String.valueOf(time) + "-" + filename.toString();
     }
 
     public static boolean isExists(String path) {

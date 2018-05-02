@@ -51,7 +51,7 @@ public class DBHelper implements Database {
                         "%s TEXT, " +
                         "CONSTRAINT user_files UNIQUE (%s, %s));",
                 FileDAOImpl.TABLE_NAME, FileDAOImpl.COLUMN_ID, FileDAOImpl.COLUMN_USER_ID, UserDAOImpl.TABLE_NAME,
-                UserDAOImpl.COLUMN_ID, FileDAOImpl.COLUMN_SERVER_PATH, FileDAOImpl.COLUMN_FILE_PATH, FileDAOImpl.COLUMN_FILE_SIZE,
+                UserDAOImpl.COLUMN_ID, FileDAOImpl.COLUMN_SERVER_FILE_NAME, FileDAOImpl.COLUMN_FILE_PATH, FileDAOImpl.COLUMN_FILE_SIZE,
                 FileDAOImpl.COLUMN_FILE_DATE, FileDAOImpl.COLUMN_SYNCED, FileDAOImpl.COLUMN_LAST_ACTION,
                 FileDAOImpl.COLUMN_USER_ID, FileDAOImpl.COLUMN_FILE_PATH));
         ps.executeUpdate();
