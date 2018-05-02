@@ -35,8 +35,8 @@ public class FileHelper {
         return true;
     }
 
-    public static long getSize(String path) throws IOException {
-        return Files.size(Paths.get(path));
+    public static long getSize(String filePath) throws IOException {
+        return Files.size(Paths.get(filePath));
     }
 
     public static String getHumanSize(long fileSize) {
@@ -67,11 +67,11 @@ public class FileHelper {
         return res;
     }
 
-    public static long getDate(String path) throws IOException {
-        return Files.getLastModifiedTime(Paths.get(path)).toMillis();
+    public static long getDate(String filePath) throws IOException {
+        return Files.getLastModifiedTime(Paths.get(filePath)).toMillis();
     }
 
-    public static String getName(String path) {
-        return Paths.get(path).getFileName().toString();
+    public static String getName(String filePath) {
+        return Paths.get(filePath).getFileName().toString();
     }
 }

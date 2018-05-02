@@ -191,8 +191,10 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             controller.updateTableData(filesList);
         } else {
             for (ClientFile clientFile : newList) {
-                if (!this.filesList.contains(clientFile))
+                if (!this.filesList.contains(clientFile)) {
                     this.filesList.add(clientFile);
+                    // TODO: get new file from queue
+                }
             }
         }
 //        controller.setClientFiles(filesList);
