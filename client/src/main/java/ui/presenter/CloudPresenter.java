@@ -2,6 +2,7 @@ package ui.presenter;
 
 import connection.ConnectionService;
 import base.FileHelper;
+import ui.controller.BaseController;
 import ui.controller.CloudController;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -50,7 +51,8 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             @Override
             public void onDisconnected() {
                 Platform.runLater(() -> controller.showSignIn());
-                controller.showAlert("Соединение с сервером разорвано");
+//                controller.showAlert("Соединение с сервером разорвано");
+                controller.showNotification(BaseController.NotificationType.ERROR, "Ошибка", "Соединение с сервером потеряно");
             }
 
             @Override
@@ -82,13 +84,16 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             connectionService.getOut().writeObject(lastRequest.toString());
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            controller.showAlert("Произошла ошибка при отправке данных на сервер");
+//            controller.showAlert("Произошла ошибка при отправке данных на сервер");
+            controller.showNotification(BaseController.NotificationType.ERROR, "Ошибка",
+                    "Произошла ошибка при обращении к файлу " + file.getAbsolutePath());
         }
     }
 
     public void onClickDelete(Event event, ClientFile selectedItem) {
         if (selectedItem == null) {
-            controller.showAlert("Укажите файл из списка");
+//            controller.showAlert("Укажите файл из списка");
+            controller.showNotification(BaseController.NotificationType.INFO, "Файл не выбран", "Укажите файл из списка");
             return;
         }
         requestDeleteFile(selectedItem.getFilePath());
@@ -105,37 +110,50 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             connectionService.getOut().writeObject(lastRequest.toString());
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            controller.showAlert("Произошла ошибка при удалении файла, возможно файл не найден.");
+//            controller.showAlert("Произошла ошибка при удалении файла, возможно файл не найден.");
+            controller.showNotification(BaseController.NotificationType.ERROR, "Ошибка",
+                    "Произошла ошибка при удалении файла, возможно файл не найден: " + filePath);
         }
     }
 
     public void onClickDeleteAll(Event event, ClientFile selectedItem) {
         if (selectedItem == null) {
-            controller.showAlert("Укажите файл из списка");
+//            controller.showAlert("Укажите файл из списка");
+            controller.showNotification(BaseController.NotificationType.INFO, "Файл не выбран", "Укажите файл из списка");
             return;
         }
         if (FileHelper.isExists(selectedItem.getFilePath())) {
-            if (!FileHelper.deleteLocalFile(selectedItem.getFilePath()))
-                controller.showAlert("Не удалось удалить локальный файл: " + selectedItem.getFilePath() + "\nФайл не найден, либо недостаточно прав");
+            if (!FileHelper.deleteLocalFile(selectedItem.getFilePath())) {
+//                controller.showAlert("Не удалось удалить локальный файл: " + selectedItem.getFilePath() + "\nФайл не найден, либо недостаточно прав");
+                controller.showNotification(BaseController.NotificationType.ERROR, "Файл не удален",
+                        "Не удалось удалить локальный файл: " + selectedItem.getFilePath()
+                                + "\nФайл не найден, либо недостаточно прав");
+            }
         }
         requestDeleteFile(selectedItem.getFilePath());
     }
 
     public void onClickUpdate(Event event, ClientFile selectedItem) {
         if (selectedItem == null) {
-            controller.showAlert("Укажите файл из списка");
+//            controller.showAlert("Укажите файл из списка");
+            controller.showNotification(BaseController.NotificationType.INFO, "Файл не выбран", "Укажите файл из списка");
             return;
         }
         String filePath = selectedItem.getFilePath();
         if (FileHelper.isExists(filePath)) {
             requestDeleteFile(selectedItem.getFilePath());
             onFileSelected(new File(filePath));
-        } else controller.showAlert("Файл не найден: " + filePath);
+        }
+        else {
+//            controller.showAlert("Файл не найден: " + filePath);
+            controller.showNotification(BaseController.NotificationType.WARNING, "Файл отсутствует", "Файл не найден: " + filePath);
+        }
     }
 
     public void onClickDownload(Event event, ClientFile selectedItem) {
         if (selectedItem == null) {
-            controller.showAlert("Укажите файл из списка");
+//            controller.showAlert("Укажите файл из списка");
+            controller.showNotification(BaseController.NotificationType.INFO, "Файл не выбран", "Укажите файл из списка");
             return;
         }
         String filePath = selectedItem.getFilePath();
@@ -157,7 +175,9 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             connectionService.getOut().writeObject(lastRequest.toString());
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            controller.showAlert("Произошла ошибка при запросе на загрузку файла");
+//            controller.showAlert("Произошла ошибка при запросе на загрузку файла");
+            controller.showNotification(BaseController.NotificationType.ERROR, "Ошибка",
+                    "Произошла ошибка при запросе на загрузку файла " + filePath);
         }
     }
 
@@ -176,7 +196,8 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             connectionService.getOut().writeObject(lastRequest.toString());
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            controller.showAlert("Произошла ошибка при отправке данных на сервер");
+//            controller.showAlert("Произошла ошибка при отправке данных на сервер");
+            controller.showNotification(BaseController.NotificationType.ERROR, "Ошибка", "Не удалось получить список файлов");
         }
     }
 
@@ -190,7 +211,8 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             stream.write(file.getFile());
         } catch (IOException e) {
             System.out.println("Ошибка при сохранении файла: " + e.getMessage());
-            controller.showAlert("Не удалось сохранить файл " + file.getFilePath());
+//            controller.showAlert("Не удалось сохранить файл " + file.getFilePath());
+            controller.showNotification(BaseController.NotificationType.ERROR, "Файл не сохранен", "Не удалось сохранить файл " + file.getFilePath());
         } finally {
             if (stream != null) {
                 try {
@@ -250,7 +272,9 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             case 0:
                 break;
             case 1:
-                controller.showAlert("Произошла ошибка при запросе файлов, обратитесь к системному администратору");
+//                controller.showAlert("Произошла ошибка при запросе файлов, обновите приложение или обратитесь к системному администратору");
+                controller.showNotification(BaseController.NotificationType.ERROR, "Ошибка",
+                        "Произошла ошибка при запросе файлов, обновите приложение или обратитесь к системному администратору");
                 break;
             default:
                 System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
@@ -275,19 +299,27 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
                 onAuthError(responseMessage);
                 break;
             case 3:
-                controller.showAlert("При добавлении файла произошла ошибка, попробуйте еще раз");
+//                controller.showAlert("При добавлении файла произошла ошибка, попробуйте еще раз");
+                controller.showNotification(BaseController.NotificationType.INFO, "Файл не добавлен",
+                        "Файл не удалось загрузить, попробуйте еще раз");
                 requestMap.remove(responseMessage.getId());
                 break;
             case 4:
-                controller.showAlert("Файл не добавлен: такой файл уже существует");
+//                controller.showAlert("Файл не добавлен: такой файл уже существует");
+                controller.showNotification(BaseController.NotificationType.INFO, "Файл не добавлен",
+                        "Файл не добавлен: такой файл уже существует");
                 requestMap.remove(responseMessage.getId());
                 break;
             case 5:
-                controller.showAlert("Файл не добавлен: отсутствует свободное место в облаке");
+//                controller.showAlert("Файл не добавлен: отсутствует свободное место в облаке");
+                controller.showNotification(BaseController.NotificationType.WARNING, "Файл не добавлен",
+                        "Файл не добавлен: отсутствует свободное место в облаке");
                 requestMap.remove(responseMessage.getId());
                 break;
             case 6:
-                controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
+//                controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
+                controller.showNotification(BaseController.NotificationType.ERROR, "Файл не добавлен",
+                        "Файл не добавлен: неверный формат данных, обновите приложение");
                 requestMap.remove(responseMessage.getId());
                 break;
             default:
@@ -309,11 +341,15 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
                 onAuthError(responseMessage);
                 break;
             case 3:
-                controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
+//                controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
+                controller.showNotification(BaseController.NotificationType.WARNING, "Файл не удален",
+                        "Файл не удален: неверный формат данных, обновите приложение");
                 requestMap.remove(responseMessage.getId());
                 break;
             case 4:
-                controller.showAlert("При удалении файла произошла ошибка, попробуйте еще раз");
+//                controller.showAlert("При удалении файла произошла ошибка, попробуйте еще раз");
+                controller.showNotification(BaseController.NotificationType.INFO, "Файл не удален",
+                        "Файл не удалось удалить, попробуйте еще раз");
                 requestMap.remove(responseMessage.getId());
                 break;
             default:
@@ -328,18 +364,23 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             case 0:
                 break;
             case 1:
-                controller.showAlert("К сожалению, файл не найден");
+//                controller.showAlert("К сожалению, файл не найден");
+                controller.showNotification(BaseController.NotificationType.ERROR, "Файл не найден", "В хранилище отсутствует файл");
                 requestMap.remove(responseMessage.getId());
                 break;
             case 2:
                 onAuthError(responseMessage);
                 break;
             case 3:
-                controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
+//                controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
+                controller.showNotification(BaseController.NotificationType.ERROR, "Файл не загружен",
+                        "Файл не загружен: неверный формат данных, обновите приложение");
                 requestMap.remove(responseMessage.getId());
                 break;
             case 4:
-                controller.showAlert("При загрузке файла произошла ошибка, попробуйте еще раз");
+//                controller.showAlert("При загрузке файла произошла ошибка, попробуйте еще раз");
+                controller.showNotification(BaseController.NotificationType.INFO, "Файл не загружен",
+                        "Файл не удалось загрузить, попробуйте еще раз");
                 requestMap.remove(responseMessage.getId());
                 break;
             default:
@@ -366,7 +407,9 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
     }
 
     private void onSendFileError(String filePath) {
-        controller.showAlert("Произошла ошибка при отправке файла на сервер. Попробуйте еще раз");
+//        controller.showAlert("Произошла ошибка при отправке файла на сервер. Попробуйте еще раз");
+        controller.showNotification(BaseController.NotificationType.ERROR, "Файл не отправлен",
+                "Произошла ошибка при отправке файла на сервер. Попробуйте еще раз");
         requestDeleteFile(filePath);
     }
 
@@ -390,7 +433,8 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
     }
 
     private void onAuthError(ResponseMessage responseMessage) {
-        controller.showAlert("Ошибка аутентификации");
+//        controller.showAlert("Ошибка аутентификации");
+        controller.showNotification(BaseController.NotificationType.ERROR, "Ошибка", "Вы не аутентифицированы на сервере");
         controller.showSignIn();
         requestMap.remove(responseMessage.getId());
     }

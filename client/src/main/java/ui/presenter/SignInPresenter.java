@@ -1,16 +1,16 @@
 package ui.presenter;
 
-import base.ClientUtils;
-import connection.ConnectionService;
-import ui.controller.SignInController;
-import javafx.application.Platform;
-import javafx.event.Event;
 import adapter.TransferringFile;
+import connection.ConnectionService;
 import connection.listener.ConnectionStateListener;
 import connection.listener.ResponseListener;
+import javafx.application.Platform;
+import javafx.event.Event;
 import protocol.*;
 import protocol.handler.ResponseHandler;
 import protocol.request.RequestMessage;
+import ui.controller.BaseController;
+import ui.controller.SignInController;
 
 import java.io.IOException;
 
@@ -39,7 +39,8 @@ public class SignInPresenter extends BasePresenter implements ResponseListener, 
 
             @Override
             public void onError(String error) {
-                controller.showAlert(error);
+//                controller.showAlert(error);
+                controller.showNotification(BaseController.NotificationType.ERROR, "Ошибка подключения", error);
                 controller.updateUI(true);
             }
         };
@@ -58,7 +59,8 @@ public class SignInPresenter extends BasePresenter implements ResponseListener, 
             controller.setPassword("");
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            controller.showAlert("Произошла ошибка при отправке данных на сервер");
+//            controller.showAlert("Произошла ошибка при отправке данных на сервер");
+            controller.showNotification(BaseController.NotificationType.ERROR, "Ошибка", "Произошла ошибка при отправке данных на сервер");
         }
     }
 
@@ -128,17 +130,19 @@ public class SignInPresenter extends BasePresenter implements ResponseListener, 
                     case 2:
                         // TODO: hide progress
                         controller.updateUI(true);
-                        ClientUtils.showAlert("Неверый формат данных. Обратитесь к разработчику.");
+//                        controller.showAlert("Неверый формат данных. Обратитесь к разработчику.");
+                        controller.showNotification(BaseController.NotificationType.ERROR, "Ошибка аутентификации", "Неверый формат данных, обновите приложение");
                         break;
                     case 3:
                         // TODO: hide progress
                         controller.updateUI(true);
-                        ClientUtils.showAlert("Неверный логин и/или пароль");
+                        controller.showAlert("Неверный логин и/или пароль");
                         break;
                     case 4:
                         // TODO: hide progress
                         controller.updateUI(true);
-                        ClientUtils.showAlert("Произошла внутрення ошибка на сервере");
+//                        controller.showAlert("Произошла внутрення ошибка на сервере");
+                        controller.showNotification(BaseController.NotificationType.ERROR, "Ошибка аутентификации", "Произошла внутрення ошибка на сервере");
                         break;
                     default:
                         System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()

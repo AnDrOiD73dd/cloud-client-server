@@ -2,6 +2,7 @@ package ui.presenter;
 
 import base.ClientUtils;
 import connection.ConnectionService;
+import ui.controller.BaseController;
 import ui.controller.SignUpController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -46,7 +47,8 @@ public class SignUpPresenter extends BasePresenter implements ResponseListener, 
 
             @Override
             public void onError(String error) {
-                controller.showAlert(error);
+//                controller.showAlert(error);
+                controller.showNotification(BaseController.NotificationType.ERROR, "Ошибка подключения", error);
                 controller.updateUI(true);
             }
         };
@@ -63,7 +65,8 @@ public class SignUpPresenter extends BasePresenter implements ResponseListener, 
 //            connectionService.getOut().flush();
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            controller.showAlert("Произошла ошибка при отправке данных на сервер");
+//            controller.showAlert("Произошла ошибка при отправке данных на сервер");
+            controller.showNotification(BaseController.NotificationType.ERROR, "Ощибка регистрации", "Произошла ошибка при отправке данных на сервер");
         }
     }
 
@@ -149,12 +152,14 @@ public class SignUpPresenter extends BasePresenter implements ResponseListener, 
                     case 2:
                         // TODO: hide progress
                         controller.updateUI(true);
-                        ClientUtils.showAlert("Неверый формат данных. Обратитесь к разработчику.");
+//                        controller.showAlert("Неверый формат данных. Обратитесь к разработчику.");
+                        controller.showNotification(BaseController.NotificationType.ERROR, "Ошибка регистрации","Неверый формат данных, обновите приложение");
                         break;
                     case 3:
                         // TODO: hide progress
                         controller.updateUI(true);
-                        controller.showAlert("Произошла внутрення ошибка на сервере");
+//                        controller.showAlert("Произошла внутрення ошибка на сервере");
+                        controller.showNotification(BaseController.NotificationType.ERROR, "Ошибка регистрации","Произошла внутрення ошибка на сервере");
                         break;
                     case 4:
                         // TODO: hide progress
