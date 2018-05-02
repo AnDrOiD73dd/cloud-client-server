@@ -1,6 +1,6 @@
-import java.io.File;
+import model.TransferringFile;
 
 public interface ResponseListener {
-    void onNewFile(File requestFile);
+    void onNewFile(TransferringFile file);
     void onNewMessage(String message);
 }

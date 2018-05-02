@@ -1,4 +1,3 @@
-import db.FileDAO;
 import db.FileDAOImpl;
 import db.UserDAOImpl;
 import model.File;
@@ -161,6 +160,10 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
                 sendMessage(new ResponseMessage(requestMessage.getId(), 0).toString());
                 parseFileDelete(requestMessage);
                 break;
+            case CommandList.FILE_DOWNLOAD:
+                sendMessage(new ResponseMessage(requestMessage.getId(), 0).toString());
+                parseFileDownload(requestMessage);
+                break;
             default:
                 System.out.println("Unknown command = " + cmd);
                 break;
@@ -316,6 +319,35 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
         }
     }
 
+    private void parseFileDownload(RequestMessage requestMessage) {
+        if (!authorized) {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 2).toString());
+            return;
+        }
+        HashMap<String, String> body = requestMessage.getRequest();
+        String filePath = body.getOrDefault(RequestFilesList.KEY_FILE_PATH, "");
+        String destinationFilePath = body.getOrDefault(RequestFilesList.KEY_DESTINATION_FILE_PATH, "");
+        if (filePath.isEmpty() || destinationFilePath.isEmpty()) {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 3).toString());
+            return;
+        }
+        File file = FileDAOImpl.getInstance().get(dbConnection, currentUser.getId(), filePath);
+        if (file == null) {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
+            sendFilesList();
+            return;
+        }
+        String serverFilePath = FileHelper.getUserDirectory(CLOUD_DIR_NAME, currentUser.getUsername()).toAbsolutePath().toString();
+        serverFilePath = Paths.get(serverFilePath, file.getServerFileName()).toAbsolutePath().toString();
+        if (!FileHelper.isExists(serverFilePath)) {
+            sendMessage(new ResponseMessage(requestMessage.getId(), 1).toString());
+            sendFilesList();
+            return;
+        }
+        TransferringFile transferringFile = new TransferringFile(destinationFilePath, FileHelper.convertToByteArray(serverFilePath));
+        sendFile(transferringFile);
+    }
+
     @Override
     public void handleResponse(ResponseMessage responseMessage, String command) {
 
@@ -324,6 +356,14 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
     private void sendMessage(String message) {
         try {
             out.writeObject(message);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void sendFile(TransferringFile file) {
+        try {
+            out.writeObject(file);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }

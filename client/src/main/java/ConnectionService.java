@@ -1,4 +1,5 @@
-import java.io.File;
+import model.TransferringFile;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -51,8 +52,8 @@ public class ConnectionService {
                 try {
                     while (!Thread.currentThread().isInterrupted()) {
                         Object request = in.readObject();
-                        if (request instanceof File) {
-                            File requestFile = (File) request;
+                        if (request instanceof TransferringFile) {
+                            TransferringFile requestFile = (TransferringFile) request;
                             responseListener.onNewFile(requestFile);
                         } else if (request instanceof String) {
                             String question = request.toString();

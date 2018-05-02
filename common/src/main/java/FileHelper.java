@@ -82,4 +82,13 @@ public class FileHelper {
             return false;
         return file.delete();
     }
+
+    public static byte[] convertToByteArray(String filePath) {
+        try {
+            return Files.readAllBytes(Paths.get(filePath));
+        } catch (IOException e) {
+            System.out.println("Произошла ошибка при чтении файла: " + e.getMessage());
+            return null;
+        }
+    }
 }

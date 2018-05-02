@@ -59,9 +59,9 @@ public class RequestMessageFactory {
         return new RequestFilesList(id, filesList);
     }
 
-    public static Message getFileAddRequest(int id, String filepath, long fileDate, long fileSize) {
+    public static Message getFileAddRequest(int id, String filePath, long fileDate, long fileSize) {
         HashMap<String, String> dataMap = new HashMap<>();
-        dataMap.put(RequestFilesList.KEY_FILE_PATH, filepath);
+        dataMap.put(RequestFilesList.KEY_FILE_PATH, filePath);
         dataMap.put(RequestFilesList.KEY_FILE_DATE, String.valueOf(fileDate));
         dataMap.put(RequestFilesList.KEY_FILE_SIZE, String.valueOf(fileSize));
         return new RequestMessage(id, CommandList.FILE_ADD, dataMap);
@@ -71,6 +71,13 @@ public class RequestMessageFactory {
         HashMap<String, String> dataMap = new HashMap<>();
         dataMap.put(RequestFilesList.KEY_FILE_PATH, filepath);
         return new RequestMessage(id, CommandList.FILE_DELETE, dataMap);
+    }
+
+    public static Message getFileDownloadRequest(int id, String filePath, String destinationFilePath) {
+        HashMap<String, String> dataMap = new HashMap<>();
+        dataMap.put(RequestFilesList.KEY_FILE_PATH, filePath);
+        dataMap.put(RequestFilesList.KEY_DESTINATION_FILE_PATH, destinationFilePath);
+        return new RequestMessage(id, CommandList.FILE_DOWNLOAD, dataMap);
     }
 }
 

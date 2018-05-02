@@ -5,8 +5,10 @@ import model.TransferringFile;
 import protocol.*;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
@@ -47,7 +49,10 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
     }
 
     void onClickAdd(Event event) {
-        controller.showFileChooser();
+        File file = controller.showFileOpenDialog();
+        if (file != null) {
+            onFileSelected(file);
+        }
     }
 
     public void onFileSelected(File file) {
@@ -73,14 +78,14 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
             controller.showAlert("Укажите файл из списка");
             return;
         }
-        requestDeleteFile(selectedItem);
+        requestDeleteFile(selectedItem.getFilePath());
     }
 
-    private void requestDeleteFile(ClientFile selectedItem) {
+    private void requestDeleteFile(String filePath) {
         try {
             RequestMessage newRequest;
             do {
-                newRequest = (RequestMessage) RequestMessageFactory.getFileDeleteRequest(MessageUtil.getId(), selectedItem.getFilePath());
+                newRequest = (RequestMessage) RequestMessageFactory.getFileDeleteRequest(MessageUtil.getId(), filePath);
             } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
             requestMap.put(newRequest.getId(), newRequest);
             lastRequest = newRequest;
@@ -98,16 +103,9 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
         }
         if (!selectedItem.getStatus().equals(ClientFile.STATUS_FILE_NOT_FOUND)) {
             if (!FileHelper.deleteLocalFile(selectedItem.getFilePath()))
-                controller.showAlert("Не удалось удалить локальный файл: " + selectedItem.getFilePath() + " Файл не найден, либо недостаточно прав");
+                controller.showAlert("Не удалось удалить локальный файл: " + selectedItem.getFilePath() + "\nФайл не найден, либо недостаточно прав");
         }
-        requestDeleteFile(selectedItem);
-    }
-
-    void onClickDownload(Event event, ClientFile selectedItem) {
-        if (selectedItem == null) {
-            controller.showAlert("Укажите файл из списка");
-            return;
-        }
+        requestDeleteFile(selectedItem.getFilePath());
     }
 
     public void onClickUpdate(Event event, ClientFile selectedItem) {
@@ -117,9 +115,41 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
         }
         String filePath = selectedItem.getFilePath();
         if (FileHelper.isExists(filePath)) {
-            requestDeleteFile(selectedItem);
+            requestDeleteFile(selectedItem.getFilePath());
             onFileSelected(new File(filePath));
         } else controller.showAlert("Файл не найден: " + filePath);
+    }
+
+    void onClickDownload(Event event, ClientFile selectedItem) {
+        if (selectedItem == null) {
+            controller.showAlert("Укажите файл из списка");
+            return;
+        }
+        String filePath = selectedItem.getFilePath();
+        if (FileHelper.isExists(filePath)) {
+            controller.showReplaceDialog(filePath);
+        } else {
+            requestDownloadFile(filePath, filePath);
+        }
+    }
+
+    private void requestDownloadFile(String filePath, String destinationFilePath) {
+        try {
+            RequestMessage newRequest;
+            do {
+                newRequest = (RequestMessage) RequestMessageFactory.getFileDownloadRequest(MessageUtil.getId(), filePath, destinationFilePath);
+            } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
+            requestMap.put(newRequest.getId(), newRequest);
+            lastRequest = newRequest;
+            connectionService.getOut().writeObject(lastRequest.toString());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            controller.showAlert("Произошла ошибка при запросе на загрузку файла");
+        }
+    }
+
+    public void onDownloadDialogResult(String filePath, String destinationFilePath) {
+        requestDownloadFile(filePath, destinationFilePath);
     }
 
     private void requestFilesList() {
@@ -138,8 +168,16 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
     }
 
     @Override
-    public void onNewFile(File requestFile) {
-
+    public void onNewFile(TransferringFile file) {
+        try {
+            Path dirPath = Paths.get(file.getFilePath());
+            Files.createDirectories(dirPath.getParent());
+            FileOutputStream stream = new FileOutputStream(Paths.get(file.getFilePath()).toAbsolutePath().toString());
+            stream.write(file.getFile());
+        } catch (IOException e) {
+            System.out.println("Ошибка при сохранении файла: " + e.getMessage());
+            controller.showAlert("Не удалось сохранить файл " + file.getFilePath());
+        }
     }
 
     @Override
@@ -246,6 +284,33 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
                         break;
                 }
                 break;
+            case CommandList.FILE_DOWNLOAD:
+                switch (responseMessage.getResponseCode()) {
+                    case 0:
+                        break;
+                    case 1:
+                        controller.showAlert("К сожалению, файл не найден");
+                        requestMap.remove(responseMessage.getId());
+                        break;
+                    case 2:
+                        controller.showAlert("Ошибка аутентификации");
+                        controller.showSignIn();
+                        requestMap.remove(responseMessage.getId());
+                        break;
+                    case 3:
+                        controller.showAlert("Сервер сообщил о неверном формате данных. Обновите приложение.");
+                        requestMap.remove(responseMessage.getId());
+                        break;
+                    case 4:
+                        controller.showAlert("При загрузке файла произошла ошибка, попробуйте еще раз");
+                        requestMap.remove(responseMessage.getId());
+                        break;
+                    default:
+                        System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
+                                + ", cmd=" + CommandList.SIGN_IN);
+                        break;
+                }
+                break;
             default:
                 System.out.println(("Unknown command=" + command));
                 break;
@@ -256,13 +321,21 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
         File file = new File(filePath);
         if (file.exists()) {
             try {
-                byte[] fileArray = Files.readAllBytes(Paths.get(file.getAbsolutePath()));
+                byte[] fileArray = FileHelper.convertToByteArray(filePath);
+                if (fileArray == null) {
+                    onSendFileError(filePath);
+                    return;
+                }
                 connectionService.getOut().writeObject(new TransferringFile(filePath, fileArray));
             } catch (IOException e) {
-                controller.showAlert("Произошла ошибка при отправке файла на сервер. Попробуйте еще раз");
-                // TODO delete file from DB
+                onSendFileError(filePath);
             }
         }
+    }
+
+    private void onSendFileError(String filePath) {
+        controller.showAlert("Произошла ошибка при отправке файла на сервер. Попробуйте еще раз");
+        requestDeleteFile(filePath);
     }
 
     @Override

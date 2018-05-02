@@ -1,8 +1,8 @@
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import model.TransferringFile;
 import protocol.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -103,7 +103,7 @@ public class SignUpPresenter implements ResponseListener, ResponseHandler {
     }
 
     @Override
-    public void onNewFile(File requestFile) {
+    public void onNewFile(TransferringFile file) {
 
     }
 

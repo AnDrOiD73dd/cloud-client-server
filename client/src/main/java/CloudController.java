@@ -5,11 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -19,6 +17,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class CloudController extends BaseController implements Initializable {
@@ -201,10 +200,38 @@ public class CloudController extends BaseController implements Initializable {
         return (ClientFile) fileTable.getSelectionModel().getSelectedItem();
     }
 
-    public void showFileChooser() {
-        File file = fileChooser.showOpenDialog(fileTable.getScene().getWindow());
-        if (file != null) {
-            presenter.onFileSelected(file);
+    public File showFileOpenDialog() {
+        return fileChooser.showOpenDialog(fileTable.getScene().getWindow());
+    }
+
+    public File showFileSaveDialog() {
+        return fileChooser.showSaveDialog(fileTable.getScene().getWindow());
+    }
+
+    void showReplaceDialog(String filePath) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Выберите действие");
+        alert.setHeaderText("Файл уже существует, что будем делать?");
+        alert.setContentText("Выбранный файл уже существует. Желаете заменить его или указать другое место для загрузки файла?");
+
+        ButtonType buttonReplace = new ButtonType("Заменить");
+        ButtonType buttonChoosePath = new ButtonType("Выбрать другой путь");
+        ButtonType buttonCancel = new ButtonType("Отмена", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(buttonReplace, buttonChoosePath, buttonCancel);
+
+        Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+        stage.getIcons().add(new Image(this.getClass().getResource("/images/happy-cloud-480.png").toString()));
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == buttonReplace){
+            presenter.onDownloadDialogResult(filePath, filePath);
+        }
+        else if (result.get() == buttonChoosePath) {
+            File file = showFileSaveDialog();
+            if (file != null) {
+                presenter.onDownloadDialogResult(filePath, file.getAbsolutePath());
+            }
         }
     }
 

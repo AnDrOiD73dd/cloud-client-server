@@ -1,8 +1,8 @@
 import javafx.application.Platform;
 import javafx.event.Event;
+import model.TransferringFile;
 import protocol.*;
 
-import java.io.File;
 import java.io.IOException;
 
 public class SignInPresenter implements ResponseListener, ResponseHandler {
@@ -79,7 +79,7 @@ public class SignInPresenter implements ResponseListener, ResponseHandler {
     }
 
     @Override
-    public void onNewFile(File requestFile) {
+    public void onNewFile(TransferringFile file) {
 
     }
 
