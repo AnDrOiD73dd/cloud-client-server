@@ -1,3 +1,6 @@
+package base;
+
+import base.FileHelper;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.File;
