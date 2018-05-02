@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controller.SignUpController"
+      fx:controller="ui.controller.SignUpController"
       stylesheets="@../style/style_auth.css"
       fx:id="rootSignUp"
       alignment="CENTER">

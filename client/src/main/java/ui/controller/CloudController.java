@@ -1,4 +1,4 @@
-package controller;
+package ui.controller;
 
 import base.ClientUtils;
 import base.Constants;
@@ -17,7 +17,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.ClientFile;
-import presenter.CloudPresenter;
+import ui.presenter.CloudPresenter;
 
 import java.io.File;
 import java.io.IOException;
@@ -170,7 +170,7 @@ public class CloudController extends BaseController implements Initializable {
 
     public void showSignIn() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/layout/layout_sign_in.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/ui/layout/layout_sign_in.fxml"));
             Stage stage = new Stage();
             stage.setTitle(Constants.APP_NAME + ": Вход в систему");
             ClientUtils.setupIcon(stage, getClass());

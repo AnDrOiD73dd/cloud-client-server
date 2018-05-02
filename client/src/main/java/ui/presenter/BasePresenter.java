@@ -1,4 +1,4 @@
-package presenter;
+package ui.presenter;
 
 public abstract class BasePresenter {
 

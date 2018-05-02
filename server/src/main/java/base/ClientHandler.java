@@ -84,7 +84,7 @@ public class ClientHandler implements RequestHandler, ResponseHandler, FilesRequ
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
-                System.out.println("Exception in data listener: " + e + " " + e.getMessage());
+                System.out.println("Exception in messageListener: " + e + " " + e.getMessage());
             } finally {
                 disconnect();
             }

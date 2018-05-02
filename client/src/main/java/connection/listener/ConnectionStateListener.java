@@ -1,4 +1,4 @@
-package listener;
+package connection.listener;
 
 public interface ConnectionStateListener {
     void onConnected();

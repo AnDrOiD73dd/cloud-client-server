@@ -1,8 +1,8 @@
-package base;
+package connection;
 
 import adapter.TransferringFile;
-import listener.ConnectionStateListener;
-import listener.ResponseListener;
+import connection.listener.ConnectionStateListener;
+import connection.listener.ResponseListener;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

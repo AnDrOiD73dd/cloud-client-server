@@ -1,14 +1,14 @@
-package presenter;
+package ui.presenter;
 
-import base.ConnectionService;
+import connection.ConnectionService;
 import base.FileHelper;
-import controller.CloudController;
+import ui.controller.CloudController;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import adapter.TransferringFile;
-import listener.ConnectionStateListener;
-import listener.ResponseListener;
+import connection.listener.ConnectionStateListener;
+import connection.listener.ResponseListener;
 import model.ClientFile;
 import protocol.*;
 import protocol.handler.FilesRequestHandler;

@@ -1,4 +1,4 @@
-package controller;
+package ui.controller;
 
 import base.ClientUtils;
 

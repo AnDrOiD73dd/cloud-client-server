@@ -1,47 +1,39 @@
-package presenter;
+package ui.presenter;
 
 import base.ClientUtils;
-import base.ConnectionService;
-import controller.SignUpController;
+import connection.ConnectionService;
+import ui.controller.SignInController;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
+import javafx.event.Event;
 import adapter.TransferringFile;
-import listener.ConnectionStateListener;
-import listener.ResponseListener;
-import presenter.BasePresenter;
+import connection.listener.ConnectionStateListener;
+import connection.listener.ResponseListener;
 import protocol.*;
 import protocol.handler.ResponseHandler;
 import protocol.request.RequestMessage;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class SignUpPresenter extends BasePresenter implements ResponseListener, ResponseHandler {
+public class SignInPresenter extends BasePresenter implements ResponseListener, ResponseHandler {
 
-    private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-
-    private SignUpController controller;
+    private SignInController controller;
     private ConnectionService connectionService;
     private RequestMessage lastRequest;
     private ConnectionStateListener connectionStateListener;
     private String username;
     private String password;
-    private String firstName;
-    private String lastName;
-    private String email;
 
-    public SignUpPresenter(SignUpController controller) {
+    public SignInPresenter(SignInController controller) {
         this.controller = controller;
         connectionStateListener = new ConnectionStateListener() {
             @Override
             public void onConnected() {
-                signUp();
+                signIn();
             }
 
             @Override
             public void onDisconnected() {
+//                controller.showAlert("Подключение с сервером разорвано");
                 controller.updateUI(true);
             }
 
@@ -53,70 +45,56 @@ public class SignUpPresenter extends BasePresenter implements ResponseListener, 
         };
     }
 
-    private void signUp() {
+    private void signIn() {
         try {
             RequestMessage newRequest;
             do {
-                newRequest = (RequestMessage) RequestMessageFactory.getSignUpMessage(MessageUtil.getId(), username, password, firstName, lastName, email);
+                newRequest = (RequestMessage) RequestMessageFactory.getLoginMessage(MessageUtil.getId(), username, password);
             } while (lastRequest != null && lastRequest.getId() == newRequest.getId());
             lastRequest = newRequest;
             connectionService.getOut().writeObject(lastRequest.toString());
 //            connectionService.getOut().flush();
+            controller.setUsername("");
+            controller.setPassword("");
         } catch (IOException e) {
             System.out.println(e.getMessage());
             controller.showAlert("Произошла ошибка при отправке данных на сервер");
         }
     }
 
-    public void onClickSignUp(ActionEvent actionEvent, String username, String password, String firstName, String lastName, String email, String serverAddress, String serverPort) {
+    public void onSignUpClick(Event event) {
+        controller.showSignUp(event);
+    }
+
+    public void onSignInClick(String username, String password, String serverAddress, String serverPort) {
         serverAddress = serverAddress.trim();
         serverPort = serverPort.trim();
         if (!isValidServerAddress(serverAddress, serverPort)) {
             controller.showAlert("Указаны невалидные данные сервера");
             return;
         }
-        if (isValidCredentials(username, password, firstName, lastName, email)) {
-            initConnection(serverAddress, Integer.valueOf(serverPort));
-        }
-    }
-
-    private boolean isValidCredentials(String username, String password, String firstName, String lastName, String email) {
         this.username = username.trim();
         this.password = password.trim();
-        this.firstName = firstName.trim();
-        this.lastName = lastName.trim();
-        this.email = email.trim();
-        if (username.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty()){
-            controller.showAlert("Вы заполнили не все поля");
-            return false;
+        if (!isValidCredentials(this.username, this.password)) {
+            controller.showAlert("Указаны неполные данные авторизации");
+            return;
         }
-        String usernamePattern = "[a-zA-Z0-9._\\-]{3,}";
-        if (!username.matches(usernamePattern)) {
-            controller.showAlert("Имя пользователя должно быть не короче 3-х символов. Разрешенные символы:" +
-                    "\nцифры, буквы, точка, нижнее подчеркивание, тире");
-            return false;
-        }
-        String passwordPattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
-        if (!password.matches(passwordPattern)) {
-            controller.showAlert("Пароль должен состоять не менее чем из 8 символов и иметь по одному символу:" +
-                    "\nцыфры\nстрочной буквы\nпрописной буквы\nсодержать хотя бы один символ из: [@#$%^&+=\nи не должен содержать пробелы");
-            return false;
-        }
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
-        if (!matcher.find()) {
-            controller.showAlert("Вы указали невалидное значение в поле email");
-            return false;
-        }
-        return true;
+        initConnection(serverAddress, Integer.valueOf(serverPort));
     }
 
+    @Override
     protected void initConnection(String host, Integer port) {
         connectionService = ConnectionService.getInstance();
         connectionService.setResponseListener(this);
         connectionService.addConnectionStateListener(connectionStateListener);
         if (connectionService.isConnected())
-            signUp();
+            signIn();
         else connectionService.connect(host, port);
+
+    }
+
+    private boolean isValidCredentials(String username, String password) {
+        return !username.isEmpty() && !password.isEmpty();
     }
 
     @Override
@@ -137,7 +115,7 @@ public class SignUpPresenter extends BasePresenter implements ResponseListener, 
             return;
         }
         switch (lastRequest.getCmd()) {
-            case CommandList.SIGN_UP:
+            case CommandList.SIGN_IN:
                 switch (responseMessage.getResponseCode()) {
                     case 0:
                         // TODO: show progress
@@ -155,17 +133,12 @@ public class SignUpPresenter extends BasePresenter implements ResponseListener, 
                     case 3:
                         // TODO: hide progress
                         controller.updateUI(true);
-                        controller.showAlert("Произошла внутрення ошибка на сервере");
+                        ClientUtils.showAlert("Неверный логин и/или пароль");
                         break;
                     case 4:
                         // TODO: hide progress
                         controller.updateUI(true);
-                        controller.showAlert("Пользователь с таким логином уже существует");
-                        break;
-                    case 5:
-                        // TODO: hide progress
-                        controller.updateUI(true);
-                        controller.showAlert("Пользователь с таким e-mail уже существует");
+                        ClientUtils.showAlert("Произошла внутрення ошибка на сервере");
                         break;
                     default:
                         System.out.println("Unknown responseCode=" + responseMessage.getResponseCode()
