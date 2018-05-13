@@ -2,14 +2,14 @@
 Client and server side for cloud storage
 
 # TODO
-* Loading queue
+* File Loading queue
 * SSL sockets or requests
 * Store password hash
 * Use Logger instead of System.out.println
 * Drag & drop file
 * Split big files
 * Add choose client cloud directory
-* Scan client cloud directory and check files
+* Scan client cloud directory and check files on start app
 
 # Протокол взаимодействия
 Пример запроса на логин
