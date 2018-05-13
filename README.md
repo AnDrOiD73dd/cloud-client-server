@@ -17,7 +17,7 @@ Client and server side for cloud storage
 {
   "id": 528,
   "request": {
-    "cmd": "signin",
+    "cmd": "sign_in",
     "data": {
       "login": "Vasya",
       "password": "159753"
