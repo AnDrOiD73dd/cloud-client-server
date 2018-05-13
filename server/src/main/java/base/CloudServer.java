@@ -1,10 +1,10 @@
 package base;
 
+import adapter.File;
+import adapter.User;
 import db.DBHelper;
 import db.FileDAOImpl;
 import db.UserDAOImpl;
-import adapter.File;
-import adapter.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;

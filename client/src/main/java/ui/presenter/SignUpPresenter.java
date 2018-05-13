@@ -1,17 +1,16 @@
 package ui.presenter;
 
-import base.ClientUtils;
-import connection.ConnectionService;
-import ui.controller.BaseController;
-import ui.controller.SignUpController;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import adapter.TransferringFile;
+import connection.ConnectionService;
 import connection.listener.ConnectionStateListener;
 import connection.listener.ResponseListener;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import protocol.*;
 import protocol.handler.ResponseHandler;
 import protocol.request.RequestMessage;
+import ui.controller.BaseController;
+import ui.controller.SignUpController;
 
 import java.io.IOException;
 import java.util.regex.Matcher;

@@ -1,10 +1,8 @@
 package base;
 
-import base.FileHelper;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Utils {
@@ -21,7 +19,7 @@ public class Utils {
     }
 
     public static Date getDate(long milliseconds) {
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+//        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
         return new Date(milliseconds);
     }
 }

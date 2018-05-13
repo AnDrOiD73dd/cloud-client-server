@@ -1,15 +1,13 @@
 package ui.presenter;
 
-import connection.ConnectionService;
+import adapter.TransferringFile;
 import base.FileHelper;
-import ui.controller.BaseController;
-import ui.controller.CloudController;
+import connection.ConnectionService;
+import connection.listener.ConnectionStateListener;
+import connection.listener.ResponseListener;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
-import adapter.TransferringFile;
-import connection.listener.ConnectionStateListener;
-import connection.listener.ResponseListener;
 import model.ClientFile;
 import protocol.*;
 import protocol.handler.FilesRequestHandler;
@@ -17,6 +15,8 @@ import protocol.handler.RequestHandler;
 import protocol.handler.ResponseHandler;
 import protocol.request.RequestFilesList;
 import protocol.request.RequestMessage;
+import ui.controller.BaseController;
+import ui.controller.CloudController;
 
 import java.io.File;
 import java.io.FileOutputStream;
