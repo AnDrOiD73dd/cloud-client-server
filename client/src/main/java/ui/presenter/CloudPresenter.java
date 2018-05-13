@@ -233,9 +233,6 @@ public class CloudPresenter implements RequestHandler, ResponseHandler, Response
     @Override
     public void handleRequest(RequestMessage requestMessage) {
         switch (requestMessage.getCmd()) {
-            case CommandList.FILES_LIST:
-                HashMap<String, String> request = requestMessage.getRequest();
-                break;
             default:
                 System.out.println("Unknown command=" + requestMessage.getCmd());
                 break;

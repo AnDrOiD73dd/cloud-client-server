@@ -62,7 +62,7 @@ public class SignInController extends BaseController implements Initializable {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/ui/layout/layout_sign_up.fxml"));
             Stage stage = new Stage();
-            stage.setTitle(Constants.APP_NAME + ": Регистрация");
+            stage.setTitle(Constants.TITLE_SIGN_UP);
             ClientUtils.setupIcon(stage, getClass());
             stage.setScene(new Scene(root));
             stage.show();

@@ -172,7 +172,7 @@ public class CloudController extends BaseController implements Initializable {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/ui/layout/layout_sign_in.fxml"));
             Stage stage = new Stage();
-            stage.setTitle(Constants.APP_NAME + ": Вход в систему");
+            stage.setTitle(Constants.TITLE_SIGN_IN);
             ClientUtils.setupIcon(stage, getClass());
             stage.setScene(new Scene(root));
             stage.show();
