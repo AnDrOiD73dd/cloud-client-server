@@ -10,6 +10,10 @@ Client and server side for cloud storage
 * Split big files
 * Add choose client cloud directory
 * Scan client cloud directory and check files on start app
+* User config
+* Button icons
+* Add commands to server console
+* Use cachedThreadPool
 
 # Протокол взаимодействия
 Пример запроса на логин
